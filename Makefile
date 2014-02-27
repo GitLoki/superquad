@@ -7,8 +7,8 @@ TARGET := superquad
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g -Wall
-LIB := -lboost_system -lncurses
+CFLAGS := -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux
+LIB := -lboost_system -lncurses -lpthread -lncurses
 INC := -I include -I /usr/include/boost
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
