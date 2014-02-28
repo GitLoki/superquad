@@ -20,6 +20,9 @@ $(BINDIR)/$(TARGET): $(OBJECTS)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(BUILDDIR)/PhysicsModel
+	@mkdir -p $(BUILDDIR)/Tx
+	@mkdir -p $(BUILDDIR)/Kinect
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(BUILDDIR)/PhysicsModel/extApi.o: $(SRCDIR)/PhysicsModel/extApi.c
