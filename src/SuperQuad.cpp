@@ -1,12 +1,12 @@
 #include <iostream>
-#include "../include/SerialWriter/SerialWriter.hpp"
+#include "../include/Tx/Tx.hpp"
 using namespace std;
 
 int main (int argc, char** argv) {
 
   cout << "Hello!" << endl;
 
-  SerialWriter sw;
+  Tx tx;
 
   return 0;
 }
