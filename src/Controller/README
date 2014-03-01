@@ -1,0 +1,9 @@
+This file is intended to allow an XBOX 360 controller to be used to
+control the quadcopter.
+
+Please note, this file is platform-specific to the Mac right now, and
+does not yet work, which is why it has its own makefile. Please do not
+add anything to this makefile, please do not add these files to any
+other makefile until further notice.
+
+--A
