@@ -45,8 +45,11 @@ PhysicsModel::PhysicsModel() {
 					(simxInt) simx_opmode_oneshot_wait);
   errGetHandle[5] = simxGetObjectHandle(clientID, (simxChar*) 
 					"Quadricopter_target", &targetHandle, 
-					simx_opmode_oneshot_wait);
-  
+					simx_opmode_oneshot_wait); 
+}
+
+PhysicsModel::~PhysicsModel() {
+
 }
 
 void PhysicsModel::moveTarget(double coords[3]) {
