@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <cstdlib>
-using namespace std;
 
-extern "C" {
+//extern "C" {
 #include "extApi.h"
 #include "extApiCustom.h"
 #include "extApiPlatform.h"
-}
+//}
+
 
 class PhysicsModel{
 
@@ -28,19 +28,21 @@ public:
   
   void getPosition(double position[3]);
 
-  void setRotation(double angles[3]);
+  void setRotation(char ch);
 
   void setPosition(double position[3]);
   
 private:
-  
+  simxInt err;     //Annoying error container 
+                   //used to avoid 'unused variable' warnings  
+
   simxInt errGetHandle[6];
   simxInt quadHandle, targetHandle, propellerRespondable[4];
   
-  // simxFloat* quadPosWrite;
+  simxFloat* quadPosWrite;
   simxFloat* quadPosRead;
   simxFloat* eulerAnglesRead;
-  // simxFloat* eulerAnglesWrite;
+  simxFloat* eulerAnglesWrite;
   
   simxInt clientID;
 };
