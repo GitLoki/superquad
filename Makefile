@@ -9,8 +9,8 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  $(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
 CC := gcc
 
-CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv`
-LIB := `pkg-config --libs opencv` -lboost_system -lncurses -lpthread -lncurses -lfreenect
+CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags`
+LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11
 INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
@@ -23,6 +23,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/PhysicsModel
 	@mkdir -p $(BUILDDIR)/Tx
 	@mkdir -p $(BUILDDIR)/Kinect
+	@mkdir -p $(BUILDDIR)/Controller
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(BUILDDIR)/PhysicsModel/extApi.o: $(SRCDIR)/PhysicsModel/extApi.c

@@ -88,6 +88,7 @@ void XBoxControllerManager::monitorEvents(){
 }
 
 // If you want to run a program from C++ your main() function MUST have the following params
+/*
 int main(int argc, char *argv[]){
     XBoxControllerManager cont;
     cont.initialize();
@@ -95,4 +96,5 @@ int main(int argc, char *argv[]){
 	cont.monitorEvents();
     return 1;
 }
+*/
 // Note to self - the controller is not opening. Google this in morning.

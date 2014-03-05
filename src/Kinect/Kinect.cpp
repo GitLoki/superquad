@@ -214,18 +214,32 @@ void Kinect::createTrackbars() {
   sprintf( TrackbarName, "V_MIN");
   sprintf( TrackbarName, "V_MAX");
 
-  //create trackbars and insert them into window
+ //create trackbars and insert them into window
   //3 parameters are: the address of the variable that is changing when 
   //the trackbar is moved(eg.H_LOW),
   //the max value the trackbar can move (eg. H_HIGH), 
   //and the function that is called whenever the trackbar is moved(eg. 
   //on_trackbar)     
-  cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
+  /*
+    ORIGINAL createTrackbar - changed by TEREZA
+    it might be better hardcode the values for orange and don't run
+    the trackbar window
+
+    cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
   cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
   cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
   cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
   cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
   cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
+  */
+
+  cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX);
+  cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX);
+  cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX);
+  cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX);
+  cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX);
+  cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX);
+
 }
 
 void Kinect::drawObject(int x, int y, cv::Mat &frame) {

@@ -23,10 +23,10 @@
 //
 // This file was automatically created for V-REP release V3.1.0 on January 20th 2014
 
-#include "extApiCustom.h"
-#include "extApi.h"
-#include "extApiInternal.h"
-#include "extApiCustomConst.h"
+#include "../../include/PhysicsModel/extApiCustom.h"
+#include "../../include/PhysicsModel/extApi.h"
+#include "../../include/PhysicsModel/extApiInternal.h"
+#include "../../include/PhysicsModel/extApiCustomConst.h"
 
 /* Your custom remote API functions. Following are examples: */
 

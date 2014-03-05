@@ -23,7 +23,7 @@
 //
 // This file was automatically created for V-REP release V3.1.0 on January 20th 2014
 
-#include "extApiPlatform.h"
+#include "../../include/PhysicsModel/extApiPlatform.h"
 #include <stdio.h>
 
 #ifdef _WIN32

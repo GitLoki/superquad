@@ -4,12 +4,11 @@
 #include <iostream>
 #include <cstdlib>
 
-//extern "C" {
+extern "C" {
 #include "extApi.h"
 #include "extApiCustom.h"
 #include "extApiPlatform.h"
-//}
-
+}
 
 class PhysicsModel{
 

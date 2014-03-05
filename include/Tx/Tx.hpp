@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 
-enum controlIndices = {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
+enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
 const int sigVal = 3;
 const int aileronTrim = 127;
@@ -32,9 +32,10 @@ public:
 
   /* send commands to alter and transmit a specific control value */
   void setThrottle(int _throttle);
-  void setRudder(int _throttle);
-  void setAileron(int _throttle);
-  void setElevator(int _throttle);
+  void setRudder(int _rudder);
+  void setAileron(int _aileron);
+  void setElevator(int _elevator);
+  void setThrust(int _thrust);
 
   /* sets all values back to starting values (throttle = 0) and transmits them */
   void halt();
@@ -53,7 +54,7 @@ private:
   boost::array<unsigned char,5> controls;
   
   /* sanitises the current command values and sends them to the transmitter */
-  void Tx::sendValues(bool verbose = false) {
+  void sendValues(bool verbose = false);
 };
 
 #endif /* TX_HPP */

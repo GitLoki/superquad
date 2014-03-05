@@ -23,8 +23,8 @@
 //
 // This file was automatically created for V-REP release V3.1.0 on January 20th 2014
 
-#include "extApi.h"
-#include "extApiInternal.h"
+#include "../../include/PhysicsModel/extApi.h"
+#include "../../include/PhysicsModel/extApiInternal.h"
 #include <stdio.h>
 
 #ifdef _Included_extApiJava

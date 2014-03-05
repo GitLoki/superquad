@@ -85,7 +85,7 @@ void Tx::SendCommand(char com, bool verbose) {
       break;
     case 'q': // yaw right
       controls[RUDDER] += 10;
-      break;/
+      break;
     case 'e': // yaw left
       controls[RUDDER] -= 10;
       break;
@@ -103,12 +103,12 @@ void Tx::SendCommand(char com, bool verbose) {
   sendValues(verbose);
 }
 
-void Tx::sendValues(bool verbose = false) {
+void Tx::sendValues(bool verbose) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
     for (int i = THROTTLE ; i <= ELEVATOR ; i++) {
 	if (controls[i] < 0)
-	    controls[i] == 0;
+	    controls[i] = 0;
 	else if (controls[i] > 255)
 	    controls[i] = 255;
 	else if (controls[i] == sigVal)

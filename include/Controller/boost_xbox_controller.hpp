@@ -1,5 +1,5 @@
 #include <iostream>
-#include "SDL.h"
+#include <SDL2/SDL.h>
 
 #define LEFT_THUMBSTICK_HORIZONTAL 1
 #define LEFT_THUMBSTICK_VERTICAL 2
