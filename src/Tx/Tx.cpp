@@ -69,7 +69,7 @@ void Tx::getValues(int* _values) {
 
 /* sends a command to the Arduino; set verbose to true for debugging 
    information*/
-void Tx::SendCommand(char com, bool verbose) {
+void Tx::sendCommand(char com, bool verbose) {
   switch(com) {
     case 'd': // roll right
       controls[AILERON] += 10;

@@ -13,28 +13,24 @@ extern "C" {
 class PhysicsModel{
 
 public:
-  /* constructor */
+  /* Constructor */
   PhysicsModel();
 
-  /* destructor */
+  /* Destructor */
   ~PhysicsModel();
 
-  void moveTarget(double coords[3]);
-  
-  void stop();
-  
-  void getRotation(double angles[3]);
-  
-  void getPosition(double position[3]);
+  /* Initialises communication with VREP and sets object handles, returns -1 if 
+     there is a communication error, else returns clientID */
+  int init();
 
-  void setRotation(char ch);
+  /* Starts the simulation running */
+  int startSimulation();
 
-  void setPosition(double position[3]);
+  /* Sends the command corresponding to 'ch' to the physics model */
+  void sendCommand(char ch);
   
 private:
-  simxInt err;     //Annoying error container 
-                   //used to avoid 'unused variable' warnings  
-
+  simxInt clientID;
   simxInt errGetHandle[6];
   simxInt quadHandle, targetHandle, propellerRespondable[4];
   
@@ -42,8 +38,19 @@ private:
   simxFloat* quadPosRead;
   simxFloat* eulerAnglesRead;
   simxFloat* eulerAnglesWrite;
+
+  simxInt err;     //Annoying error container 
+                   //used to avoid 'unused variable' warnings  
+
+  void stop();
   
-  simxInt clientID;
+  void getRotation(double angles[3]);
+  
+  void getPosition(double position[3]);
+
+  void setPosition(double position[3]);
+
+  void moveTarget(double coords[3]);
 };
 
 #endif /* PHYSICSMODEL_HPP */

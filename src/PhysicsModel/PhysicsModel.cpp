@@ -1,55 +1,59 @@
 #include "../../include/PhysicsModel/PhysicsModel.hpp"
 
 PhysicsModel::PhysicsModel() {
-  
-  //  simxFloat* quadPosWrite = new simxFloat[3];
-  simxFloat* quadPosRead = new simxFloat[3];
-  simxFloat* eulerAnglesRead = new simxFloat[3];
-  // simxFloat* eulerAnglesWrite = new simxFloat[3];
-  
-  simxInt clientID = simxStart((simxChar*) "127.0.0.1", (simxInt) 19997,
-			       (simxChar) true, 
-			       (simxChar) true,
-			       (simxInt) 3000, (simxInt) 5);
+  quadPosWrite = new simxFloat[3];
+  quadPosRead = new simxFloat[3];
+  eulerAnglesRead = new simxFloat[3];
+  eulerAnglesWrite = new simxFloat[3];
 
-  if(clientID == -1) std::cout << "ERROR ESTABLISHING CONNECTION TO VREP" << std::endl;
-  
   for(int i = 0 ; i < 3 ; i++) {
       quadPosRead[i] = 0;
-      // quadPosWrite[i] = 0;
+      quadPosWrite[i] = 0;
       eulerAnglesRead[i] = 0;
-      // eulerAnglesWrite[i] = 0;
+      eulerAnglesWrite[i] = 0;
   }
-  
-  /* get handles */
-
-  simxInt errGetHandle[6] = {};
-  errGetHandle[0] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_base#", &quadHandle, 
-					(simxInt) simx_opmode_oneshot_wait);
-  errGetHandle[1] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint1#", 
-					propellerRespondable, 
-					(simxInt) simx_opmode_oneshot_wait);
-  errGetHandle[2] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint2#",
-					(propellerRespondable + 1), 
-					(simxInt) simx_opmode_oneshot_wait);
-  errGetHandle[3] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint3#",
-					(propellerRespondable + 2), 
-					(simxInt) simx_opmode_oneshot_wait);
-  errGetHandle[4] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint4#",
-					(propellerRespondable + 3), 
-					(simxInt) simx_opmode_oneshot_wait);
-  errGetHandle[5] = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_target", &targetHandle, 
-					simx_opmode_oneshot_wait); 
 }
 
 PhysicsModel::~PhysicsModel() {
+  stop();
+}
 
+int PhysicsModel::init() {
+  /* Initialise communication thread */
+  clientID = simxStart((simxChar*) "127.0.0.1", (simxInt) 19997,
+		       (simxChar) true, 
+		       (simxChar) true,
+		       (simxInt) 3000, (simxInt) 5);
+
+  /* Get object handles */
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_base#", &quadHandle, 
+					(simxInt) simx_opmode_oneshot_wait);
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_propeller_joint1#", 
+					propellerRespondable, 
+					(simxInt) simx_opmode_oneshot_wait);
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_propeller_joint2#",
+					(propellerRespondable + 1), 
+					(simxInt) simx_opmode_oneshot_wait);
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_propeller_joint3#",
+					(propellerRespondable + 2), 
+					(simxInt) simx_opmode_oneshot_wait);
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_propeller_joint4#",
+					(propellerRespondable + 3), 
+					(simxInt) simx_opmode_oneshot_wait);
+  err = simxGetObjectHandle(clientID, (simxChar*) 
+					"Quadricopter_target", &targetHandle, 
+					simx_opmode_oneshot_wait);
+
+  return clientID;
+}
+
+int PhysicsModel::startSimulation() {
+  return simxStartSimulation(clientID,(simxInt) simx_opmode_oneshot);
 }
 
 void PhysicsModel::moveTarget(double coords[3]) {
@@ -94,9 +98,9 @@ void PhysicsModel::setPosition(double position[3]) {
 			       simx_opmode_streaming);
 }
 
-void PhysicsModel::setRotation(char ch) {
+void PhysicsModel::sendCommand(char ch) {
   
-  // If lateral movement change Eulers angles
+  /* If lateral movement change Eulers angles */
   if(ch != '+' && ch != '-'){
     
     err = simxGetObjectOrientation(clientID, quadHandle, 
@@ -105,22 +109,22 @@ void PhysicsModel::setRotation(char ch) {
     
     switch(ch){
     case 'd': // roll right
-      eulerAnglesRead[0] += 10;
+      eulerAnglesRead[0] += 0.07;
       break;
     case 'a': // roll left
-      eulerAnglesRead[0] -= 10;
+      eulerAnglesRead[0] -= 0.07;
       break;
     case 'w': // pitch forward
-      eulerAnglesRead[1] += 10;
+      eulerAnglesRead[1] += 0.07;
       break;
     case 'x': // pitch backward
-      eulerAnglesRead[1] -= 10;
+      eulerAnglesRead[1] -= 0.07;
       break;
     case 'q': // yaw right
-      eulerAnglesRead[2] += 10;
+      eulerAnglesRead[2] += 0.07;
       break;
     case 'e': // yaw left
-      eulerAnglesRead[2] -= 10;
+      eulerAnglesRead[2] -= 0.07;
       break;
     }     
     
@@ -144,10 +148,10 @@ void PhysicsModel::setRotation(char ch) {
 
   switch(ch){
   case '+':
-    quadPosRead[2] += 10;
+    quadPosRead[2] += 1;
     break;
   case '-':
-    quadPosRead[2] -= 10;
+    quadPosRead[2] -= 1;
     break;
   }
  err =  simxSetObjectPosition(clientID, quadHandle, 

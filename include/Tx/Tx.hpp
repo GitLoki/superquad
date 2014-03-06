@@ -28,7 +28,7 @@ public:
 
   /* sends a command to the Arduino; set verbose to true for debugging 
      information (function expects ncurses mode) */
-  void SendCommand(char com, bool verbose);
+  void sendCommand(char com, bool verbose);
 
   /* send commands to alter and transmit a specific control value */
   void setThrottle(int _throttle);
