@@ -56,6 +56,8 @@ public:
   /* destructor */
   ~Kinect();
 
+  void init();
+
   int query(double& x, double& y, double& z, double& p);
 
 private:
@@ -64,6 +66,10 @@ private:
   cv::Mat* depthf;
   cv::Mat* rgbMat;
   cv::Mat* ownMat;
+
+  bool trackObjects = true;
+  bool useMorphOps = true;
+  
 
   Freenect::Freenect freenect;
   MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
@@ -78,6 +84,19 @@ private:
 			   cv::Mat &cameraFeed);
   float getrealwidth(float avgX, float depth);
   float getrealheight(float avgY, float depth);
+
+  //Colourtracking
+  //Matrix to store each frame of the webcam feed
+  cv::Mat cameraFeed;
+  //matrix storage for HSV image
+  cv::Mat HSV;
+  //matrix storage for binary threshold image
+  cv::Mat threshold;
+  //video capture object to acquire webcam feed
+  cv::VideoCapture capture;
+
+
+
 };
 
 #endif /* KINECT_HPP */

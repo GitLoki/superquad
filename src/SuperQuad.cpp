@@ -7,8 +7,9 @@
 using namespace std;
 
 int main (int argc, char** argv) {
+
   //Tx tx;
-  //Kinect k;
+  Kinect k;
   //XBoxControllerManager xbcm;
   PhysicsModel pm;
 
@@ -16,7 +17,7 @@ int main (int argc, char** argv) {
 
   bool end = false;
   char com;
-  //int x,y,z,p;
+  double x,y,z,p;
 
   /* Start curses mode */
   initscr();
@@ -25,22 +26,25 @@ int main (int argc, char** argv) {
   cbreak();
   refresh();
 
-  cout << pm.startSimulation() << endl;
+  //cout << pm.startSimulation() << endl;
 
-  com = getch();
+  //com = getch();
 
   /* Main loop of program */
   while(!end) {
     //tx.sendCommand(com,true);
-    pm.sendCommand(com);
+    //pm.sendCommand(com);
 
     /*
     xbcm.GetInput(ch); -- yet to be written
-    k.query(x,y,z,p); -- yet to test
+    */
+    k.query(x,y,z,p); // yet to test
+    /*
     pm.rectify(x,y,z,p); -- yet to be written
     */
 
     usleep(29000); // Wait ~thirtieth second
+    /*
     clrtoeol();
     
     com = getch();
@@ -48,10 +52,11 @@ int main (int argc, char** argv) {
     printw("Char input: %d = %c \n", com, com);
     refresh();
     flushinp();
-
+    
     if(com == '0') {
       end = true;
     }
+    */
   }
 
   endwin();

@@ -1,11 +1,17 @@
 #include "../../include/Kinect/Kinect.hpp"
 
 /* constructor */
+
 Kinect::Kinect() {
-  cv::Mat *depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
-  cv::Mat *depthf = new cv::Mat(cv::Size(640,480), CV_8UC1);
-  cv::Mat *rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
-  cv::Mat *ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
+  init();
+}
+
+void Kinect::init(){
+
+  depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
+  depthf = new cv::Mat(cv::Size(640,480), CV_8UC1);
+  rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
+  ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
 
   //The next two lines must be changed as Freenect::Freenect isn't a 
   //template but the method createDevice:
@@ -21,19 +27,11 @@ Kinect::Kinect() {
   /*From colourtracking*/
   //some boolean variables for different functionality within this
   //program
-  bool trackObjects = true;
-  bool useMorphOps = true;
-  //Matrix to store each frame of the webcam feed
-  cv::Mat cameraFeed;
-  //matrix storage for HSV image
-  cv::Mat HSV;
-  //matrix storage for binary threshold image
-  cv::Mat threshold;
+  trackObjects = true;
+  useMorphOps = true;
 
   //create slider bars for HSV filtering
   createTrackbars();
-  //video capture object to acquire webcam feed
-  cv::VideoCapture capture;
   //open capture object at location zero (default location for webcam)
   capture.open(0);
   //set height and width of capture frame
@@ -52,10 +50,12 @@ Kinect::~Kinect() {
 
 /* expect this function to be called inside a loop continuously */
 int Kinect::query(double& x, double& y, double& z, double& p) {
+
   std::string filename("snapshot");
   std::string suffix(".png");
   int i_snap = 0;
   //  int iter = 0;
+
 
   //x and y values for the location of the object
   int colour_x=0.0, colour_y=0.0;
@@ -85,6 +85,7 @@ int Kinect::query(double& x, double& y, double& z, double& p) {
     imwrite(file.str(),*depthf);
     i_snap++;
   }
+
   
   for(int i = 0 ; i < 100 ; i++) {
     std::cout << std::endl;
@@ -95,7 +96,7 @@ int Kinect::query(double& x, double& y, double& z, double& p) {
   double sumDepth = 0;
   int count = 0;
   
-  std::cout << "starting x,y,z loop" << std::endl;
+  std::cout << "starting x,y,z loop\n\r";
   
   for(int y = 0 ; y < 480 ; y++) {
     for(int x = 0 ; x < 640 ; x++) {
@@ -149,12 +150,10 @@ int Kinect::query(double& x, double& y, double& z, double& p) {
     float realY = getrealheight(avgY, avgDepth);
     
     std::cout << "Object located at pixels: ("
-	      << avgX << "," << avgY << "," << avgDepth << ")"
-	      << std::endl;
+	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
     std::cout << "Real world location: ("
-	      << realX << "," << realY << "," << avgDepth << ")"
-	      << std::endl;
-    std::cout << "number of points read: " << count << std::endl;
+	      << realX << "," << realY << "," << avgDepth << ")\n\r";
+    std::cout << "number of points read: " << count << "\n\r";
     
     // graphical tracker from colour tracking code
     colour_x = avgX;
@@ -176,71 +175,23 @@ int Kinect::rawDepthToMilimeters(int depthValue) {
   return 0;
 }
 
-void Kinect::on_trackbar( int, void*) {
-  //This function gets called whenever a
-  // trackbar position is changed
-}
-
 std::string Kinect::intToString(int number) {
   std::stringstream ss;
   ss << number;
   return ss.str();
 }
 
-void Kinect::createTrackbars() {
-  // colour tracking constants
-  // Tereza: this should match orange colour, but needs to be tested
-  // again with the orange quadcopter
-  int H_MIN = 177;
-  int H_MAX = 185;
-  int S_MIN = 115;
-  int S_MAX = 256;
-  int V_MIN = 0;
-  int V_MAX = 256;
- 
-
-  //create window for trackbars
-  cv::namedWindow(trackbarWindowName,0);
-
-  //create memory to store trackbar name on window
-  char TrackbarName[50];
-  /* MILO: CHANGED THESE LINES BELOW - REMOVED LAST ARGUMENT BECAUSE 
-     COMPILER COMPLAINED - MILO */
-
-  sprintf( TrackbarName, "H_MIN");
-  sprintf( TrackbarName, "H_MAX");
-  sprintf( TrackbarName, "S_MIN");
-  sprintf( TrackbarName, "S_MAX");
-  sprintf( TrackbarName, "V_MIN");
-  sprintf( TrackbarName, "V_MAX");
-
- //create trackbars and insert them into window
-  //3 parameters are: the address of the variable that is changing when 
-  //the trackbar is moved(eg.H_LOW),
-  //the max value the trackbar can move (eg. H_HIGH), 
-  //and the function that is called whenever the trackbar is moved(eg. 
-  //on_trackbar)     
-  /*
-    ORIGINAL createTrackbar - changed by TEREZA
-    it might be better hardcode the values for orange and don't run
-    the trackbar window
-
-    cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
-  cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
-  cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
-  cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
-  cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
-  cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
-  */
-
-  cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX);
-  cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX);
-  cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX);
-  cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX);
-  cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX);
-  cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX);
-
+float Kinect::getrealwidth(float avgX, float depth) {
+  float focal_distance =  FRAME_WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
+  return depth * avgX / focal_distance;
 }
+
+float Kinect::getrealheight(float avgY, float depth) {
+  float focal_distance =  FRAME_HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
+  return depth * avgY / focal_distance;
+}
+
+
 
 void Kinect::drawObject(int x, int y, cv::Mat &frame) {
   //use some of the openCV drawing functions to draw crosshairs
@@ -270,23 +221,7 @@ void Kinect::drawObject(int x, int y, cv::Mat &frame) {
 	  cv::Scalar(0,255,0),2);
 }
 
-void Kinect::morphOps(cv::Mat &thresh) {
-
-  //create structuring element that will be used to "dilate" and "erode" image.
-  //the element chosen here is a 3px by 3px rectangle
-
-  // original value (3,3)
-  cv::Mat erodeElement = getStructuringElement(cv::MORPH_RECT,cv::Size(1,1));
-  //dilate with larger element so make sure object is nicely visible
-  // original value (8,8)
-  cv::Mat dilateElement = getStructuringElement(cv::MORPH_RECT,cv::Size(8,8));
-
-  erode(thresh,thresh,erodeElement);
-  erode(thresh,thresh,erodeElement);
-
-  dilate(thresh,thresh,dilateElement);
-  dilate(thresh,thresh,dilateElement);
-}
+//Colourtracking functions below
 
 void Kinect::trackFilteredObject(int &x, int &y, cv::Mat threshold, cv::Mat &cameraFeed) {
   cv::Mat temp;
@@ -334,12 +269,83 @@ Scalar(0,0,255),2);
   }
 }
 
-float Kinect::getrealwidth(float avgX, float depth) {
-  float focal_distance =  FRAME_WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
-  return depth * avgX / focal_distance;
+
+void Kinect::morphOps(cv::Mat &thresh) {
+
+  //create structuring element that will be used to "dilate" and "erode" image.
+  //the element chosen here is a 3px by 3px rectangle
+
+  // original value (3,3)
+  cv::Mat erodeElement = getStructuringElement(cv::MORPH_RECT,cv::Size(1,1));
+  //dilate with larger element so make sure object is nicely visible
+  // original value (8,8)
+  cv::Mat dilateElement = getStructuringElement(cv::MORPH_RECT,cv::Size(8,8));
+
+  erode(thresh,thresh,erodeElement);
+  erode(thresh,thresh,erodeElement);
+
+  dilate(thresh,thresh,dilateElement);
+  dilate(thresh,thresh,dilateElement);
 }
 
-float Kinect::getrealheight(float avgY, float depth) {
-  float focal_distance =  FRAME_HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
-  return depth * avgY / focal_distance;
+
+void Kinect::createTrackbars() {
+  // colour tracking constants
+  // Tereza: this should match orange colour, but needs to be tested
+  // again with the orange quadcopter
+  int H_MIN = 177;
+  int H_MAX = 185;
+  int S_MIN = 115;
+  int S_MAX = 256;
+  int V_MIN = 0;
+  int V_MAX = 256;
+ 
+
+  //create window for trackbars
+  cv::namedWindow(trackbarWindowName,0);
+
+  //create memory to store trackbar name on window
+  char TrackbarName[50];
+  /* MILO: CHANGED THESE LINES BELOW - REMOVED LAST ARGUMENT BECAUSE 
+     COMPILER COMPLAINED - MILO */
+
+  sprintf( TrackbarName, "H_MIN");
+  sprintf( TrackbarName, "H_MAX");
+  sprintf( TrackbarName, "S_MIN");
+  sprintf( TrackbarName, "S_MAX");
+  sprintf( TrackbarName, "V_MIN");
+  sprintf( TrackbarName, "V_MAX");
+
+ //create trackbars and insert them into window
+  //3 parameters are: the address of the variable that is changing when 
+  //the trackbar is moved(eg.H_LOW),
+  //the max value the trackbar can move (eg. H_HIGH), 
+  //and the function that is called whenever the trackbar is moved(eg. 
+  //on_trackbar)     
+  /*
+    ORIGINAL createTrackbar - changed by TEREZA
+    it might be better hardcode the values for orange and don't run
+    the trackbar window
+
+  cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX, on_trackbar);
+  cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX, on_trackbar);
+  cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX, on_trackbar);
+  cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar);
+  cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar);
+  cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar);
+  */
+
+  cv::createTrackbar( "H_MIN", trackbarWindowName, &H_MIN, H_MAX);
+  cv::createTrackbar( "H_MAX", trackbarWindowName, &H_MAX, H_MAX);
+  cv::createTrackbar( "S_MIN", trackbarWindowName, &S_MIN, S_MAX);
+  cv::createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX);
+  cv::createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX);
+  cv::createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX);
+
+}
+
+
+void Kinect::on_trackbar( int, void*) {
+  //This function gets called whenever a
+  // trackbar position is changed
 }
