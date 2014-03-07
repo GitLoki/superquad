@@ -2,10 +2,16 @@
 
 /* Constructor */
 Tx::Tx() {
+  port = new boost::asio::serial_port(ios);  
 
-  boost::asio::io_service ios;
+  try  {
+    port->open("/dev/ttyACM0");
+  } catch(...) {
+    std::cout << "Unable to open /dev/ttyACM0!" << std::endl;
+    exit(1);
+  }
 
-  Tx::port = new  boost::asio::serial_port(ios);  
+  usleep(2000000);
 
   port->set_option(boost::asio::serial_port_base::baud_rate(115200));
   port->set_option(boost::asio::serial_port_base::flow_control
@@ -15,13 +21,6 @@ Tx::Tx() {
   port->set_option(boost::asio::serial_port_base::stop_bits
 		  (boost::asio::serial_port_base::stop_bits::one));
   port->set_option(boost::asio::serial_port_base::character_size(8U));
-  
-  try  {
-    port->open("/dev/ttyACM0");
-  } catch(...) {
-    std::cout << "Unable to open /dev/ttyACM0!" << std::endl;
-    exit(1);
-  }
   
   // initialise default control values and send them to the Tx
   halt();
@@ -54,6 +53,7 @@ void Tx::setElevator(int _pitch) {
 }
 
 void Tx::halt() {
+  controls[SIGNAL] = sigVal;
   controls[THROTTLE] = 0;
   controls[RUDDER] = rudderTrim;
   controls[AILERON] = aileronTrim;
@@ -93,7 +93,7 @@ void Tx::sendCommand(char com, bool verbose) {
       controls[THROTTLE] += 10;
       break;
     case '-': // thrust decrease
-      controls[THROTTLE] += 10;
+      controls[THROTTLE] -= 10;
       break;
   }
 

@@ -8,12 +8,12 @@ using namespace std;
 
 int main (int argc, char** argv) {
 
-  //Tx tx;
-  Kinect k;
+  Tx tx;
+  //Kinect k;
   //XBoxControllerManager xbcm;
-  PhysicsModel pm;
+  //PhysicsModel pm;
 
-  cout << pm.init() << endl;
+  //cout << pm.init() << endl;
 
   bool end = false;
   char com;
@@ -26,25 +26,25 @@ int main (int argc, char** argv) {
   cbreak();
   refresh();
 
-  //cout << pm.startSimulation() << endl;
+  //pm.startSimulation()
 
-  //com = getch();
+  com = getch();
 
   /* Main loop of program */
   while(!end) {
-    //tx.sendCommand(com,true);
+    tx.sendCommand(com,true);
     //pm.sendCommand(com);
 
     /*
     xbcm.GetInput(ch); -- yet to be written
-    */
+  
     k.query(x,y,z,p); // yet to test
-    /*
+    
     pm.rectify(x,y,z,p); -- yet to be written
     */
 
     usleep(29000); // Wait ~thirtieth second
-    /*
+    
     clrtoeol();
     
     com = getch();
@@ -56,7 +56,7 @@ int main (int argc, char** argv) {
     if(com == '0') {
       end = true;
     }
-    */
+    
   }
 
   endwin();

@@ -9,6 +9,7 @@
 #include <ncurses.h>
 #include <iostream>
 #include <cstdlib>
+#include <unistd.h>
 
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
@@ -49,6 +50,9 @@ private:
 
   /* pointer to the port we are writing data to */
   boost::asio::serial_port* port;
+
+  /* input/output service */
+  boost::asio::io_service ios;
 
   /* data_incoming, throttle/thrust, rudder/yaw, aileron/roll, elevator/pitch */
   boost::array<unsigned char,5> controls;
