@@ -19,6 +19,7 @@ PhysicsModel::~PhysicsModel() {
 }
 
 int PhysicsModel::init() {
+
   /* Initialise communication thread */
   clientID = simxStart((simxChar*) "127.0.0.1", (simxInt) 19997,
 		       (simxChar) true, 
@@ -49,6 +50,7 @@ int PhysicsModel::init() {
 					"Quadricopter_target", &targetHandle, 
 					simx_opmode_oneshot_wait);
 
+  startSimulation();
   return clientID;
 }
 
@@ -57,6 +59,8 @@ int PhysicsModel::startSimulation() {
 }
 
 void PhysicsModel::moveTarget(double coords[3]) {
+  
+  
   quadPosWrite[0] += coords[0];
   quadPosWrite[1] += coords[1];
   quadPosWrite[2] += coords[2];
@@ -103,10 +107,9 @@ void PhysicsModel::sendCommand(char ch) {
   /* If lateral movement change Eulers angles */
   if(ch != '+' && ch != '-'){
     
-    err = simxGetObjectOrientation(clientID, quadHandle, 
-				   -1, (simxFloat*) eulerAnglesRead, 
-				   simx_opmode_streaming);
-    
+    err = simxGetObjectOrientation(clientID, quadHandle, -1,
+				   eulerAnglesRead,
+				   simx_opmode_oneshot_wait);
     switch(ch){
     case 'd': // roll right
       eulerAnglesRead[0] += 0.07;
@@ -121,40 +124,31 @@ void PhysicsModel::sendCommand(char ch) {
       eulerAnglesRead[1] -= 0.07;
       break;
     case 'q': // yaw right
-      eulerAnglesRead[2] += 0.07;
+      eulerAnglesRead[2] += 0.35;
       break;
     case 'e': // yaw left
-      eulerAnglesRead[2] -= 0.07;
+      eulerAnglesRead[2] -= 0.35;
       break;
     }     
     
-  /*case '+': // thrust increase
-    controls[THROTTLE] += 10;
-    break;
-   case '-': // thrust decrease
-   controls[THROTTLE] += 10;
-   break;
-  */
-    err =  simxSetObjectOrientation(clientID, quadHandle, 
-				    -1, (simxFloat*) eulerAnglesRead, 
-				    simx_opmode_streaming);
-  return;
+    err = simxSetObjectOrientation(clientID, quadHandle, -1,
+				   eulerAnglesRead, 
+				   simx_opmode_oneshot_wait);
+    return;
   }
   
-  // If height, shift model position vertically
-  err = simxGetObjectOrientation(clientID, quadHandle, 
-				 -1, (simxFloat*) quadPosRead, 
-				 simx_opmode_streaming);
-
   switch(ch){
+    err = simxGetObjectPosition(clientID, quadHandle, -1,
+				quadPosRead, 
+				simx_opmode_oneshot_wait);
   case '+':
-    quadPosRead[2] += 1;
+    quadPosRead[2] += 0.1;
     break;
   case '-':
-    quadPosRead[2] -= 1;
+    quadPosRead[2] -= 0.1;
     break;
   }
- err =  simxSetObjectPosition(clientID, quadHandle, 
-			      -1, (simxFloat*)  quadPosRead,
-			      simx_opmode_streaming);  
+  err = simxSetObjectPosition(clientID, quadHandle, -1,
+			      quadPosRead,
+			      simx_opmode_oneshot_wait); 
 }

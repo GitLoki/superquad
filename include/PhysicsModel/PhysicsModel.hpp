@@ -28,7 +28,15 @@ public:
 
   /* Sends the command corresponding to 'ch' to the physics model */
   void sendCommand(char ch);
+
+  simxInt err;     
+
+  void stop();
   
+  void getRotation(double angles[3]);
+  
+  void getPosition(double position[3]);
+
 private:
   simxInt clientID;
   simxInt errGetHandle[6];
@@ -39,14 +47,6 @@ private:
   simxFloat* eulerAnglesRead;
   simxFloat* eulerAnglesWrite;
 
-  simxInt err;     //Annoying error container 
-                   //used to avoid 'unused variable' warnings  
-
-  void stop();
-  
-  void getRotation(double angles[3]);
-  
-  void getPosition(double position[3]);
 
   void setPosition(double position[3]);
 
