@@ -32,6 +32,13 @@ Tx::~Tx() {
   port->close();
 }
 
+void Tx::resetOrientation() {
+  controls[RUDDER] = rudderTrim;
+  controls[AILERON] = aileronTrim;
+  controls[ELEVATOR] = elevatorTrim;
+  sendValues();
+}
+
 void Tx::setThrust(int _thrust) {
   controls[THROTTLE] = _thrust;
   sendValues();
@@ -72,10 +79,12 @@ void Tx::getValues(int* _values) {
 void Tx::sendCommand(char com, bool verbose) {
   switch(com) {
     case 'd': // roll right
-      controls[AILERON] += 10;
+      controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
+      //controls[AILERON] += 10;
       break;
     case 'a': // roll left
-      controls[AILERON] -= 10;
+      controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 10 : 0; 
+      //controls[AILERON] -= 10;
       break;
     case 'w': // pitch forward
       controls[ELEVATOR] += 10;
@@ -90,10 +99,12 @@ void Tx::sendCommand(char com, bool verbose) {
       controls[RUDDER] -= 10;
       break;
     case '+': // thrust increase
-      controls[THROTTLE] += 10;
+      controls[THROTTLE] = controls[THROTTLE] <= 245 ? controls[THROTTLE] + 10 : 255; 
+      // controls[THROTTLE] += 10;
       break;
     case '-': // thrust decrease
-      controls[THROTTLE] -= 10;
+      controls[THROTTLE] = controls[THROTTLE] >= 10 ? controls[THROTTLE] - 10 : 0; 
+      // controls[THROTTLE] -= 10;
       break;
   }
 
@@ -128,3 +139,7 @@ void Tx::sendValues(bool verbose) {
 	port->write_some(boost::asio::buffer(controls));
     }
 }   
+
+void Tx::cancel() {
+  port->cancel();
+}

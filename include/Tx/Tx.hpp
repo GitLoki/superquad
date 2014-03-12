@@ -41,6 +41,12 @@ public:
   /* sets all values back to starting values (throttle = 0) and transmits them */
   void halt();
 
+  /* sets rudder, aileron and elevator back to default values and transmits them */
+  void resetOrientation();
+
+  /* calls cancel on port - clears write buffer of serial port */
+  void cancel();
+
   /* returns current command values */
   void getValues(int* _values);
 

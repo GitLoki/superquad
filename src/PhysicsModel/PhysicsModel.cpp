@@ -28,27 +28,33 @@ int PhysicsModel::init() {
 
   /* Get object handles */
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_base#", &quadHandle, 
-					(simxInt) simx_opmode_oneshot_wait);
+			    "Quadricopter_base#", &quadHandle, 
+			    (simxInt) simx_opmode_oneshot_wait);
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint1#", 
-					propellerRespondable, 
-					(simxInt) simx_opmode_oneshot_wait);
+			    "Quadricopter_propeller_joint1#", 
+			    propellerRespondable, 
+			    (simxInt) simx_opmode_oneshot_wait);
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint2#",
-					(propellerRespondable + 1), 
-					(simxInt) simx_opmode_oneshot_wait);
+			    "Quadricopter_propeller_joint2#",
+			    (propellerRespondable + 1), 
+			    (simxInt) simx_opmode_oneshot_wait);
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint3#",
-					(propellerRespondable + 2), 
-					(simxInt) simx_opmode_oneshot_wait);
+			    "Quadricopter_propeller_joint3#",
+			    (propellerRespondable + 2), 
+			    (simxInt) simx_opmode_oneshot_wait);
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_propeller_joint4#",
-					(propellerRespondable + 3), 
-					(simxInt) simx_opmode_oneshot_wait);
+			    "Quadricopter_propeller_joint4#",
+			    (propellerRespondable + 3), 
+			    (simxInt) simx_opmode_oneshot_wait);
   err = simxGetObjectHandle(clientID, (simxChar*) 
-					"Quadricopter_target", &targetHandle, 
-					simx_opmode_oneshot_wait);
+			    "Quadricopter_target", &targetHandle, 
+			    simx_opmode_oneshot_wait);
+
+  thrustVal = 0;
+  /*
+  thrustStr[0] = '0';
+  thrustStr[1] = '\0';
+  */
 
   startSimulation();
   return clientID;
@@ -110,6 +116,7 @@ void PhysicsModel::sendCommand(char ch) {
     err = simxGetObjectOrientation(clientID, quadHandle, -1,
 				   eulerAnglesRead,
 				   simx_opmode_oneshot_wait);
+
     switch(ch){
     case 'd': // roll right
       eulerAnglesRead[0] += 0.07;
@@ -124,31 +131,100 @@ void PhysicsModel::sendCommand(char ch) {
       eulerAnglesRead[1] -= 0.07;
       break;
     case 'q': // yaw right
-      eulerAnglesRead[2] += 0.35;
+      eulerAnglesRead[2] += 0.07;
       break;
     case 'e': // yaw left
-      eulerAnglesRead[2] -= 0.35;
+      eulerAnglesRead[2] -= 0.07;
       break;
     }     
-    
+
     err = simxSetObjectOrientation(clientID, quadHandle, -1,
 				   eulerAnglesRead, 
 				   simx_opmode_oneshot_wait);
     return;
   }
   
-  switch(ch){
+  /* Otherwise set position */
+  else {
+
+    /*
     err = simxGetObjectPosition(clientID, quadHandle, -1,
 				quadPosRead, 
 				simx_opmode_oneshot_wait);
-  case '+':
-    quadPosRead[2] += 0.1;
+    */
+
+    switch(ch){
+    case '+':
+      thrustVal++;
+	// simxQuery(clientID,"thrust",(simxUChar*) "increase",12,
+	//	"reply",replyData,&replySize,5000);
+      
+      // thrust = thrust <= 8 ? thrust + 1 : 9;
+      // quadPosRead[2] -= 0.05;
+      break;
+    case '-':
+      thrustVal = thrustVal > 0 ? thrustVal - 1 : 0;
+  //simxQuery(clientID,"thrust",(simxUChar*) "decrease",12,
+  //		"reply",replyData,&replySize,5000);
+      // thrust = thrust >= 1 ? thrust - 1 : 0;
+      // quadPosRead[2] += 0.05;
+      break;
+    }
+    
+    simxSetIntegerSignal(clientID,"thrust",thrustVal,simx_opmode_oneshot_wait);
+
+    /*
+    switch(thrust) {
+    case 0:
+    thrustStr[0] = '0';
     break;
-  case '-':
-    quadPosRead[2] -= 0.1;
+    case 1:
+    thrustStr[0] = '1';
     break;
+    case 2:
+    thrustStr[0] = '2';
+    break;
+    case 3:
+    thrustStr[0] = '3';
+    break;
+    case 4:
+    thrustStr[0] = '4';
+    break;
+    case 5:
+    thrustStr[0] = '5';
+    break;
+    case 6:
+    thrustStr[0] = '6';
+    break;
+    case 7:
+    thrustStr[0] = '7';
+    break;
+    case 8:
+    thrustStr[0] = '8';
+    break;
+    case 9:
+    thrustStr[0] = '9';
+    break;
+    }
+    */
+
+    /*
+    err = simxSetObjectPosition(clientID, quadHandle, -1,
+				quadPosRead,
+				simx_opmode_oneshot_wait);
+    */
   }
-  err = simxSetObjectPosition(clientID, quadHandle, -1,
-			      quadPosRead,
-			      simx_opmode_oneshot_wait); 
 }
+
+
+/*
+
+    simClearStringSignal("thrust")
+    if (req=="increase") then
+        simSetStringSignal("reply","52\0") -- will be automatically cleared by the client
+		thrustconst = 7
+    end
+    if (req=="decrease") then
+        simSetStringSignal("reply","42\0") -- will be automatically cleared by the client
+		thrustconst = 5
+*/

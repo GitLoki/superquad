@@ -30,6 +30,7 @@ void Kinect::init(){
   trackObjects = true;
   useMorphOps = true;
 
+  /*
   //create slider bars for HSV filtering
   createTrackbars();
   //open capture object at location zero (default location for webcam)
@@ -39,7 +40,8 @@ void Kinect::init(){
   capture.set(CV_CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
   //start an infinite loop where webcam feed is copied to cameraFeed matrix
   //all of our operations will be performed within this loop
-  /*End_of_colourtracking*/
+  //End_of_colourtracking
+  */
 }
 
 /* destructor */
@@ -49,7 +51,7 @@ Kinect::~Kinect() {
 }
 
 /* expect this function to be called inside a loop continuously */
-int Kinect::query(double& x, double& y, double& z, double& p) {
+int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
 
   std::string filename("snapshot");
   std::string suffix(".png");
@@ -145,9 +147,9 @@ int Kinect::query(double& x, double& y, double& z, double& p) {
     
     float avgX = ((float)sumX)/count;
     float avgY = ((float)sumY)/count;
-    double avgDepth = sumDepth/count;
-    float realX = getrealwidth(avgX, avgDepth);
-    float realY = getrealheight(avgY, avgDepth);
+    avgDepth = sumDepth/count;
+    realX = getrealwidth(avgX, avgDepth);
+    realY = getrealheight(avgY, avgDepth);
     
     std::cout << "Object located at pixels: ("
 	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
@@ -159,12 +161,15 @@ int Kinect::query(double& x, double& y, double& z, double& p) {
     colour_x = avgX;
     colour_y = avgY;
     std::cout << "before draw object" << std::endl;
-    drawObject(colour_x,colour_y,*rgbMat);
+    drawObject(avgX,avgY,*rgbMat);
     //trackFilteredObject(colour_x,colour_y, threshold, rgbMat);
     std::cout << "after draw object" << std::endl;
   }
   else {
-    std::cout << "No values read" << std::endl;
+    avgDepth = 0;
+    realX = 0;
+    realY = 0;
+    std::cout << "No values read" << "\n\n\n\n";
   }
 }
 

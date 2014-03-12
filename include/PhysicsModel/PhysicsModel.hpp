@@ -41,12 +41,20 @@ private:
   simxInt clientID;
   simxInt errGetHandle[6];
   simxInt quadHandle, targetHandle, propellerRespondable[4];
-  
+  simxInt scriptHandle;
+
+  int thrustVal;
+  /*
+  simxUChar thrustStr[2];
+  simxUChar** replyData;
+  simxInt replySize;
+  */
+
+
   simxFloat* quadPosWrite;
   simxFloat* quadPosRead;
   simxFloat* eulerAnglesRead;
   simxFloat* eulerAnglesWrite;
-
 
   void setPosition(double position[3]);
 
