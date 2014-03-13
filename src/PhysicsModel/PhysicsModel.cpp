@@ -155,7 +155,7 @@ void PhysicsModel::sendCommand(char ch) {
 
     switch(ch){
     case '+':
-      thrustVal++;
+      thrustVal ++;
 	// simxQuery(clientID,"thrust",(simxUChar*) "increase",12,
 	//	"reply",replyData,&replySize,5000);
       
@@ -228,3 +228,21 @@ void PhysicsModel::sendCommand(char ch) {
         simSetStringSignal("reply","42\0") -- will be automatically cleared by the client
 		thrustconst = 5
 */
+
+void PhysicsModel::rectify(double x, double y, double z, double p){
+  err = simxGetObjectPosition(clientID, quadHandle, -1,
+			      quadPosRead, 
+			      simx_opmode_oneshot_wait);
+  
+  // RATIO TO BE CALCULATED
+  x *= coord_ratio;
+  y *= coord_ratio; 
+  z *= coord_ratio; 
+  quadPosRead[0] += x-quadPosRead[0];
+  quadPosRead[1] += y-quadPosRead[1];
+  quadPosRead[2] += z-quadPosRead[2]; 
+
+  err = simxSetObjectPosition(clientID, quadHandle, -1,
+			      quadPosRead,
+			      simx_opmode_oneshot_wait);
+}

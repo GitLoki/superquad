@@ -58,6 +58,9 @@ private:
   simxFloat* eulerAnglesRead;
   simxFloat* eulerAnglesWrite;
 
+  // TO BE CALCULATED
+  double coord_ratio = 1;
+
   void setPosition(double position[3]);
 
   void moveTarget(double coords[3]);

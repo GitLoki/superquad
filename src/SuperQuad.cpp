@@ -19,7 +19,7 @@ int main (int argc, char** argv) {
   bool end = false;
   char com;
   double x,y,z,p;
-
+ 
   /* Start curses mode */
   initscr();
   clear();
@@ -39,7 +39,7 @@ int main (int argc, char** argv) {
     /*
     xbcm.GetInput(ch); -- yet to be written
     k.query(x,y,z,p); // yet to test
-    pm.rectify(x,y,z,p); -- yet to be written
+    pm.rectify(x,y,z,p); // yet to test (may need a lot)
     */
 
     usleep(29000); // Wait ~thirtieth second
