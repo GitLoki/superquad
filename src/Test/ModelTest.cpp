@@ -51,11 +51,17 @@ int main () {
 
   PhysicsModel testMod = PhysicsModel();
   testMod.init();
-  char testMoves[] = {'+','+','d','d','a','a','w','w','x','x','q','q','e','e','-','-'};
+  char testMoves[] = {'+','+','+','+','+','+','+','+','+','+','+',
+		      '+','+','+','+','+','+','+','+','+','+','+',
+		      'd','d','d','a','a','a','w','w','w','x','x',
+		      'q','q','q','e','e','e',
+		      '-','-','-','-','-','-','-','-','-','-','-',
+		      '-','-','-','-','-','-','-','-','-','-','-'};
   // Used to see result of move
-  double positionBefore[16][3], positionAfter[16][3];  
+  double positionBefore[sizeof(testMoves)/sizeof(testMoves[0])][3];
+  double positionAfter[sizeof(testMoves)/sizeof(testMoves[0])][3];  
   usleep(2000000);
-
+  
   if(testMod.err != simx_error_noerror){ 
     cout << "Test failed: " << testMod.err << endl;
     return 0;
