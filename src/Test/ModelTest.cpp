@@ -51,12 +51,11 @@ int main () {
 
   PhysicsModel testMod = PhysicsModel();
   testMod.init();
-  char testMoves[] = {'+','+','+','+','+','+','+','+','+','+','+',
-		      '+','+','+','+','+','+','+','+','+','+','+',
-		      'd','d','d','a','a','a','w','w','w','x','x',
+  char testMoves[] = {'+','+','+','+','+','+','+',
+		      'd','d','d','a','a','a',
+		      'w','w','w','x','x', 'x',
 		      'q','q','q','e','e','e',
-		      '-','-','-','-','-','-','-','-','-','-','-',
-		      '-','-','-','-','-','-','-','-','-','-','-'};
+		      '-','-','-','-','-','-','-'};
   // Used to see result of move
   double positionBefore[sizeof(testMoves)/sizeof(testMoves[0])][3];
   double positionAfter[sizeof(testMoves)/sizeof(testMoves[0])][3];  
