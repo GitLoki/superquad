@@ -36,6 +36,8 @@ public:
   void getRotation(double angles[3]);
   
   void getPosition(double position[3]);
+  
+  void rectify(double x, double y, double z, double p);
 
 private:
   simxInt clientID;
