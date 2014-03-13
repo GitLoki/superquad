@@ -240,6 +240,7 @@ void PhysicsModel::rectify(double x, double y, double z, double p){
   z *= coord_ratio; 
   quadPosRead[0] += x-quadPosRead[0];
   quadPosRead[1] += y-quadPosRead[1];
+  // Put in a p based weighting
   quadPosRead[2] += z-quadPosRead[2]; 
 
   err = simxSetObjectPosition(clientID, quadHandle, -1,
