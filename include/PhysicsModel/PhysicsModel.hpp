@@ -39,6 +39,10 @@ public:
   
   void rectify(double x, double y, double z, double p);
 
+  void moveTarget(double coords[3]);
+
+  void setPosition(double position[3]);
+
 private:
   simxInt clientID;
   simxInt errGetHandle[6];
@@ -52,7 +56,6 @@ private:
   simxInt replySize;
   */
 
-
   simxFloat* quadPosWrite;
   simxFloat* quadPosRead;
   simxFloat* eulerAnglesRead;
@@ -60,10 +63,6 @@ private:
 
   // TO BE CALCULATED
   double coord_ratio = 1;
-
-  void setPosition(double position[3]);
-
-  void moveTarget(double coords[3]);
 };
 
 #endif /* PHYSICSMODEL_HPP */
