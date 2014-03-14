@@ -5,9 +5,6 @@ CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__
 LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11
 TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags`
 TESTLIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lgcov
-#CFLAGS = $(TESTFLAGS) 
-#LIB = $(TESTLIB)
-
 INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect
 
 # Directories:
@@ -22,6 +19,13 @@ MODELTESTTARGET := modeltest
 KINECTTESTTARGET := kinecttest
 KINECTIMAGECAPTURETARGET := kinectimagecapture
 TRACKINGTESTTARGET := trackingtest
+
+# Testing options - comment out when not using
+ifdef TEST
+	CFLAGS = $(TESTFLAGS) 
+	LIB = $(TESTLIB)
+	BUILDDIR := buildtest
+endif
 
 # Source files:
 SRCEXT := cpp
@@ -53,7 +57,7 @@ $(MAINTARGET): $(MAINOBJECTS)
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
 	@mkdir -p $(TESTDIR)
 	@echo " Linking..."
-	@echo " $(CXX) $^ -o $(MODELTESTTARGET) $(LIB)"; $(CXX) $^ -o $(TESTDIR)/$(MODELTESTTARGET) $(LIB)
+	@echo " $(CXX) $^ -o $(MODELTESTTARGET) $(LIB)"; $(CXX) $^ -pg -fprofile-arcs -o $(TESTDIR)/$(MODELTESTTARGET) $(LIB)
 
 $(KINECTTESTTARGET): $(KINECTTESTOBJECTS)
 	@mkdir -p $(TESTDIR)
