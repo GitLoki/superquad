@@ -160,3 +160,4 @@ int main () {
   getgrid();
   std::cout << "Readings complete." << std::endl; 
 }
+

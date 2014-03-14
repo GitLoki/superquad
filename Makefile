@@ -1,31 +1,50 @@
+# Compiler options:
+CXX := g++
+CC := gcc
+CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3
+LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11
+TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags`
+TESTLIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lgcov
+#CFLAGS = $(TESTFLAGS) 
+#LIB = $(TESTLIB)
+
+INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect
+
+# Directories:
 SRCDIR := src
 BUILDDIR := build
 BINDIR := bin
 TESTDIR := test
+
+# Targets:
 MAINTARGET := superquad
 MODELTESTTARGET := modeltest
 KINECTTESTTARGET := kinecttest
+KINECTIMAGECAPTURETARGET := kinectimagecapture
+TRACKINGTESTTARGET := trackingtest
 
-CXX := g++
-CC := gcc
-
+# Source files:
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-MAINSOURCES := $(filter-out src/Test/ModelTest.cpp src/Test/KinectTest.cpp, $(SOURCES))
-MODELTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/KinectTest.cpp, $(SOURCES))
-KINECTTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp, $(SOURCES))
+MAINSOURCES := $(filter-out src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+MODELTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+KINECTTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+KINECTIMAGECAPTURESOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+TRACKINGTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp, $(SOURCES))
 
+# Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
 MODELTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(MODELTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
 KINECTTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(KINECTTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
+KINECTIMAGECAPTUREOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(KINECTIMAGECAPTURESOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+	$(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
+TRACKINGTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(TRACKINGTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+	$(BUILDDIR)/PhysicsModel/extApiPlatform.o $(BUILDDIR)/PhysicsModel/extApiCustom.o
 
-CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3
-LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11
-INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect
-
+# Rules:
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
@@ -40,6 +59,16 @@ $(KINECTTESTTARGET): $(KINECTTESTOBJECTS)
 	@mkdir -p $(TESTDIR)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(KINECTTESTTARGET) $(LIB)"; $(CXX) $^ -o $(TESTDIR)/$(KINECTTESTTARGET) $(LIB)
+
+$(KINECTIMAGECAPTURETARGET): $(KINECTIMAGECAPTUREOBJECTS)
+	@mkdir -p $(TESTDIR)
+	@echo " Linking..."
+	@echo " $(CXX) $^ -o $(KINECTIMAGECAPTURETARGET) $(LIB)"; $(CXX) $^ -o $(TESTDIR)/$(KINECTIMAGECAPTURETARGET) $(LIB)
+
+$(TRACKINGTESTTARGET): $(TRACKINGTESTOBJECTS)
+	@mkdir -p $(TESTDIR)
+	@echo " Linking..."
+	@echo " $(CXX) $^ -o $(TRACKINGTESTTARGET) $(LIB)"; $(CXX) $^ -o $(TESTDIR)/$(TRACKINGTESTTARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)

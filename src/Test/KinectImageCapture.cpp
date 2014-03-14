@@ -1,4 +1,7 @@
-#include "../../include/Kinect/myfreenectdevice.h"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include "../../include/Kinect/Kinect.hpp"
 
 using namespace cv;
 using namespace std;

@@ -156,7 +156,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
     std::cout << "Real world location: ("
 	      << realX << "," << realY << "," << avgDepth << ")\n\r";
     std::cout << "number of points read: " << count << "\n\r";
-    
+    /*
     // graphical tracker from colour tracking code
     colour_x = avgX;
     colour_y = avgY;
@@ -164,6 +164,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
     drawObject(avgX,avgY,*rgbMat);
     //trackFilteredObject(colour_x,colour_y, threshold, rgbMat);
     std::cout << "after draw object" << std::endl;
+    */
   }
   else {
     avgDepth = 0;
