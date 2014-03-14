@@ -111,6 +111,12 @@ int main () {
 
  //Quad should jump back to(wards?) where it was before the target was moved;
  testMod.rectify(positionBefore[0][0], positionBefore[0][1], positionBefore[0][2], 1.1);
- 
+ usleep(1000000);
+
+ //and back again
+ testMod.setPosition(positionAfter[0]);
+  
+
+ testMod.stop();
  return 0;    
 }
