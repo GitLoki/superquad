@@ -58,7 +58,7 @@ public:
 
   void init();
 
-  int query(double& x, double& y, double& z, double& p);
+  int query(double& x, double& y, double& z);
 
 private:
 

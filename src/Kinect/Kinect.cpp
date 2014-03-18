@@ -51,7 +51,7 @@ Kinect::~Kinect() {
 }
 
 /* expect this function to be called inside a loop continuously */
-int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
+int Kinect::query(double& realX, double& realY, double& avgDepth) {
 
   std::string filename("snapshot");
   std::string suffix(".png");
@@ -69,7 +69,6 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
   imshow("depth",*depthf);
-
   //imshow("HSV",HSV);
   
   char k = cvWaitKey(5);
@@ -98,7 +97,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
   double sumDepth = 0;
   int count = 0;
   
-  std::cout << "starting x,y,z loop\n\r";
+  //std::cout << "starting x,y,z loop\n\r";
   
   for(int y = 0 ; y < 480 ; y++) {
     for(int x = 0 ; x < 640 ; x++) {
@@ -150,12 +149,13 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
     avgDepth = sumDepth/count;
     realX = getrealwidth(avgX, avgDepth);
     realY = getrealheight(avgY, avgDepth);
-    
+    /*
     std::cout << "Object located at pixels: ("
 	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
     std::cout << "Real world location: ("
 	      << realX << "," << realY << "," << avgDepth << ")\n\r";
     std::cout << "number of points read: " << count << "\n\r";
+    */
     /*
     // graphical tracker from colour tracking code
     colour_x = avgX;
@@ -170,7 +170,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth, double& p) {
     avgDepth = 0;
     realX = 0;
     realY = 0;
-    std::cout << "No values read" << "\n\n\n\n";
+    //std::cout << "No values read" << "\n\n\n\n";
   }
 }
 

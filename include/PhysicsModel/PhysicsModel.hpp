@@ -37,11 +37,13 @@ public:
   
   void getPosition(double position[3]);
   
-  void rectify(double x, double y, double z, double p);
+  void rectify();
 
   void moveTarget(double coords[3]);
 
   void setPosition(double position[3]);
+  
+  double kinX, kinY, kinZ;
 
 private:
   simxInt clientID;

@@ -229,19 +229,22 @@ void PhysicsModel::sendCommand(char ch) {
 		thrustconst = 5
 */
 
-void PhysicsModel::rectify(double x, double y, double z, double p){
+void PhysicsModel::rectify(){
   err = simxGetObjectPosition(clientID, quadHandle, -1,
 			      quadPosRead, 
 			      simx_opmode_oneshot_wait);
   
-  // RATIO TO BE CALCULATED
-  x *= coord_ratio;
-  y *= coord_ratio; 
-  z *= coord_ratio; 
-  quadPosRead[0] += x-quadPosRead[0];
-  quadPosRead[1] += y-quadPosRead[1];
-  // Put in a p based weighting
-  quadPosRead[2] += z-quadPosRead[2]; 
+  // If kinect calls itself as the origin we can simply shift the vrep
+  // coords by a constant
+
+  // RATIO TO BE CALCULATED, will convert between kinect and vrep
+  // coordinate values
+  kinX *= coord_ratio;
+  kinY *= coord_ratio; 
+  kinZ *= coord_ratio; 
+  quadPosRead[0] += kinX-quadPosRead[0];
+  quadPosRead[1] += kinY-quadPosRead[1];
+  quadPosRead[2] += kinZ-quadPosRead[2]; 
 
   err = simxSetObjectPosition(clientID, quadHandle, -1,
 			      quadPosRead,

@@ -18,7 +18,6 @@ int main (int argc, char** argv) {
   int count = 0;
   bool end = false;
   char com;
-  double x,y,z,p;
  
   /* Start curses mode */
   initscr();
@@ -38,15 +37,13 @@ int main (int argc, char** argv) {
 
     /*
     xbcm.GetInput(ch); -- yet to be written
-    k.query(x,y,z,p); // yet to test
-    pm.rectify(x,y,z,p); // yet to test (may need a lot)
+    k.query(pm.kinX,pm.kinY, pm.kinZ); // yet to test
+    pm.rectify(); // yet to test (may need a lot)
     */
 
     usleep(29000); // Wait ~thirtieth second
 
     tx.resetOrientation();
-
-    clrtoeol();
 
     com = getch();
     clear();
