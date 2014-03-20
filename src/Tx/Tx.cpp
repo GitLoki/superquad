@@ -78,34 +78,35 @@ void Tx::getValues(int* _values) {
    information*/
 void Tx::sendCommand(char com, bool verbose) {
   switch(com) {
-    case 'd': // roll right
-      controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
-      //controls[AILERON] += 10;
-      break;
-    case 'a': // roll left
-      controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 10 : 0; 
-      //controls[AILERON] -= 10;
-      break;
-    case 'w': // pitch forward
-      controls[ELEVATOR] += 10;
-      break;
-    case 'x': // pitch backward
-      controls[ELEVATOR] -= 10;
-      break;
-    case 'q': // yaw right
-      controls[RUDDER] += 10;
-      break;
-    case 'e': // yaw left
-      controls[RUDDER] -= 10;
-      break;
-    case '+': // thrust increase
-      controls[THROTTLE] = controls[THROTTLE] <= 245 ? controls[THROTTLE] + 10 : 255; 
-      // controls[THROTTLE] += 10;
-      break;
-    case '-': // thrust decrease
-      controls[THROTTLE] = controls[THROTTLE] >= 10 ? controls[THROTTLE] - 10 : 0; 
-      // controls[THROTTLE] -= 10;
-      break;
+  case 'd': // roll right
+    controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
+    break;
+  case 'a': // roll left
+    controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 10 : 0; 
+    break;
+  case 'w': // pitch forward
+    controls[ELEVATOR] += 10;
+    break;
+  case 'x': // pitch backward
+    controls[ELEVATOR] -= 10;
+    break;
+  case 'q': // yaw right
+    controls[RUDDER] += 10;
+    break;
+  case 'e': // yaw left
+    controls[RUDDER] -= 10;
+    break;
+  case '+': // thrust increase
+    controls[THROTTLE] = controls[THROTTLE] <= 245 ? controls[THROTTLE] + 10 : 255; 
+    break;
+  case '-': // thrust decrease
+    controls[THROTTLE] = controls[THROTTLE] >= 10 ? controls[THROTTLE] - 10 : 0; 
+    break;
+  case ' ':
+    controls[RUDDER] = rudderTrim;
+    controls[ELEVATOR] = elevatorTrim;
+    controls[AILERON] = aileronTrim;
+    break;
   }
 
   if(verbose)
@@ -117,6 +118,8 @@ void Tx::sendCommand(char com, bool verbose) {
 void Tx::sendValues(bool verbose) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
+    // Deprecated - santising input inside sendCommand function instead
+  /*
     for (int i = THROTTLE ; i <= ELEVATOR ; i++) {
 	if (controls[i] < 0)
 	    controls[i] = 0;
@@ -125,6 +128,7 @@ void Tx::sendValues(bool verbose) {
 	else if (controls[i] == sigVal)
 	    controls[i]++;
     }
+  */
 	
     if(verbose) {
 	int bytes = port->write_some(boost::asio::buffer(controls));

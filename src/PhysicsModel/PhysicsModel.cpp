@@ -155,7 +155,7 @@ void PhysicsModel::sendCommand(char ch) {
 
     switch(ch){
     case '+':
-      thrustVal ++;
+      thrustVal++;
 	// simxQuery(clientID,"thrust",(simxUChar*) "increase",12,
 	//	"reply",replyData,&replySize,5000);
       
@@ -216,18 +216,6 @@ void PhysicsModel::sendCommand(char ch) {
   }
 }
 
-
-/*
-
-    simClearStringSignal("thrust")
-    if (req=="increase") then
-        simSetStringSignal("reply","52\0") -- will be automatically cleared by the client
-		thrustconst = 7
-    end
-    if (req=="decrease") then
-        simSetStringSignal("reply","42\0") -- will be automatically cleared by the client
-		thrustconst = 5
-*/
 
 void PhysicsModel::rectify(){
   err = simxGetObjectPosition(clientID, quadHandle, -1,

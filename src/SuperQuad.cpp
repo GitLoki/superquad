@@ -26,9 +26,9 @@ int main (int argc, char** argv) {
   cbreak();
   refresh();
 
-  tx.setThrust(80);
-
   com = getch();
+
+  tx.setThrust(160);
 
   /* Main loop of program */
   while(!end) {
@@ -43,7 +43,7 @@ int main (int argc, char** argv) {
 
     usleep(29000); // Wait ~thirtieth second
 
-    tx.resetOrientation();
+    clrtoeol();
 
     com = getch();
     clear();
@@ -57,9 +57,11 @@ int main (int argc, char** argv) {
     
     count++;
 
+    /*
     if(count % 5 == 0) {
       tx.cancel();
     }
+    */
   }
 
   endwin();
