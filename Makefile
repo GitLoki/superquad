@@ -130,6 +130,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/Kinect
 	@mkdir -p $(BUILDDIR)/Controller
 	@mkdir -p $(BUILDDIR)/Test
+	@mkdir -p $(BUILDDIR)/PID
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) \
 $(INC) -c -o $@ $<
 

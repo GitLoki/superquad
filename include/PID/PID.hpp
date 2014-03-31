@@ -5,6 +5,7 @@
 #include "../Tx/Tx.hpp"
 #include <cmath>
 #include <unistd.h>
+
 class PID {
 private:
     const double XCENTRE = 250;
@@ -20,10 +21,10 @@ private:
 public:
     PID(Kinect* kinect, Tx* tx);
     ~PID(){};
-    int getLocation(double* _location);
+    int updateLocation();
     void setDestination(double* _destination);
-    void query();
-    void goToDestination() {
-}
+    void update();
+    void goToDestination();
+};
 
 #endif
