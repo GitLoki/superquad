@@ -368,7 +368,6 @@ void Kinect::save_video(std::string rgbfilename, std::string depthfilename){
   depthwriter.open(depthfilename,  CV_FOURCC('P','I','M','1'), 20, frameSize, false);
 
   double x,y,z;
-  
   while(truth && count < 60){
 
     query(x,y,z);
@@ -384,3 +383,29 @@ void Kinect::save_video(std::string rgbfilename, std::string depthfilename){
     count++;
   }
 }
+/*
+
+// Open the input video files or camera stream.
+CvCapture* capture1 = cvCaptureFromAVI( argv[1] );
+CvCapture* capture2 = cvCaptureFromAVI( argv[2] );
+// Create a new video file for output.
+CvSize combinedSize = [Big enough to fit both video frames next to each other, plus a border].
+CvVideoWriter* videoWriter = cvCreateVideoWriter(outputFilename, CV_FOURCC('D','I','V','3'), FPS, combinedSize, TRUE);
+IplImage *frameOut = cvCreateImage(combinedSize, 8, 3);		// Create an empty RGB image for storing the combined frame.
+IplImage *frame1, *frame2;
+
+// Process both video streams while atleast one is still running (AVI or MPG file or camera stream).
+frame1 = (IplImage*)1;	// Enter the loop.
+frame2 = (IplImage*)1;	// Enter the loop.
+while (frame1 || frame2) {
+	// Get the next video frames.
+	frame1 = cvQueryFrame( capture1 );
+	frame2 = cvQueryFrame( capture2 );
+	if (frame1 || frame2) {
+		// Combine the 2 image frames into 1 big frame.	
+		frameOut = combineImages(frame1, frame2);
+		// Store the combined video frame into the new video file.
+		cvWriteFrame(videoWriter, frameOut);
+	}
+}
+*/
