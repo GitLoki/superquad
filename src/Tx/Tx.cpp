@@ -74,6 +74,12 @@ void Tx::getValues(int* _values) {
     _values[i] = controls[i];
 };
 
+void Tx::setValues(int* _values) {
+  for (int i = THROTTLE ; i < ELEVATOR ; i++)
+      controls[i] = _values[i];
+  sendValues();
+};
+
 /* sends a command to the Arduino; set verbose to true for debugging 
    information*/
 void Tx::sendCommand(char com, bool verbose) {
@@ -115,7 +121,7 @@ void Tx::sendCommand(char com, bool verbose) {
   sendValues(verbose);
 }
 
-void Tx::sendValues(bool verbose) {
+void Tx::sendValues(bool verbose = false) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
     // Deprecated - santising input inside sendCommand function instead
