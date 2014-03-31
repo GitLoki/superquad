@@ -9,7 +9,7 @@ Kinect::Kinect() {
 void Kinect::init(){
 
   depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
-  depthf = new cv::Mat(cv::Size(640,480), CV_8UC1);
+  depthf = new cv::Mat(cv::Size(640,480),CV_8UC1);
   rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
   ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
 
@@ -67,7 +67,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   imshow("rgb", *rgbMat);
   //depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
-  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
+  depthMat->convertTo(*depthf, CV_8UC3, 1.0/8.03);
   imshow("depth",*depthf);
   //imshow("HSV",HSV);
   
@@ -354,4 +354,33 @@ void Kinect::createTrackbars() {
 void Kinect::on_trackbar( int, void*) {
   //This function gets called whenever a
   // trackbar position is changed
+}
+
+void Kinect::save_video(std::string rgbfilename, std::string depthfilename){
+  
+  bool truth = true;
+
+  cv::Size frameSize(640, 480);
+
+  int count = 0;
+
+  rgbwriter.open(rgbfilename, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
+  depthwriter.open(depthfilename,  CV_FOURCC('P','I','M','1'), 20, frameSize, false);
+
+  double x,y,z;
+  
+  while(truth && count < 60){
+
+    query(x,y,z);
+
+    //rgbwriter.write(*rgbMat);
+    depthwriter.write(*depthf);
+
+    if (cv::waitKey(10) == 27)
+      {
+	std::cout << "esc key is pressed by user" << std::endl;
+	truth = false; 
+      }
+    count++;
+  }
 }
