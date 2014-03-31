@@ -1,0 +1,20 @@
+#include "../../include/PID/PID.hpp"
+
+PID::PID(Kinect* _kinect) : kinect(_kinect)
+{
+    for (int i = 0 ; i < 3 ; i++) {
+        destination[i] = 0;
+        location[i] = 0;
+	ratios[i] = 1;
+    }
+    return 0;
+};
+
+PID::getLocation() {
+    double new_location[3];
+    kinect.query(new_location[0], new_location[1], new_location[2]);
+    
+  
+  for (int i = 0 ; i < 3 ; i++)
+      _location[i] = location[i];
+  return 
