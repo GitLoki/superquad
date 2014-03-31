@@ -60,7 +60,7 @@ public:
 
   int query(double& x, double& y, double& z);
 
-  void save_video(std::string rgbfilename, std::string depthfilename);
+  void save_video(std::string filename, int frames);
 
 
   //private:
@@ -97,8 +97,7 @@ public:
   cv::Mat threshold;
   //video capture object to acquire webcam feed
   //cv::VideoCapture capture;
-  cv::VideoWriter rgbwriter;
-  cv::VideoWriter depthwriter;
+  cv::VideoWriter writer;
 
 
 };

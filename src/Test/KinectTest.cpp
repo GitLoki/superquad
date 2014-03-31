@@ -174,6 +174,6 @@ int main(int argc, char* argv[])
 {
   Kinect k;
 
-  k.save_video("rgbtest.avi","depthtest.avi");
+  k.save_video("test.avi",300);
 
 }

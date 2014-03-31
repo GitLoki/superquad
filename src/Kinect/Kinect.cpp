@@ -67,7 +67,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   imshow("rgb", *rgbMat);
   //depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
-  depthMat->convertTo(*depthf, CV_8UC3, 1.0/8.03);
+  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
   imshow("depth",*depthf);
   //imshow("HSV",HSV);
   
@@ -356,24 +356,34 @@ void Kinect::on_trackbar( int, void*) {
   // trackbar position is changed
 }
 
-void Kinect::save_video(std::string rgbfilename, std::string depthfilename){
+void Kinect::save_video(std::string filename, int frames){
   
   bool truth = true;
 
-  cv::Size frameSize(640, 480);
+  cv::Mat doubleImg= cv::Mat::zeros(960,640,CV_8UC3);
+  cv::Mat *depth3 = new cv::Mat(cv::Size(640,480),CV_8UC3);
+  cv::Mat in[] = {*depthf,*depthf,*depthf};
+  cv::merge(in,3,*depth3);
+
+  cv::Size frameSize(640,960);
 
   int count = 0;
 
-  rgbwriter.open(rgbfilename, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
-  depthwriter.open(depthfilename,  CV_FOURCC('P','I','M','1'), 20, frameSize, false);
+  writer.open(filename, CV_FOURCC('P','I','M','1'), 20, frameSize, true);
 
   double x,y,z;
-  while(truth && count < 60){
+
+  while(truth && count < frames){
+
+    cv::Mat in[] = {*depthf,*depthf,*depthf};
+    cv::merge(in,3,*depth3);
 
     query(x,y,z);
 
-    //rgbwriter.write(*rgbMat);
-    depthwriter.write(*depthf);
+    rgbMat->copyTo(doubleImg(cv::Range(0,480),cv::Range(0,640)));
+    depth3->copyTo(doubleImg(cv::Range(480,960),cv::Range(0,640)));
+
+    writer.write(doubleImg);
 
     if (cv::waitKey(10) == 27)
       {
@@ -382,6 +392,9 @@ void Kinect::save_video(std::string rgbfilename, std::string depthfilename){
       }
     count++;
   }
+
+  delete depth3;
+
 }
 /*
 
