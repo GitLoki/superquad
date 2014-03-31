@@ -5,13 +5,16 @@
 #include "../Tx/Tx.hpp"
 #include <cmath>
 #include <unistd.h>
+#include <iostream>
+
+const int STARTPOW = 170;
 
 class PID {
 private:
-    const double XCENTRE = 250;
-    const double YCENTRE = 200;
+    const double XCENTRE = 240;
+    const double YCENTRE = 320;
     const double ZCENTRE = 70;
-    int control_vals[4];
+    int control_vals[5];
     double destination[3];
     double location[3];
     double ratios[3]; 

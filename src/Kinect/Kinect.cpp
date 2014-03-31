@@ -88,7 +88,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   }
 
   
-  for(int i = 0 ; i < 100 ; i++) {
+  for(int i = 0 ; i < 2 ; i++) {
     std::cout << std::endl;
   }
   int mmDepth;
@@ -147,8 +147,16 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
     float avgX = ((float)sumX)/count;
     float avgY = ((float)sumY)/count;
     avgDepth = sumDepth/count;
+
+    /*
     realX = getrealwidth(avgX, avgDepth);
     realY = getrealheight(avgY, avgDepth);
+    */
+
+    // returning pixel vals for now, because this makes it easier to centre the quad over the kinect
+    realX = avgX;
+    realY = avgY;
+
     /*
     std::cout << "Object located at pixels: ("
 	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
