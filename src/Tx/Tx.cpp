@@ -121,7 +121,7 @@ void Tx::sendCommand(char com, bool verbose) {
   sendValues(verbose);
 }
 
-void Tx::sendValues(bool verbose = false) {
+void Tx::sendValues(bool verbose) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
     // Deprecated - santising input inside sendCommand function instead
