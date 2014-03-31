@@ -1,4 +1,4 @@
-# Compiler options:
+# Compiler options: 
 CXX := g++
 CC := gcc
 CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
