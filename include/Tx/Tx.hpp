@@ -49,6 +49,9 @@ public:
 
   /* returns current command values */
   void getValues(int* _values);
+  
+  /* set all command values simultaneously */
+  void setValues(int* _values);
 
 private:
   /* pointer to the input-output service */

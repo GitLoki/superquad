@@ -24,8 +24,9 @@ MODELTESTTARGET := modeltest
 KINECTTESTTARGET := kinecttest
 KINECTIMAGECAPTURETARGET := kinectimagecapture
 TRACKINGTESTTARGET := trackingtest
+PIDTESTTARGET := pidtest
 TESTTARGETS = $(MODELTESTTARGET) $(KINECTTESTTARGET) \
-$(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET)
+$(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET) $(PIDTEST)
 
 ifneq (,$(findstring $(MAKECMDGOALS),$(TESTTARGETS)))
 	CFLAGS = $(TESTFLAGS) 
@@ -56,6 +57,7 @@ MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
 KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
 KINECTIMAGECAPTURESOURCES := $(SRCDIR)/Test/KinectImageCapture.cpp $(AUXSOURCES)
 TRACKINGTESTSOURCES := $(SRCDIR)/Test/TrackingTest.cpp $(AUXSOURCES)
+PIDTESTSOURCES := $(SRCDIR)/src/PID/PID.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
@@ -78,6 +80,11 @@ TRACKINGTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(TRACKINGTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
 $(BUILDDIR)/PhysicsModel/extApiCustom.o
+PIDTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
+$(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
+$(BUILDDIR)/PhysicsModel/extApiCustom.o
+
 
 # Rules:
 $(MAINTARGET): $(MAINOBJECTS)
@@ -109,6 +116,12 @@ $(TRACKINGTESTTARGET): $(TRACKINGTESTOBJECTS)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(TRACKINGTESTTARGET) $(LIB)"; $(CXX) $^ -o \
 $(TESTDIR)/$(TRACKINGTESTTARGET) $(LIB)
+
+$(PIDTESTTARGET): $(PIDTESTOBJECTS)
+	@mkdir -p $(TESTDIR)
+	@echo " Linking..."
+	@echo " $(CXX) $^ -o $(PIDTESTTARGET) $(LIB)"; $(CXX) $^ -o \
+$(TESTDIR)/$(PIDTESTTARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
