@@ -35,18 +35,27 @@ endif
 
 # Source files:
 SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-MAINSOURCES := $(filter-out src/Test/ModelTest.cpp src/Test/KinectTest.cpp \
-src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-MODELTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/KinectTest.cpp \
-src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-KINECTTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
-src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-KINECTIMAGECAPTURESOURCES := $(filter-out src/SuperQuad.cpp \
-src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/TrackingTest.cpp, \
-$(SOURCES))
-TRACKINGTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
-src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp, $(SOURCES))
+# SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+# MAINSOURCES := $(filter-out src/Test/ModelTest.cpp src/Test/KinectTest.cpp \
+# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+# MODELTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/KinectTest.cpp \
+# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+# KINECTTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
+# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
+# KINECTIMAGECAPTURESOURCES := $(filter-out src/SuperQuad.cpp \
+# src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/TrackingTest.cpp, \
+# $(SOURCES))
+# TRACKINGTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
+# src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp, $(SOURCES))
+
+#$(SRCDIR)/PhysicsModel/extApi.c $(SRCDIR)/PhysicsModel/extApiCustom.c $(SRCDIR)/PhysicsModel/extApiPlatform.c
+
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/myfreenectdevice.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp
+MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
+MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
+KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
+KINECTIMAGECAPTURESOURCES := $(SRCDIR)/Test/KinectImageCapture.cpp $(AUXSOURCES)
+TRACKINGTESTSOURCES := $(SRCDIR)/Test/TrackingTest.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
