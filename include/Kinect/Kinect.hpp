@@ -16,7 +16,7 @@
 #include <opencv/highgui.h>
 #include <opencv2/opencv.hpp>
 
-#include "myfreenectdevice.h"
+#include "camera.h"
 
 const double PI = 3.14159265;
 const int DELAY = 300000/2; //half second delay
@@ -75,7 +75,7 @@ public:
   
 
   Freenect::Freenect freenect;
-  MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
+  Camera& device = freenect.createDevice<Camera>(0);
 
   int rawDepthToMilimeters(int depthValue);
   void on_trackbar( int, void* );
