@@ -1,5 +1,5 @@
-#ifndef _MYFREENECTDEVICE_
-#define _MYFREENECTDEVICE_
+#ifndef _CAMERA_
+#define _CAMERA_
 
 #include "libfreenect.hpp"
 #include <vector>
@@ -8,9 +8,9 @@
 #include <opencv/highgui.h>
 
 
-class MyFreenectDevice : public Freenect::FreenectDevice {
+class Camera : public Freenect::FreenectDevice {
 public:
-  MyFreenectDevice(freenect_context *_ctx, int _index);
+  Camera(freenect_context *_ctx, int _index);
   void VideoCallback(void* _rgb, uint32_t timestamp);
   void DepthCallback(void* _depth, uint32_t timestamp);
   bool getVideo(cv::Mat& output);
@@ -29,4 +29,4 @@ private:
   bool m_new_depth_frame;
 };
 
-#endif /* _MYFREENECTDEVICE_ */
+#endif /* _CAMERA_ */
