@@ -3,12 +3,9 @@
 PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
 {
     tx->getValues(control_vals);
-    for (int i = 0 ; i < 3 ; i++) {
-     	ratios[i] = 1;
-    }
-    location.X = XCENTRE;
-    location.Y = YCENTRE;
-    location.Z = 0;
+    ratios.setValues(1.0,1.0,1.0);
+    location.setValues(XCENTRE, YCENTRE, 0.0);
+    destination.setValues(XCENTRE, YCENTRE, ZCENTRE);
 };
 
 int PID::updateLocation() { 
@@ -36,9 +33,9 @@ void PID::updateRatios() {
     ratios.Z = pow(2, (destination.Z / K) - (location.Z / K));
 }
 
-PID::goToDestination(Location* _currentLocation) {
+void PID::goToDestination(Location& _currentLocation) {
     updateRatios();
-
+    int controlIndices[] = {3, 4, 1};
     int index;
 
     control_vals[3] *= ratios.X;
@@ -46,14 +43,14 @@ PID::goToDestination(Location* _currentLocation) {
     control_vals[1] *= ratios.Z;
 	
     for (int i = 0 ; i < 3 ; i++) {
-      index = control_indices[i];
+      index = controlIndices[i];
       if (control_vals[index] > 250)
 	control_vals[index] = 250;
       if (control_vals[index] <= 0)
 	control_vals[index] = 5;
     }
 
-    if (location[2] <= 40)
+    if (location.Z <= 40)
       control_vals[1] = STARTPOW;
 
     std::cout << "[" << control_vals[3] << ", " 
@@ -65,14 +62,13 @@ PID::goToDestination(Location* _currentLocation) {
 
     tx->setValues(control_vals);
 
-    _currentLocation->X = location.X;
-    _currentLocation->Y = location.Y;
-    _currentLocation->Z = location.Z;
+    _currentLocation.setValues(location.X, location.Y, location.Z);
 }
 
 int main() {
-  Location currentLocation(XCENTRE, YCENTRE, 0.0), 
-           destination(XCENTRE, YCENTRE, ZCENTRE);
+    Location currentLocation, destination;
+    currentLocation.setValues(XCENTRE, YCENTRE, 0.0);
+    destination.setValues(XCENTRE, YCENTRE, ZCENTRE);
 
     std::cout << "Initialising Kinect..." << std::endl;
     Kinect* kinect = new Kinect;  
@@ -85,10 +81,10 @@ int main() {
     PID* pid = new PID(kinect, tx);
     std::cout << "Finished waiting. Initialising liftoff..." << std::endl;
     tx->setThrust(STARTPOW);
-    do 
-      
+
     while (currentLocation.Z < 50)
         kinect->query(currentLocation.X, currentLocation.Y, currentLocation.Z);
+
     std::cout << "Hovering height reached. Handing control to PID loop." << std::endl;
 
     while (true) {
