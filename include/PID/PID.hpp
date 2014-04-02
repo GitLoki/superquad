@@ -9,9 +9,10 @@
 #include <iostream>
 
 const int STARTPOW = 170;
+const int MINDEPTH = 800;
 const double XCENTRE = 240;
 const double YCENTRE = 320;
-const double ZCENTRE = 70;
+const double ZCENTRE = 1000;
     
 class PID {
 private:
