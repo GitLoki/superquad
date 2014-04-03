@@ -1,18 +1,15 @@
 #include "../../include/Kinect/Kinect.hpp"
 
-Kinect::Kinect() {
-
-  depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
-  depthf = new cv::Mat(cv::Size(640,480),CV_8UC1);
-  rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
-  ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
-
+Kinect::Kinect():
+  depthMat(new cv::Mat(cv::Size(640,480), CV_16UC1)),
+  depthf(  new cv::Mat(cv::Size(640,480),CV_8UC1)),
+  rgbMat(  new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0))),
+  ownMat(  new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0))),
+  trackObjects(true),
+  useMorphOps( true)
+{
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
   cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
-
-  trackObjects = true;
-  useMorphOps = true;
-
 }
 
 
