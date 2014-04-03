@@ -8,9 +8,9 @@
 #include <opencv/highgui.h>
 
 
-class Camera : public Freenect::FreenectDevice {
+class ExtendedFreenectDevice : public Freenect::FreenectDevice {
 public:
-  Camera(freenect_context *_ctx, int _index);
+  ExtendedFreenectDevice(freenect_context *_ctx, int _index);
   void VideoCallback(void* _rgb, uint32_t timestamp);
   void DepthCallback(void* _depth, uint32_t timestamp);
   bool getVideo(cv::Mat& output);
@@ -27,6 +27,18 @@ private:
   cv::Mutex m_depth_mutex;
   bool m_new_rgb_frame;
   bool m_new_depth_frame;
+};
+
+class Camera{
+ public:
+  Camera();
+  ~Camera();
+  bool getVideo(cv::Mat& output);
+  bool getDepth(cv::Mat& output);
+
+ private:
+  Freenect::Freenect freenect;
+  ExtendedFreenectDevice& extendedFreenectDevice;
 };
 
 #endif /* _CAMERA_ */
