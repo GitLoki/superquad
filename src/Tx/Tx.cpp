@@ -71,12 +71,12 @@ void Tx::halt() {
 
 void Tx::getValues(int* _values) {
   for (int i = THROTTLE ; i <= ELEVATOR ; i++)
-    _values[i] = controls[i];
+    _values[i-1] = controls[i];
 };
 
 void Tx::setValues(int* _values) {
   for (int i = THROTTLE ; i <= ELEVATOR ; i++)
-      controls[i] = _values[i];
+      controls[i] = _values[i-1];
   sendValues();
 };
 
