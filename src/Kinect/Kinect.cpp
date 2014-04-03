@@ -17,6 +17,8 @@ Kinect::~Kinect(){
   delete depthf;
   delete rgbMat;
   delete ownMat;
+  cvDestroyWindow("rgb");
+  cvDestroyWindow("depth");
 }
 
 void Kinect::save_frame(std::string filename){
@@ -45,11 +47,11 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
 
   camera.getVideo(*rgbMat);
   camera.getDepth(*depthMat);
-  imshow("rgb", *rgbMat);
+  // imshow("rgb", *rgbMat);
   // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  imshow("depth",*depthf);
+  // imshow("depth",*depthf);
 
   int mmDepth;
   int sumX = 0;
@@ -102,41 +104,14 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
 
   if(count) {
     
-    float avgX = ((float)sumX)/count;
-    float avgY = ((float)sumY)/count;
-    avgDepth = sumDepth/count;
-
-    /*
-    realX = getrealwidth(avgX, avgDepth);
-    realY = getrealheight(avgY, avgDepth);
-    */
-
-    // returning pixel vals for now, because this makes it easier to centre the quad over the kinect
-    realX = avgX;
-    realY = avgY;
-
-    /*
-    std::cout << "Object located at pixels: ("
-	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
-    std::cout << "Real world location: ("
-	      << realX << "," << realY << "," << avgDepth << ")\n\r";
-    std::cout << "number of points read: " << count << "\n\r";
-    */
-    /*
-    // graphical tracker from colour tracking code
-    colour_x = avgX;
-    colour_y = avgY;
-    std::cout << "before draw object" << std::endl;
-    drawObject(avgX,avgY,*rgbMat);
-    //trackFilteredObject(colour_x,colour_y, threshold, rgbMat);
-    std::cout << "after draw object" << std::endl;
-    */
+    realX = (double) sumX / count;
+    realY = (double) sumY / count;
+    // need to getrealwidth(avgX, avgDepth);
   }
   else {
     avgDepth = 0;
     realX = 0;
     realY = 0;
-    //std::cout << "No values read" << "\n\n\n\n";
   }
 }
 
