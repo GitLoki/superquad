@@ -1,10 +1,6 @@
 #include "../../include/Kinect/Kinect.hpp"
 
 Kinect::Kinect() {
-  init();
-}
-
-void Kinect::init(){
 
   depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
   depthf = new cv::Mat(cv::Size(640,480),CV_8UC1);
@@ -14,25 +10,11 @@ void Kinect::init(){
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
   cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
 
-  /*From colourtracking*/
-  //some boolean variables for different functionality within this
-  //program
   trackObjects = true;
   useMorphOps = true;
 
-  /*
-  //create slider bars for HSV filtering
-  createTrackbars();
-  //open capture object at location zero (default location for webcam)
-  capture.open(0);
-  //set height and width of capture frame
-  capture.set(CV_CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
-  capture.set(CV_CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
-  //start an infinite loop where webcam feed is copied to cameraFeed matrix
-  //all of our operations will be performed within this loop
-  //End_of_colourtracking
-  */
 }
+
 
 /* destructor */
 

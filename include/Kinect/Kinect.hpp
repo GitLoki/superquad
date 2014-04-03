@@ -47,8 +47,6 @@ public:
 
   Kinect();
 
-  void init();
-
   bool query(double& x, double& y, double& z);
 
   void save_video(std::string filename, int frames);
