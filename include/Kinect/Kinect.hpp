@@ -46,7 +46,7 @@ class Kinect {
 public:
 
   Kinect();
-  //  ~Kinect(); // will have to delete new'ed matrices!!!
+  ~Kinect();
 
   bool query(double& x, double& y, double& z);
 

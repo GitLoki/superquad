@@ -12,8 +12,12 @@ Kinect::Kinect():
   cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
 }
 
-
-/* destructor */
+Kinect::~Kinect(){
+  delete depthMat;
+  delete depthf;
+  delete rgbMat;
+  delete ownMat;
+}
 
 /* expect this function to be called inside a loop continuously */
 bool Kinect::query(double& realX, double& realY, double& avgDepth) {
