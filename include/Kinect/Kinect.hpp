@@ -41,22 +41,15 @@ const std::string windowName2 = "Thresholded Image";
 const std::string windowName3 = "After Morphological Operations";
 const std::string trackbarWindowName = "Trackbars";
 
-/*******************************/
-/*        class: Kinect        */
-/*******************************/
-
 class Kinect {
 
 public:
 
-  /* constructor */
   Kinect();
-
-  /* destructor */
 
   void init();
 
-  int query(double& x, double& y, double& z);
+  bool query(double& x, double& y, double& z);
 
   void save_video(std::string filename, int frames);
 

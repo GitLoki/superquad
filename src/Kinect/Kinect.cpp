@@ -1,7 +1,5 @@
 #include "../../include/Kinect/Kinect.hpp"
 
-/* constructor */
-
 Kinect::Kinect() {
   init();
 }
@@ -39,7 +37,7 @@ void Kinect::init(){
 /* destructor */
 
 /* expect this function to be called inside a loop continuously */
-int Kinect::query(double& realX, double& realY, double& avgDepth) {
+bool Kinect::query(double& realX, double& realY, double& avgDepth) {
 
   std::string filename("snapshot");
   std::string suffix(".png");
