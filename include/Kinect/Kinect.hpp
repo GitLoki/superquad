@@ -3,17 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include <pthread.h>
-#include <iomanip>
-#include <unistd.h>
-#include <sstream>
 #include <string>
 
 #include <opencv/cv.h>
-#include <cxcore.h>
 #include <opencv/highgui.h>
-#include <opencv2/opencv.hpp>
 
 #include "camera.h"
 
@@ -28,7 +21,7 @@ const int FRAME_WIDTH = 640;
 const int FRAME_HEIGHT = 480;
 
 //max number of objects to be detected in frame
-const int MAX_NUM_OBJECTS=50;
+const int MAX_NUM_OBJECTS = 50;
 
 //minimum and maximum object area
 const int MIN_OBJECT_AREA = 20*20;
@@ -41,28 +34,16 @@ const std::string windowName2 = "Thresholded Image";
 const std::string windowName3 = "After Morphological Operations";
 const std::string trackbarWindowName = "Trackbars";
 
-/*******************************/
-/*        class: Kinect        */
-/*******************************/
-
 class Kinect {
 
 public:
-
-  /* constructor */
   Kinect();
-
-  /* destructor */
-
-  void init();
-
-  int query(double& x, double& y, double& z);
-
+  ~Kinect();
+  bool query(double& x, double& y, double& z);
   void save_video(std::string filename, int frames);
+  void save_frame(std::string filename = "snapshot");
 
-
-  //private:
-
+private:
   cv::Mat* depthMat;
   cv::Mat* depthf;
   cv::Mat* rgbMat;
@@ -84,16 +65,10 @@ public:
   float getrealheight(float avgY, float depth);
 
   //Colourtracking
-  //Matrix to store each frame of the webcam feed
   cv::Mat cameraFeed;
-  //matrix storage for HSV image
   cv::Mat HSV;
-  //matrix storage for binary threshold image
   cv::Mat threshold;
-  //video capture object to acquire webcam feed
-  //cv::VideoCapture capture;
   cv::VideoWriter writer;
-
 
 };
 

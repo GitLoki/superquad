@@ -1,64 +1,30 @@
 #include "../../include/Kinect/Kinect.hpp"
 
-/* constructor */
-
-Kinect::Kinect() {
-  init();
+Kinect::Kinect():
+  depthMat(new cv::Mat(cv::Size(640,480), CV_16UC1)),
+  depthf(  new cv::Mat(cv::Size(640,480),CV_8UC1)),
+  rgbMat(  new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0))),
+  ownMat(  new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0))),
+  trackObjects(true),
+  useMorphOps( true)
+{
+  //  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
+  //  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
 }
 
-void Kinect::init(){
-
-  depthMat = new cv::Mat(cv::Size(640,480), CV_16UC1);
-  depthf = new cv::Mat(cv::Size(640,480),CV_8UC1);
-  rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
-  ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
-
-  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
-  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
-
-  /*From colourtracking*/
-  //some boolean variables for different functionality within this
-  //program
-  trackObjects = true;
-  useMorphOps = true;
-
-  /*
-  //create slider bars for HSV filtering
-  createTrackbars();
-  //open capture object at location zero (default location for webcam)
-  capture.open(0);
-  //set height and width of capture frame
-  capture.set(CV_CAP_PROP_FRAME_WIDTH,FRAME_WIDTH);
-  capture.set(CV_CAP_PROP_FRAME_HEIGHT,FRAME_HEIGHT);
-  //start an infinite loop where webcam feed is copied to cameraFeed matrix
-  //all of our operations will be performed within this loop
-  //End_of_colourtracking
-  */
+Kinect::~Kinect(){
+  delete depthMat;
+  delete depthf;
+  delete rgbMat;
+  delete ownMat;
+  //  cvDestroyWindow("rgb");
+  //  cvDestroyWindow("depth");
 }
 
-/* destructor */
+void Kinect::save_frame(std::string filename){
 
-/* expect this function to be called inside a loop continuously */
-int Kinect::query(double& realX, double& realY, double& avgDepth) {
-
-  std::string filename("snapshot");
   std::string suffix(".png");
   int i_snap = 0;
-  //  int iter = 0;
-
-
-  //x and y values for the location of the object
-  int colour_x=0.0, colour_y=0.0;
-
-  camera.getVideo(*rgbMat);
-  camera.getDepth(*depthMat);
-  imshow("rgb", *rgbMat);
-  //depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
-  // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
-  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  imshow("depth",*depthf);
-  //imshow("HSV",HSV);
-  
   char k = cvWaitKey(5);
   
   // taking a screenshot by "space"
@@ -74,18 +40,27 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
     imwrite(file.str(),*depthf);
     i_snap++;
   }
+}
 
-  /*  
-  for(int i = 0 ; i < 2 ; i++) {
-    std::cout << std::endl;
-    }*/
+/* expect this function to be called inside a loop continuously */
+bool Kinect::query(double& realX, double& realY, double& avgDepth) {
+  if(  !camera.getVideo(*rgbMat) || !camera.getDepth(*depthMat) ) {
+    avgDepth = 0;
+    realX = 0;
+    realY = 0;
+    return false;
+  }
+  //  imshow("rgb", *rgbMat);
+  // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
+  // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
+  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
+  //  imshow("depth",*depthf);
+
   int mmDepth;
   int sumX = 0;
   int sumY = 0;
   double sumDepth = 0;
   int count = 0;
-  
-  //std::cout << "starting x,y,z loop\n\r";
   
   for(int y = 0 ; y < 480 ; y++) {
     for(int x = 0 ; x < 640 ; x++) {
@@ -101,7 +76,7 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
       }
     }
   }
-  
+
   // ##########  COLOR TRACKING ##########
   /*
   //store image to matrix
@@ -131,42 +106,17 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   // ##########  END COLOR TRACKING ##########
 
   if(count) {
-    
-    float avgX = ((float)sumX)/count;
-    float avgY = ((float)sumY)/count;
     avgDepth = sumDepth/count;
-
-    /*
-    realX = getrealwidth(avgX, avgDepth);
-    realY = getrealheight(avgY, avgDepth);
-    */
-
-    // returning pixel vals for now, because this makes it easier to centre the quad over the kinect
-    realX = avgX;
-    realY = avgY;
-
-    /*
-    std::cout << "Object located at pixels: ("
-	      << avgX << "," << avgY << "," << avgDepth << ")\n\r";
-    std::cout << "Real world location: ("
-	      << realX << "," << realY << "," << avgDepth << ")\n\r";
-    std::cout << "number of points read: " << count << "\n\r";
-    */
-    /*
-    // graphical tracker from colour tracking code
-    colour_x = avgX;
-    colour_y = avgY;
-    std::cout << "before draw object" << std::endl;
-    drawObject(avgX,avgY,*rgbMat);
-    //trackFilteredObject(colour_x,colour_y, threshold, rgbMat);
-    std::cout << "after draw object" << std::endl;
-    */
+    realX = (double) sumX / count;
+    realY = (double) sumY / count;
+    return true;
+    // need to getrealwidth(avgX, avgDepth);
   }
   else {
     avgDepth = 0;
     realX = 0;
     realY = 0;
-    //std::cout << "No values read" << "\n\n\n\n";
+    return false;
   }
 }
 
