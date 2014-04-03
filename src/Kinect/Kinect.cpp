@@ -8,8 +8,7 @@ Kinect::Kinect():
   trackObjects(true),
   useMorphOps( true)
 {
-  //  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
-  //  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
+
 }
 
 Kinect::~Kinect(){
@@ -17,28 +16,48 @@ Kinect::~Kinect(){
   delete depthf;
   delete rgbMat;
   delete ownMat;
-  //  cvDestroyWindow("rgb");
-  //  cvDestroyWindow("depth");
-}
+ }
 
 void Kinect::save_frame(std::string filename){
 
+  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
+  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
+
   std::string suffix(".png");
   int i_snap = 0;
-  char k = cvWaitKey(5);
+
+  double dummyx, dummyy, dummyz; //used in query
   
-  // taking a screenshot by "space"
-  if( k == 32 ) { 
-    std::ostringstream file;
-    file << filename << i_snap << "_rgb" << suffix;
-    std::cout << "You just saved out: " << file.str();
-    imwrite(file.str(),*rgbMat);
+  while(true){
+    query(dummyx, dummyy, dummyz); 
+    // call query to update matrices
+    // should have an update() function instead...
+
+    imshow("rgb", *rgbMat);
+    imshow("depth",*depthf);
+
+    char k = cvWaitKey(5);
+    // taking a screenshot by "space"
+    if( k == 32 ) { 
+
+      std::ostringstream file;
+      file << filename << i_snap << "_rgb" << suffix;
+      std::cout << "You just saved out: " << file.str();
+      imwrite(file.str(),*rgbMat);
     
-    file.str(""); // clear the string stream
-    file << filename << i_snap << "_dep" << suffix;
-    std::cout << " and " << file.str() << std::endl;
-    imwrite(file.str(),*depthf);
-    i_snap++;
+      file.str(""); // clear the string stream
+      file << filename << i_snap << "_dep" << suffix;
+      std::cout << " and " << file.str() << std::endl;
+      imwrite(file.str(),*depthf);
+      i_snap++;
+    }
+
+    if( k == 27 ) { 
+      // esc key was pressed
+      cvDestroyWindow("rgb");
+      cvDestroyWindow("depth");
+      return;
+    }
   }
 }
 
@@ -50,11 +69,11 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
     realY = 0;
     return false;
   }
-  //  imshow("rgb", *rgbMat);
+
   // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  //  imshow("depth",*depthf);
+
 
   int mmDepth;
   int sumX = 0;
