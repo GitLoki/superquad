@@ -45,8 +45,7 @@ public:
 
   void save_video(std::string filename, int frames);
 
-
-  //private:
+private:
 
   cv::Mat* depthMat;
   cv::Mat* depthf;
