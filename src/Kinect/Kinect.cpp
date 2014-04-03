@@ -13,16 +13,8 @@ void Kinect::init(){
   rgbMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
   ownMat = new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0));
 
-  //The next two lines must be changed as Freenect::Freenect isn't a 
-  //template but the method createDevice:
-  //Freenect::Freenect<MyFreenectDevice> freenect;
-  //MyFreenectDevice& device = freenect.createDevice(0);
-  //by these two lines:
-
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
   cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
-  device.startVideo();
-  device.startDepth();
 
   /*From colourtracking*/
   //some boolean variables for different functionality within this
@@ -45,10 +37,6 @@ void Kinect::init(){
 }
 
 /* destructor */
-Kinect::~Kinect() {
-  device.stopVideo();
-  device.stopDepth();
-}
 
 /* expect this function to be called inside a loop continuously */
 int Kinect::query(double& realX, double& realY, double& avgDepth) {
@@ -62,8 +50,8 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   //x and y values for the location of the object
   int colour_x=0.0, colour_y=0.0;
 
-  device.getVideo(*rgbMat);
-  device.getDepth(*depthMat);
+  camera.getVideo(*rgbMat);
+  camera.getDepth(*depthMat);
   imshow("rgb", *rgbMat);
   //depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
@@ -87,10 +75,10 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
     i_snap++;
   }
 
-  
+  /*  
   for(int i = 0 ; i < 2 ; i++) {
     std::cout << std::endl;
-  }
+    }*/
   int mmDepth;
   int sumX = 0;
   int sumY = 0;

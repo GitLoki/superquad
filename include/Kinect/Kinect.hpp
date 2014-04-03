@@ -1,7 +1,6 @@
 #ifndef KINECT_HPP
 #define KINECT_HPP
 
-#include "libfreenect.hpp"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -22,7 +21,7 @@ const double PI = 3.14159265;
 const int DELAY = 300000/2; //half second delay
 const int WIDTH = 640;
 const int HEIGHT = 480;
-const int THRESHOLD = 1500; // 1.5 meters
+const int THRESHOLD = 1400; // 1.5 meters
 
 //DEFAULT CAPTURE WIDTH AND HEIGHT
 const int FRAME_WIDTH = 640;
@@ -54,7 +53,6 @@ public:
   Kinect();
 
   /* destructor */
-  ~Kinect();
 
   void init();
 
@@ -72,10 +70,7 @@ public:
 
   bool trackObjects = true;
   bool useMorphOps = true;
-  
-
-  Freenect::Freenect freenect;
-  Camera& device = freenect.createDevice<Camera>(0);
+  Camera camera;
 
   int rawDepthToMilimeters(int depthValue);
   void on_trackbar( int, void* );
