@@ -22,7 +22,7 @@ const double PI = 3.14159265;
 const int DELAY = 300000/2; //half second delay
 const int WIDTH = 640;
 const int HEIGHT = 480;
-const int THRESHOLD = 1500; // 1.5 meters
+const int THRESHOLD = 1300; // 1.3 meters
 
 //DEFAULT CAPTURE WIDTH AND HEIGHT
 const int FRAME_WIDTH = 640;

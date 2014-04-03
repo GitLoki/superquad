@@ -88,9 +88,9 @@ int Kinect::query(double& realX, double& realY, double& avgDepth) {
   }
 
   
-  for(int i = 0 ; i < 2 ; i++) {
+  /*  for(int i = 0 ; i < 2 ; i++) {
     std::cout << std::endl;
-  }
+    }*/
   int mmDepth;
   int sumX = 0;
   int sumY = 0;

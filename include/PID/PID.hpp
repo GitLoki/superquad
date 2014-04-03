@@ -14,11 +14,11 @@
 // csignal for catching ctrl-C so that we can close the logfile
 #include <csignal>
 
-const int STARTPOW = 200;
+const int STARTPOW = 180;
 const int MINDEPTH = 800;
 
 const int FPS = 100;
-const int COUNTDOWN = 30;
+const int COUNTDOWN = 15;
 
 const double XCENTRE = 240;
 const double YCENTRE = 320;
@@ -31,13 +31,12 @@ private:
 
     int trim[4];
     int control_vals[4];
-    int wtaf[4];
     Location destination;
     Location location;
     Location ratios; 
     Kinect* kinect;
     int updateLocation();
-    void updateRatios();
+    int updateRatios();
 
 public:
 
@@ -45,8 +44,7 @@ public:
     PID(Kinect* kinect, Tx* tx);
     ~PID(){};
     void updateDestination(Location* _destination);
-    void goToDestination(Location& _currentLocation);
-  //void signalHandler(int signum);
+    int goToDestination(Location& _currentLocation);
 };
 
 #endif
