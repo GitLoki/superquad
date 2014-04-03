@@ -3,17 +3,10 @@
 
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include <pthread.h>
-#include <iomanip>
-#include <unistd.h>
-#include <sstream>
 #include <string>
 
 #include <opencv/cv.h>
-#include <cxcore.h>
 #include <opencv/highgui.h>
-#include <opencv2/opencv.hpp>
 
 #include "camera.h"
 
