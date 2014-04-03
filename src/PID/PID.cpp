@@ -2,10 +2,17 @@
 
 PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
 {
+    tx->getValues(trim);
     tx->getValues(control_vals);
     ratios.setValues(1.0,1.0,1.0);
     location.setValues(XCENTRE, YCENTRE, 0.0);
     destination.setValues(XCENTRE, YCENTRE, MINDEPTH);
+
+    // open logfile for logging
+    logfile.open ("logfile.txt");
+    logfile << "control values :: location\n";
+    logfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
+
 };
 
 int PID::updateLocation() { 
@@ -25,24 +32,25 @@ void PID::updateDestination(Location* _destination) {
 }
 
 void PID::updateRatios() {
-    const double K = 4000;
-    const double K2 = 800;
+    const double K = 400;
+    const double K2 = 300;
     
     updateLocation();
-
-    ratios.X = pow(2, (destination.X / K) - (location.X / K));
-    ratios.Y = pow(2, (destination.Y / K) - (location.Y / K));
-    ratios.Z = pow(2, (destination.Z / K2) - (location.Z / K2));
+    if (location.X != 0 && location.Y != 0 && location.Z != 0) {
+      ratios.X = pow(2, (destination.X - location.X) / K);
+      ratios.Y = pow(2, (destination.Y - location.Y) / K);
+      ratios.Z = pow(2, (destination.Z - location.Z) / K2);
+    }
 }
 
 void PID::goToDestination(Location& _currentLocation) {
     updateRatios();
-    int controlIndices[] = {3, 4, 1};
+    int controlIndices[] = {2, 3, 0};
     int index;
 
-    control_vals[3] *= ratios.X;
-    control_vals[4] *= ratios.Y;
-    control_vals[1] *= ratios.Z;
+    control_vals[2] = ratios.X * trim[2];
+    control_vals[3] = ratios.Y * trim[3];
+    control_vals[0] = ratios.Z * STARTPOW;
 	
     for (int i = 0 ; i < 3 ; i++) {
       index = controlIndices[i];
@@ -54,20 +62,47 @@ void PID::goToDestination(Location& _currentLocation) {
 
     if (location.Z <= 40)
       control_vals[1] = STARTPOW;
-
-    std::cout << "[" << control_vals[3] << ", " 
-	             << control_vals[4] << ", " 
-                     << control_vals[1] << "] :: (" 
-	             << location.X << ", " 
-	             << location.Y << ", " 
-	             << location.Z << ")" << std::endl;
+    /*
+    tx->getValues(wtaf);
+    std::cout << "[ ";
+    for (int i = 0 ; i < 4 ; i++)
+      std::cout << wtaf[i] << ", ";
+    std::cout << std::endl;
+    */
+ 
+    logfile << "[" << control_vals[2] << ", " 
+	    << control_vals[3] << ", " 
+            << control_vals[0] << "] :: (" 
+	    << location.X << ", " 
+	    << location.Y << ", " 
+	    << location.Z << ")\n";
+    std::cout << "[" << control_vals[2] << ", " 
+	      << control_vals[3] << ", " 
+	      << control_vals[0] << "] :: (" 
+	      << location.X << ", " 
+	      << location.Y << ", " 
+	      << location.Z << ")" << std::endl;
+    
     
     tx->setValues(control_vals);
 
     _currentLocation.setValues(location.X, location.Y, location.Z);
 }
 
+
+void signalHandler( int signum )
+{
+  std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
+
+  //pid->tx->halt();
+  logfile.close();
+
+  exit(signum);  
+
+}
+
 int main() {
+      
     Location currentLocation, destination;
     currentLocation.setValues(XCENTRE, YCENTRE, 0.0);
     destination.setValues(XCENTRE, YCENTRE, MINDEPTH+100);
@@ -78,9 +113,13 @@ int main() {
     std::cout << "Initialising Transmitter..." << std::endl;
     Tx* tx = new Tx;
     std::cout << "Transmitter Initialised. Waiting for serial connection..." << std::endl;
-    usleep(10000000);
+    usleep(1000000 * COUNTDOWN);
 
     PID* pid = new PID(kinect, tx);
+    // register signal SIGINT and signal handler  
+    signal(SIGINT, signalHandler);  
+
+    /*
     std::cout << "Finished waiting. Initialising liftoff..." << std::endl;
     tx->setThrust(STARTPOW);
 
@@ -88,10 +127,10 @@ int main() {
         kinect->query(currentLocation.X, currentLocation.Y, currentLocation.Z);
 
     std::cout << "Hovering height reached. Handing control to PID loop." << std::endl;
-
+				   */
     while (true) {
       pid->goToDestination(currentLocation);
-      usleep(10000);
+      usleep(1000000 / FPS);
     }
     return 0;
 }
