@@ -8,8 +8,8 @@ Kinect::Kinect():
   trackObjects(true),
   useMorphOps( true)
 {
-  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
-  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
+  //  cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
+  //  cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
 }
 
 Kinect::~Kinect(){
@@ -17,8 +17,8 @@ Kinect::~Kinect(){
   delete depthf;
   delete rgbMat;
   delete ownMat;
-  cvDestroyWindow("rgb");
-  cvDestroyWindow("depth");
+  //  cvDestroyWindow("rgb");
+  //  cvDestroyWindow("depth");
 }
 
 void Kinect::save_frame(std::string filename){
@@ -50,11 +50,11 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
     realY = 0;
     return false;
   }
-  imshow("rgb", *rgbMat);
+  //  imshow("rgb", *rgbMat);
   // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  imshow("depth",*depthf);
+  //  imshow("depth",*depthf);
 
   int mmDepth;
   int sumX = 0;
