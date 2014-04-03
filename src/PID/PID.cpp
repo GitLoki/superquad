@@ -7,7 +7,7 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     tx->getValues(control_vals);
     ratios.setValues(1.0,1.0,1.0);
     location.setValues(XCENTRE, YCENTRE, 0.0);
-    destination.setValues(XCENTRE, YCENTRE, ZCENTRE);
+    destination.setValues(XCENTRE, YCENTRE, 750);
 
     // open logfile for logging
     logfile.open ("logfile.txt");
@@ -40,11 +40,11 @@ int PID::updateRatios() {
     // const double K2 = 300;
     // lower => more aggressive correction 
 
-    // 170, 160, 800 - last best config
+    // 150, 160, 1000 - last best config
 
     const double Kx = 150;
     const double Ky = 160;
-    const double Kz = 800;
+    const double Kz = 1000;
 
     
     if (updateLocation()) {
@@ -158,7 +158,7 @@ int main() {
     std::cout << "Hovering height reached. Handing control to PID loop." << std::endl;
     				   */ 
     while (pid->goToDestination(currentLocation)) {
-      usleep(1000000 / FPS);
+      //usleep(1000000 / FPS);
     }
 
     return 0;
