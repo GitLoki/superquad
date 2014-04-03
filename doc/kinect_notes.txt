@@ -1,0 +1,16 @@
+camera needs to be created, as an object, with freenect.createDevice<camera>, as it is an extension of the freenect type, and its ways are arcane. However, we can do all of the window creation, video starting and stopping as part functions within it. In particular, we can have functions to start and stop the depth image and rgb image capture. 
+
+I would have the camera created in the same place the kinect, pid, tx, and everything get created.
+
+Colour tracking and snapshots can be cleared out of Kinect into camera. Obvs.
+
+Kinect currently converts 16bit depth map into 8bit for video display. I suspect if we handle the display and the depth sensing seperately, we can use the 16bit for the actual depth sensing. 
+
+Line 151 in kinect: if(count) is non-acceptable. This creates and reports centre location if a single pixel gets read as being closer than THRESHOLD. this is root of some of the problems I have been having with getting the quadcopter to centre, I think.
+
+Ideally, we would be able to implement some kind of blob-detection? Ignore pixels which are more than a certain distance from the mean, then recalculate the mean, for example.
+
+Also, we need to ignore readings which have fewer than a certain number of pixels in them
+
+also, we need to work on the depth thresholding. Even though we are using a setup which has the ceiling more than the threshold distance of 1500mm away, we are still getting a mean depth for the empty frame of about 1475 mm. Hopefully some fiddling with the value, or putting the kinect on the floor will help.
+
