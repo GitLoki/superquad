@@ -19,27 +19,10 @@ Kinect::~Kinect(){
   delete ownMat;
 }
 
-/* expect this function to be called inside a loop continuously */
-bool Kinect::query(double& realX, double& realY, double& avgDepth) {
+void Kinect::save_frame(std::string filename){
 
-  std::string filename("snapshot");
   std::string suffix(".png");
   int i_snap = 0;
-  //  int iter = 0;
-
-
-  //x and y values for the location of the object
-  int colour_x=0.0, colour_y=0.0;
-
-  camera.getVideo(*rgbMat);
-  camera.getDepth(*depthMat);
-  imshow("rgb", *rgbMat);
-  //depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
-  // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
-  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  imshow("depth",*depthf);
-  //imshow("HSV",HSV);
-  
   char k = cvWaitKey(5);
   
   // taking a screenshot by "space"
@@ -55,18 +38,24 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
     imwrite(file.str(),*depthf);
     i_snap++;
   }
+}
 
-  /*  
-  for(int i = 0 ; i < 2 ; i++) {
-    std::cout << std::endl;
-    }*/
+/* expect this function to be called inside a loop continuously */
+bool Kinect::query(double& realX, double& realY, double& avgDepth) {
+
+  camera.getVideo(*rgbMat);
+  camera.getDepth(*depthMat);
+  imshow("rgb", *rgbMat);
+  // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
+  // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
+  depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
+  imshow("depth",*depthf);
+
   int mmDepth;
   int sumX = 0;
   int sumY = 0;
   double sumDepth = 0;
   int count = 0;
-  
-  //std::cout << "starting x,y,z loop\n\r";
   
   for(int y = 0 ; y < 480 ; y++) {
     for(int x = 0 ; x < 640 ; x++) {

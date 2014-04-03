@@ -21,7 +21,7 @@ const int FRAME_WIDTH = 640;
 const int FRAME_HEIGHT = 480;
 
 //max number of objects to be detected in frame
-const int MAX_NUM_OBJECTS=50;
+const int MAX_NUM_OBJECTS = 50;
 
 //minimum and maximum object area
 const int MIN_OBJECT_AREA = 20*20;
@@ -37,16 +37,13 @@ const std::string trackbarWindowName = "Trackbars";
 class Kinect {
 
 public:
-
   Kinect();
   ~Kinect();
-
   bool query(double& x, double& y, double& z);
-
   void save_video(std::string filename, int frames);
+  void save_frame(std::string filename = "snapshot");
 
 private:
-
   cv::Mat* depthMat;
   cv::Mat* depthf;
   cv::Mat* rgbMat;
@@ -68,16 +65,10 @@ private:
   float getrealheight(float avgY, float depth);
 
   //Colourtracking
-  //Matrix to store each frame of the webcam feed
   cv::Mat cameraFeed;
-  //matrix storage for HSV image
   cv::Mat HSV;
-  //matrix storage for binary threshold image
   cv::Mat threshold;
-  //video capture object to acquire webcam feed
-  //cv::VideoCapture capture;
   cv::VideoWriter writer;
-
 
 };
 
