@@ -44,14 +44,17 @@ void Kinect::save_frame(std::string filename){
 
 /* expect this function to be called inside a loop continuously */
 bool Kinect::query(double& realX, double& realY, double& avgDepth) {
-
-  camera.getVideo(*rgbMat);
-  camera.getDepth(*depthMat);
-  // imshow("rgb", *rgbMat);
+  if(  !camera.getVideo(*rgbMat) || !camera.getDepth(*depthMat) ) {
+    avgDepth = 0;
+    realX = 0;
+    realY = 0;
+    return false;
+  }
+  imshow("rgb", *rgbMat);
   // depthMat.convertTo(depthf, CV_16UC1, 255.0/2048.0);
   // http://stackoverflow.com/questions/6909464/convert-16-bit-depth-cvmat-to-8-bit-depth
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-  // imshow("depth",*depthf);
+  imshow("depth",*depthf);
 
   int mmDepth;
   int sumX = 0;
@@ -73,7 +76,7 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
       }
     }
   }
-  
+
   // ##########  COLOR TRACKING ##########
   /*
   //store image to matrix
@@ -103,15 +106,17 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
   // ##########  END COLOR TRACKING ##########
 
   if(count) {
-    
+    avgDepth = sumDepth/count;
     realX = (double) sumX / count;
     realY = (double) sumY / count;
+    return true;
     // need to getrealwidth(avgX, avgDepth);
   }
   else {
     avgDepth = 0;
     realX = 0;
     realY = 0;
+    return false;
   }
 }
 
