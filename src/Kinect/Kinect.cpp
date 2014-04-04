@@ -22,13 +22,21 @@ bool Kinect::update(){
   bool videoSuccess = camera.getVideo(*rgbMat);
   bool depthSuccess = camera.getDepth(*depthMat);
 
-  if (videoSuccess && depthSuccess) 
+  if (videoSuccess && depthSuccess){
+    // std::cout<< "Success!" << std::endl;
     return true;
+  }
+  
+  // since tracking currently ONLY depends on depth...
+  if (depthSuccess){
+    // std::cout<< "(Partial)Success!" << std::endl;
+    return true;
+  }
 
-  // std::cout << "Failure of ";
-  // if (!videoSuccess) std::cout << "video";
-  // if (!depthSuccess) std::cout << "depth";
-  // std::cout << std::endl;
+  //std::cout << "Failure of ";
+  //if (!videoSuccess) std::cout << "video";
+  //if (!depthSuccess) std::cout << "depth";
+  //std::cout << std::endl;
 
   return false;
 }
