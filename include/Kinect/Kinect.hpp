@@ -51,8 +51,8 @@ private:
 
   bool update();
 
-  bool trackObjects = true;
-  bool useMorphOps = true;
+  bool trackObjects;
+  bool useMorphOps;
   Camera camera;
 
   int rawDepthToMilimeters(int depthValue);
