@@ -1,6 +1,6 @@
 #include "../../include/PhysicsModel/PhysicsModel.hpp"
 
-PhysicsModel::PhysicsModel() {
+PhysicsModel::PhysicsModel() : coord_ratio(1.0) {
   quadPosWrite = new simxFloat[3];
   quadPosRead = new simxFloat[3];
   eulerAnglesRead = new simxFloat[3];

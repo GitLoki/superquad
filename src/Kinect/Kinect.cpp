@@ -18,6 +18,29 @@ Kinect::~Kinect(){
   delete ownMat;
  }
 
+bool Kinect::update(){
+  bool videoSuccess = camera.getVideo(*rgbMat);
+  bool depthSuccess = camera.getDepth(*depthMat);
+
+  if (videoSuccess && depthSuccess){
+    // std::cout<< "Success!" << std::endl;
+    return true;
+  }
+  
+  // since tracking currently ONLY depends on depth...
+  if (depthSuccess){
+    // std::cout<< "(Partial)Success!" << std::endl;
+    return true;
+  }
+
+  //std::cout << "Failure of ";
+  //if (!videoSuccess) std::cout << "video";
+  //if (!depthSuccess) std::cout << "depth";
+  //std::cout << std::endl;
+
+  return false;
+}
+
 void Kinect::save_frame(std::string filename){
 
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
@@ -26,14 +49,11 @@ void Kinect::save_frame(std::string filename){
   std::string suffix(".png");
   int i_snap = 0;
 
-  double dummyx, dummyy, dummyz; //used in query
-  
   while(true){
-    query(dummyx, dummyy, dummyz); 
-    // call query to update matrices
-    // should have an update() function instead...
+    update(); //get new RGB and depth
 
     imshow("rgb", *rgbMat);
+    depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
     imshow("depth",*depthf);
 
     char k = cvWaitKey(5);
@@ -63,7 +83,7 @@ void Kinect::save_frame(std::string filename){
 
 /* expect this function to be called inside a loop continuously */
 bool Kinect::query(double& realX, double& realY, double& avgDepth) {
-  if(  !camera.getVideo(*rgbMat) || !camera.getDepth(*depthMat) ) {
+  if( !update() ){
     avgDepth = 0;
     realX = 0;
     realY = 0;

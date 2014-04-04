@@ -64,7 +64,7 @@ private:
   simxFloat* eulerAnglesWrite;
 
   // TO BE CALCULATED
-  double coord_ratio = 1;
+  double coord_ratio;
 };
 
 #endif /* PHYSICSMODEL_HPP */

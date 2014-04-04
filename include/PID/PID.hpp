@@ -34,6 +34,7 @@ private:
     Location destination;
     Location location;
     Location ratios; 
+    Location integrals;
     Kinect* kinect;
     Tx* tx;
     int updateLocation();

@@ -30,13 +30,14 @@ int PID::updateLocation() {
     // we use a proportion of the old location and a proportion of the new location
     const double weight = 1.0;
     Location new_location;
+    kinect->query(new_location.X, new_location.Y, new_location.Z);
 
     // get new location out of kinect
     if (kinect->query(new_location.X, new_location.Y, new_location.Z)) {
         // else, update the current location according to new_locatikn and weight
         location.X = weight * new_location.X + (1-weight) * location.X;
-	location.Y = weight * new_location.Y + (1-weight) * location.Y;
-	location.Z = weight * new_location.Z + (1-weight) * location.Z;
+        location.Y = weight * new_location.Y + (1-weight) * location.Y;
+        location.Z = weight * new_location.Z + (1-weight) * location.Z;
       
 	return 1;
     }
@@ -56,21 +57,29 @@ int PID::updateRatios() {
 
     // 150, 160, 1000 - last best config
 
-    const double Kx = 150;
-    const double Ky = 160;
-    const double Kz = 1000;
+    // Proportional parameters
+    const double KP_x = 150;
+    const double KP_y = 160;
+    const double KP_z = 1000;
 
+    // Integral parameters
+    const double KI_x = 10000;
+    const double KI_y = 10000;
+    const double KI_z = 10000;
     
-    /*
-    ratios.X = pow(2, (destination.X - location.X) / K);
-    ratios.Y = pow(2, (destination.Y - location.Y) / K);
-    ratios.Z = pow(2, (destination.Z - location.Z) / K2);
-    */
-    ratios.X = (destination.X - location.X) / Kx + 1;
-    ratios.Y = -(destination.Y - location.Y) / Ky + 1;
-    ratios.Z = (destination.Z - location.Z) / Kz + 1;
+    if (updateLocation()) {
+      integrals.X += (destination.X - location.X);
+      integrals.Y += (destination.Y - location.Y);
+      integrals.Z += (destination.Z - location.Z);
+
+      ratios.X = (destination.X - location.X) / KP_x + 1 + integrals.X / KI_x;
+      ratios.Y = -(destination.Y - location.Y) / KP_y + 1 - integrals.Y / KI_y;
+      ratios.Z = (destination.Z - location.Z) / KP_z + 1 + integrals.Z / KI_z;
       
-    return 0;
+      return 1;
+    }
+    else
+      return 0;
 }
 
 int PID::goToDestination(Location& _currentLocation) {
