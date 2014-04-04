@@ -49,6 +49,8 @@ private:
   cv::Mat* rgbMat;
   cv::Mat* ownMat;
 
+  bool update();
+
   bool trackObjects = true;
   bool useMorphOps = true;
   Camera camera;
