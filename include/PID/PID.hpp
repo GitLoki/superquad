@@ -28,13 +28,16 @@ std::ofstream logfile;
 
 class PID {
 private:
-
+    double previous_time;
+    double current_time;
+    double time_diff;
     int trim[4];
     int control_vals[4];
     Location destination;
     Location location;
     Location ratios; 
     Location integrals;
+    Location delta;
     Kinect* kinect;
     Tx* tx;
     int updateLocation();
