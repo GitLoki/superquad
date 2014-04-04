@@ -35,16 +35,16 @@ private:
     Location location;
     Location ratios; 
     Kinect* kinect;
+    Tx* tx;
     int updateLocation();
     int updateRatios();
 
 public:
-
-    Tx* tx;
     PID(Kinect* kinect, Tx* tx);
     ~PID(){};
     void updateDestination(Location* _destination);
     int goToDestination(Location& _currentLocation);
+    void halt();
 };
 
 #endif
