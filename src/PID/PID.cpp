@@ -6,6 +6,7 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     trim[0] = STARTPOW;
     tx->getValues(control_vals);
     ratios.setValues(1.0,1.0,1.0);
+    integrals.setValues(0.0,0.0,0.0);
     location.setValues(XCENTRE, YCENTRE, 0.0);
     destination.setValues(XCENTRE, YCENTRE, 750);
 
@@ -36,26 +37,27 @@ void PID::updateDestination(Location* _destination) {
 }
 
 int PID::updateRatios() {
-    // const double K = 400;
-    // const double K2 = 300;
     // lower => more aggressive correction 
-
     // 150, 160, 1000 - last best config
 
-    const double Kx = 150;
-    const double Ky = 160;
-    const double Kz = 1000;
+    // Proportional parameters
+    const double KP_x = 150;
+    const double KP_y = 160;
+    const double KP_z = 1000;
 
+    // Integral parameters
+    const double KI_x = 10000;
+    const double KI_y = 10000;
+    const double KI_z = 10000;
     
     if (updateLocation()) {
-      /*
-      ratios.X = pow(2, (destination.X - location.X) / K);
-      ratios.Y = pow(2, (destination.Y - location.Y) / K);
-      ratios.Z = pow(2, (destination.Z - location.Z) / K2);
-      */
-      ratios.X = (destination.X - location.X) / Kx + 1;
-      ratios.Y = -(destination.Y - location.Y) / Ky + 1;
-      ratios.Z = (destination.Z - location.Z) / Kz + 1;
+      integrals.X += (destination.X - location.X);
+      integrals.Y += (destination.Y - location.Y);
+      integrals.Z += (destination.Z - location.Z);
+
+      ratios.X = (destination.X - location.X) / KP_x + 1 + integrals.X / KI_x;
+      ratios.Y = -(destination.Y - location.Y) / KP_y + 1 - integrals.Y / KI_y;
+      ratios.Z = (destination.Z - location.Z) / KP_z + 1 + integrals.Z / KI_z;
       
       return 1;
     }
