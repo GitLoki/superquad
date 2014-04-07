@@ -11,7 +11,7 @@ Kinect::~Kinect(){
   delete depthf;
   delete rgbMat;
   cv::destroyAllWindows();
- }
+}
 
 void Kinect::save_frame(std::string filename){
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
@@ -47,13 +47,15 @@ void Kinect::save_frame(std::string filename){
       // esc key was pressed
       cvDestroyWindow("rgb");
       cvDestroyWindow("depth");
+      cvWaitKey(10); // Fixes 'window not responding' on close...
+      return;
     }
   }
 }
 
 /* expect this function to be called inside a loop continuously */
 bool Kinect::query(double& realX, double& realY, double& avgDepth) {
-    if( !camera.getDepth(*depthMat) ) return false;
+  if( !camera.getDepth(*depthMat) ) return false;
 
   depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
 
@@ -136,10 +138,10 @@ void Kinect::save_video(std::string filename, int frames){
     writer.write(doubleImg);
 
     if (cv::waitKey(10) == 27)
-      {
-	std::cout << "esc key is pressed by user" << std::endl;
-	truth = false; 
-      }
+    {
+      std::cout << "esc key is pressed by user" << std::endl;
+      truth = false; 
+    }
     count++;
   }
 
@@ -149,17 +151,17 @@ void Kinect::save_video(std::string filename, int frames){
 }
 
 void  Kinect::update(){
-    // loop both video and depth until they have updated
-    while( !camera.getDepth(*depthMat)) ;
-    while( !camera.getVideo(*rgbMat)  ) ;
+  // loop both video and depth until they have updated
+  while( !camera.getDepth(*depthMat)) ;
+  while( !camera.getVideo(*rgbMat)  ) ;
 }
 
 float Kinect::getrealwidth(float avgX, float depth) {
-  float focal_distance =  FRAME_WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
+  float focal_distance =  WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
   return depth * avgX / focal_distance;
 }
 
 float Kinect::getrealheight(float avgY, float depth) {
-  float focal_distance =  FRAME_HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
+  float focal_distance =  HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
   return depth * avgY / focal_distance;
 }
