@@ -14,7 +14,9 @@ Kinect::~Kinect(){
 }
 
 void Kinect::save_frame(std::string filename){
-  cvStartWindowThread();
+
+  cvStartWindowThread(); // fixes the 'force quit' problem on close
+
   cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
   cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
 
@@ -48,7 +50,6 @@ void Kinect::save_frame(std::string filename){
       // esc key was pressed
       cvDestroyWindow("rgb");
       cvDestroyWindow("depth");
-//      cvWaitKey(10); // Fixes 'window not responding' on close...
       return;
     }
   }
