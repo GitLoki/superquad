@@ -20,9 +20,9 @@ const int MINDEPTH = 800;
 const int FPS = 100;
 const int COUNTDOWN = 15;
 
-const double XCENTRE = 240;
-const double YCENTRE = 320;
-const double ZCENTRE = 1000;
+const double XCENTRE = 378;
+const double YCENTRE = 263;
+const double ZCENTRE = 660;
 
 std::ofstream logfile;
 
