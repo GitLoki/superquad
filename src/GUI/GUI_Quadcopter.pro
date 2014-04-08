@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        gui_interface.cpp
+        gui_interface.cpp \
+    pollthread.cpp
 
-HEADERS  += gui_interface.h
+HEADERS  += gui_interface.h \
+    pollthread.h
 
 FORMS    += gui_interface.ui
