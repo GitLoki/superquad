@@ -87,9 +87,7 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
     float avgY = (float) sumY / count;
 
     realX = getrealwidth(avgX, avgDepth);
-    realY = getrealwidth(avgY, avgDepth);
-    // realX = (double) sumX / count;
-    // realY = (double) sumY / count;
+    realY = getrealheight(avgY, avgDepth);
     return true;
   }
   else {
@@ -165,10 +163,10 @@ void  Kinect::update(){
 
 float Kinect::getrealwidth(float avgX, float depth) {
   float focal_distance =  WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
-  return depth * avgX / focal_distance;
+  return depth * (avgX - WIDTH / 2) / focal_distance;
 }
 
 float Kinect::getrealheight(float avgY, float depth) {
   float focal_distance =  HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
-  return depth * avgY / focal_distance;
+  return -1 * depth * (avgY - HEIGHT / 2) / focal_distance;
 }
