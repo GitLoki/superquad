@@ -5,6 +5,8 @@
 #include <QObject>
 #include <vector>
 
+Q_DECLARE_METATYPE(std::vector<float>);
+
 class PollThread : public QObject
 {
     Q_OBJECT

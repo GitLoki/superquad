@@ -21,6 +21,8 @@ public:
 private slots:
     void updateLoc(std::vector<float> new_location);
 
+    void on_ButtonUpdateValeus_clicked();
+
 private:
     Ui::GUI_interface *ui;
     Monitor* mon;

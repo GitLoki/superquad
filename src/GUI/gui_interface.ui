@@ -52,7 +52,7 @@
     <string>Z-axis</string>
    </property>
   </widget>
-  <widget class="QScrollBar" name="ScrollBarX">
+  <widget class="QScrollBar" name="scrollBarX">
    <property name="geometry">
     <rect>
      <x>580</x>
@@ -65,7 +65,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QScrollBar" name="ScrollBarY">
+  <widget class="QScrollBar" name="scrollBarY">
    <property name="geometry">
     <rect>
      <x>580</x>
@@ -78,7 +78,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QScrollBar" name="ScrollBarZ">
+  <widget class="QScrollBar" name="scrollBarZ">
    <property name="geometry">
     <rect>
      <x>580</x>
@@ -215,7 +215,7 @@
     <string>Current Position</string>
    </property>
   </widget>
-  <widget class="QLabel" name="PositionX">
+  <widget class="QLabel" name="positionX">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -225,7 +225,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>50</string>
+    <string>0</string>
    </property>
   </widget>
   <widget class="QLabel" name="positionY">
@@ -238,7 +238,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>100</string>
+    <string>0</string>
    </property>
   </widget>
   <widget class="QLabel" name="positionZ">
@@ -251,7 +251,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>200</string>
+    <string>0</string>
    </property>
   </widget>
   <widget class="QProgressBar" name="ConfidenceX">
@@ -264,7 +264,7 @@
     </rect>
    </property>
    <property name="value">
-    <number>24</number>
+    <number>0</number>
    </property>
   </widget>
   <widget class="QProgressBar" name="ConfidenceY">
@@ -277,7 +277,7 @@
     </rect>
    </property>
    <property name="value">
-    <number>24</number>
+    <number>0</number>
    </property>
   </widget>
   <widget class="QProgressBar" name="ConfidenceZ">
@@ -290,7 +290,7 @@
     </rect>
    </property>
    <property name="value">
-    <number>24</number>
+    <number>0</number>
    </property>
   </widget>
   <widget class="Line" name="line_2">
@@ -382,6 +382,19 @@
    </property>
    <property name="title">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="quitButton">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>540</y>
+     <width>41</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>QUIT</string>
    </property>
   </widget>
  </widget>

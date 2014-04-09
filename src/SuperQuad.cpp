@@ -42,24 +42,10 @@ int main (int argc, char** argv) {
 
 void *contfun(void *argument){
 
+    Monitor *mon = (Monitor*) argument;
+
     while(true);
 
-    // Monitor *m = (Monitor*) argument;
-    // int oldval = 0;
-    // int newval;
-  
-    // while(true){
-    // 	newval = mon->getx();
-    // 	if(oldval != newval){
-    // 	    if(newval < 0)
-    // 		break;
-    // 	    else{
-    // 		mon->setsq(newval*newval);
-    // 		cout << "controller says: " << mon->getsq() << endl;
-    // 		oldval = newval;
-    // 	    }
-    // 	}
-    // }
     return NULL;
 }
 

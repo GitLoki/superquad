@@ -14,9 +14,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         gui_interface.cpp \
-    pollthread.cpp
+    pollthread.cpp \
+    ../Monitor/monitor.cpp
 
 HEADERS  += gui_interface.h \
-    pollthread.h
+    pollthread.h \
+    ../../include/Monitor/monitor.hpp
 
 FORMS    += gui_interface.ui
