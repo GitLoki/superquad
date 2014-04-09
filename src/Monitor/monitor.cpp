@@ -1,3 +1,5 @@
+#include "../../include/Monitor/monitor.hpp"
+
 Monitor::Monitor(): target(3), location(3), lights(false){};
 
 
