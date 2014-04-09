@@ -1,0 +1,7 @@
+*~
+*.old
+bin
+test
+data
+build
+testbuild
