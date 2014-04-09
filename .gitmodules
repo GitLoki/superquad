@@ -1,0 +1,3 @@
+[submodule "src/cppunit"]
+	path = src/cppunit
+	url = git@github.com:epronk/cppunit.git

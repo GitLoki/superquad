@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
+#include "../Actuator/Actuator.hpp"
 
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
@@ -18,7 +19,7 @@ const int aileronTrim = 127;
 const int elevatorTrim = 137;
 const int rudderTrim = 137;
 
-class Tx {
+class Tx : public Actuator {
 
 public:
   /* constructor */
@@ -39,7 +40,7 @@ public:
   void setThrust(int _thrust);
 
   /* sets all values back to starting values (throttle = 0) and transmits them */
-  void halt();
+  virtual void halt();
 
   /* sets rudder, aileron and elevator back to default values and transmits them */
   void resetOrientation();
@@ -48,10 +49,10 @@ public:
   void cancel();
 
   /* returns current command values */
-  void getValues(int* _values);
+  virtual void getValues(int* _values);
   
   /* set all command values simultaneously */
-  void setValues(int* _values);
+  virtual void setValues(int* _values);
 
 private:
   /* pointer to the input-output service */

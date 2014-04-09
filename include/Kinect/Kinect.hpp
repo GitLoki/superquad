@@ -8,6 +8,8 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
+#include "../Sensor/Sensor.hpp"
+
 #include "camera.h"
 
 const double PI = 3.14159265;
@@ -34,12 +36,12 @@ const std::string windowName2 = "Thresholded Image";
 const std::string windowName3 = "After Morphological Operations";
 const std::string trackbarWindowName = "Trackbars";
 
-class Kinect {
+class Kinect : public Sensor {
 
 public:
   Kinect();
-  ~Kinect();
-  bool query(double& x, double& y, double& z);
+  virtual ~Kinect();
+  virtual bool query(double& x, double& y, double& z);
   void save_video(std::string filename, int frames);
   void save_frame(std::string filename = "snapshot");
 

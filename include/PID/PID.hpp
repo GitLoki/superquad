@@ -1,8 +1,8 @@
 #ifndef PID_HPP
 #define PID_HPP
 
-#include "../Kinect/Kinect.hpp"
-#include "../Tx/Tx.hpp"
+#include "../Sensor/Sensor.hpp"
+#include "../Actuator/Actuator.hpp"
 #include "../datatypes.hpp"
 #include <cmath>
 #include <unistd.h>
@@ -38,13 +38,13 @@ private:
     Location ratios; 
     Location integrals;
     Location delta;
-    Kinect* kinect;
-    Tx* tx;
+    Sensor* kinect;
+    Actuator* tx;
     int updateLocation();
     int updateRatios();
 
 public:
-    PID(Kinect* kinect, Tx* tx);
+    PID(Sensor* kinect, Actuator* tx);
     ~PID(){};
     void updateDestination(Location* _destination);
     int goToDestination(Location& _currentLocation);

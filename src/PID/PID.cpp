@@ -1,6 +1,6 @@
 #include "../../include/PID/PID.hpp"
 
-PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
+PID::PID(Sensor* _kinect, Actuator* _tx) : kinect(_kinect), tx(_tx)
 {
     // Get starting (neutral) values out of the transmitter.
     tx->getValues(trim);
@@ -162,41 +162,3 @@ void PID::halt() {
     return;
 }
 
-void signalHandler( int signum )
-{
-  std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
-
-  //pid->halt();
-  logfile.close();
-
-  exit(signum);  
-
-}
-
-int main() {
-      
-    Location currentLocation, destination;
-    currentLocation.setValues(XCENTRE, YCENTRE, 0.0);
-    destination.setValues(XCENTRE, YCENTRE, 1400);
-
-    std::cout << "Initialising Kinect..." << std::endl;
-    Kinect* kinect = new Kinect;  
-    std::cout << "Kinect Initialised." << std::endl;
-    std::cout << "Initialising Transmitter..." << std::endl;
-    Tx* tx = new Tx;
-    std::cout << "Transmitter Initialised. Waiting for serial connection..." << std::endl;
-    usleep(1000000 * COUNTDOWN);
-
-    std::cout << "Waiting complete. Initiating automated control..." << std::endl;
-
-    PID* pid = new PID(kinect, tx);
-
-    // register signal SIGINT and signal handler  
-    signal(SIGINT, signalHandler);  
-
-    while (pid->goToDestination(currentLocation)) {
-      //usleep(1000000 / FPS);
-    }
-
-    return 0;
-}
