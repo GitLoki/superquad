@@ -1,12 +1,11 @@
 class VelocityControl{
  
 private:
-  double k;        // constant for correction
-  int setPoint;    // target velocity
-  int max;         // correction limit
+  double k = 2;              // constant for correction
+  int setPoint = 0;          // target velocity
+  int snapLimit = 5;         // correction limit
 
 public:
-  VelocityControl(){k = 0.01; setPoint = 0; max = 0.05;}
-  void changeSetPoint(double velocity_);
+  void changeSetPoint(double _velocity);
   double query(double velocity);
 };
