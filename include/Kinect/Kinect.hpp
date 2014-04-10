@@ -15,6 +15,10 @@ const int WIDTH = 640;
 const int HEIGHT = 480;
 const int THRESHOLD = 2000; // 1.3 meters
 
+// image filtering attributes
+const int WAIT = 10;
+const int LONG_WAIT = 4000;
+
 class Kinect {
 
 public:
@@ -29,6 +33,11 @@ public:
 private:
   void update();
   int rawDepthToMilimeters(int depthValue);
+
+  // image filtering
+  void show(Mat* image, const std::string str_text, int wait_time);
+  void closed_sequence();
+  void non_closed_sequence();
 
   cv::Mat* depthMat;
   cv::Mat* depthf;

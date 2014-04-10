@@ -170,3 +170,154 @@ float Kinect::getrealheight(float avgY, float depth) {
   float focal_distance =  HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
   return -1 * depth * (avgY - HEIGHT / 2) / focal_distance;
 }
+
+
+/* Code below taken from Alex's Python file and 
+   transformed into C++ */
+/*
+__author__ = 'az'
+import cv2
+import numpy as np
+import sys
+*/
+
+
+void Kinect::show(Mat* image, const string str_text, int wait_time){
+  //text_params = ((30,30), cv::FONT_HERSHEY_TRIPLEX, 1, (0,0,255), 2);
+  int fontFace = cv::FONT_HERSHEY_TRIPLEX;
+  double fontScale = 1;
+  int thickness = 3;  
+  cv::Point textOrg(30, 30);
+ 
+
+  Mat texty_image = image.clone();
+  //cv::putText(texty_image, str_text, *text_params);
+  cv::putText(texty_image, str_text, textOrg, fontFace, fontScale,
+	       Scalar::all(255), thickness,2);
+  cv::imshow("preview", texty_image);
+  if (cv::waitKey(wait_time) == 27)
+    //sys.exit();
+    exit (EXIT_FAILURE);
+   // filename = "prepend_"+str_text+".png";
+   // cv2.imwrite(filename, texty_image);
+}
+
+void Kinect::closed_sequence(){
+  cv::namedWindow("preview");
+  Mat original = cv::imread("quadcopter_images/snapshot1_dep.png");
+
+  Mat raw = original;
+  show(raw, "Raw", WAIT);
+
+  // a value on the quadcopter (at this depth) is ~73
+  // print "value", raw[275, 315] #= [0,0,255]
+  // near clipping plane is 0 (quadcopter is closest point to kinect)
+  // ret,threshold = cv2.threshold(original,0,255,cv2.THRESH_TOZERO)
+  // far clipping plane is about 100 (ceiling shows up around 110)
+
+  // Our Z-accuracy sucks a**. We only have about 30 'units' over our range of interest!!!
+  // At the moment 30 units covers about 1.5 metres, so we have ~10cm accuracy
+  //ret,threshold = cv::threshold(original,100,255,cv2.THRESH_TOZERO_INV);
+  double threshold_sequence = cv::threshold(original,100,255,cv2.THRESH_TOZERO_INV);
+  show(threshold_sequence, "Threshold", WAIT);
+
+  // dilated = cv2.dilate(original,kernel,iterations = 1)
+  // cv2.putText(dilated, "Dilated", *text_params)
+  // cv2.imshow("preview", dilated)
+  // if cv2.waitKey(WAIT) == 27: return
+
+  // time to fiddle around with the blur kernel... a 15px blur seems good
+  kernel = np.ones((15,15),np.uint8);
+
+  // use 'closing' to fill in some of the missing regions...
+  // this does a dilation followed by an erosion step
+  closed = cv::morphologyEx(threshold_sequence, cv2.MORPH_CLOSE, kernel);
+  show(closed, "Closed", WAIT);
+
+  // okay, create a binary version for the contour processing
+  //_, binary = cv::threshold(closed,50 ,255,cv2.THRESH_BINARY);
+  double binary = cv::threshold(closed,50 ,255,cv2.THRESH_BINARY);
+  show(binary, "Binary", WAIT);
+
+  pre_contour = cv::cvtColor(binary,cv2.COLOR_BGR2GRAY);
+  //contours, _ = cv::findContours(pre_contour, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE);
+  contours = cv::findContours(pre_contour, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE);
+  cv::drawContours(closed, contours, -1, (0, 0, 255));
+  show(closed, "Contour(s)", WAIT);
+
+  // so, now we've got a contour
+  // the biggest (only?) contour should be our quadcopter
+  cnt = contours[0];
+
+  // look at some of the moments...
+  M = cv::moments(cnt);
+  cx = int(M['m10']/M['m00']);
+  cy = int(M['m01']/M['m00']);
+
+  // draw a crosshair on the centre
+  annotated = np.copy(closed);
+  cv::line(annotated, (cx-5, cy), (cx+5, cy), (0,0,255));
+  cv::line(annotated, (cx, cy-5), (cx, cy+5), (0,0,255));
+  show(annotated, "Centroid", WAIT);
+
+  tracked_area = cv::contourArea(cnt);
+
+  sum = np.sum(closed[:,:,0]);
+  pixels = np.count_nonzero(closed[:,:,0]);
+  mean_z = sum / pixels;
+  mean_z = round(mean_z, 2);
+  // CARE! 'contour' is bigger than 'pixels';
+  // 583.5 to 498, in my test case...;
+
+  cv::putText(annotated, "Centroid at "+str(cx)+", "+str(cy), *text_params);
+  cv::putText(annotated, "Tracked Area "+str(pixels), (30,60), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,255), 2);
+  cv::putText(annotated, "Mean depth "+str(mean_z), (30,90), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,255), 2);
+  show(annotated, "", LONG_WAIT);
+}
+
+void Kinect::non_closed_sequence(){
+   // no comments here, look at the closed_sequence for that...
+  cv::namedWindow("preview");
+  Mat original = cv::imread("quadcopter_images/snapshot1_dep.png");
+
+  Mat raw = original;
+  show(raw, "Raw", WAIT);
+
+  // ret,threshold = cv2.threshold(original,100,255,cv2.THRESH_TOZERO_INV);
+  double threshold_sequence = cv::threshold(original,100,255,cv2.THRESH_TOZERO_INV);
+  show(threshold_sequence, "Threshold", WAIT);
+
+  //_, binary = cv2.threshold(threshold,50 ,255,cv2.THRESH_BINARY);
+  double binary = cv::threshold(threshold_sequence,50 ,255,cv2.THRESH_BINARY);
+  show(binary, "Binary", WAIT);
+
+  pre_contour = cv::cvtColor(binary,cv2.COLOR_BGR2GRAY);
+  //contours, _ = cv2.findContours(pre_contour, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE);
+  contours = cv::findContours(pre_contour, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE);
+  cv::drawContours(threshold_sequence, contours, -1, (0, 0, 255));
+  show(threshold, "Contours", WAIT);
+  
+  Mat M = cv::moments(contours[0]);
+  int cx = int(M['m10']/M['m00']);
+  int cy = int(M['m01']/M['m00']);
+  
+
+  Mat annotated;
+  annotated = threshold.clone();
+  cv::line(annotated, (cx-5, cy), (cx+5, cy), (0,0,255));
+  cv::line(annotated, (cx, cy-5), (cx, cy+5), (0,0,255));
+  show(annotated, "Centroid", WAIT);
+
+  // we have to fix this part
+  sum = np.sum(threshold_sequence[:,:,0]);
+  pixels = np.count_nonzero(threshold[:,:,0]);
+  mean_z = round(sum / pixels, 2);
+
+  cv::putText(annotated, "Centroid at "+str(cx)+", "+str(cy), *text_params);
+  cv::putText(annotated, "Tracked Area "+str(pixels), (30,60), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,255), 2);
+  cv::putText(annotated, "Mean depth "+str(mean_z), (30,90), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,255), 2);
+  show(annotated, "", LONG_WAIT);
+  
+}
+//closed_sequence()
+// non_closed_sequence()
