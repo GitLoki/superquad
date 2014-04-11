@@ -70,3 +70,8 @@ void GUI_interface::on_ButtonUpdateValeus_clicked()
     mon->set_target(target);
 
 }
+
+void GUI_interface::on_ButtonLights_clicked()
+{
+    mon->lightswitch();
+}

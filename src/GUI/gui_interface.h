@@ -23,6 +23,8 @@ private slots:
 
     void on_ButtonUpdateValeus_clicked();
 
+    void on_ButtonLights_clicked();
+
 private:
     Ui::GUI_interface *ui;
     Monitor* mon;
