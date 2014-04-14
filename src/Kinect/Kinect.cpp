@@ -171,12 +171,8 @@ float Kinect::getrealheight(float avgY, float depth) {
     return -1 * depth * (avgY - HEIGHT / 2) / focal_distance;
 }
 
-<<<<<<< Temporary merge branch 1
-=======
-
 //Filtered Query - hasn't been tested
 
->>>>>>> Temporary merge branch 2
 bool Kinect::filtered_query(double& realX, double& realY, double& avgDepth) {
     if( !camera.getDepth(*depthMat) ) return false;
 
@@ -195,11 +191,7 @@ bool Kinect::filtered_query(double& realX, double& realY, double& avgDepth) {
       
 	    mmDepth = rawDepthToMilimeters(depthMat->at<double>(y,x));
       
-<<<<<<< Temporary merge branch 1
-	    realDepthMat->at<double>(y,x)
-=======
 	    realDepthMat->at<double>(y,x);
->>>>>>> Temporary merge branch 2
 
 		if(mmDepth < THRESHOLD && mmDepth != 0){	
 		    sumDepth += mmDepth;
@@ -218,11 +210,7 @@ bool Kinect::filtered_query(double& realX, double& realY, double& avgDepth) {
 	cv::Mat kernel = cv::Mat::ones(15,15,CV_8UC1);
 
 	//close missing areas
-<<<<<<< Temporary merge branch 1
-	cv::morphologyEx(realDepthMat, closed, morph_operator, kernel);
-=======
 	cv::morphologyEx(*realDepthMat, closed, morph_operator, kernel);
->>>>>>> Temporary merge branch 2
 
 	//create a binary array
 	cv::threshold(closed, binary, 5, 1, cv::THRESH_BINARY);
