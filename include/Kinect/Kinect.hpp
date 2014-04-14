@@ -29,15 +29,17 @@ public:
   void save_frame(std::string filename = "snapshot");
   float getrealwidth(float avgX, float depth);
   float getrealheight(float avgY, float depth);
+  bool filtered_query(double& realX, double& realY, double& avgDepth);
 
 private:
   void update();
   int rawDepthToMilimeters(int depthValue);
+  double rawDepthToMilimetersDouble(int depthValue);
 
   // image filtering
-  void show(Mat* image, const std::string str_text, int wait_time);
-  void closed_sequence();
-  void non_closed_sequence();
+  // void show(Mat* image, const std::string str_text, int wait_time);
+  // void closed_sequence();
+  // void non_closed_sequence();
 
   cv::Mat* depthMat;
   cv::Mat* depthf;
