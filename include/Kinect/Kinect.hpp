@@ -13,7 +13,7 @@
 const double PI = 3.14159265;
 const int WIDTH = 640;
 const int HEIGHT = 480;
-const int THRESHOLD = 1300; // 1.3 meters
+const int THRESHOLD = 2000; // 1.3 meters
 
 class Kinect {
 

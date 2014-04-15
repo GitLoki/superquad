@@ -163,7 +163,7 @@ void  Kinect::update(){
 
 float Kinect::getrealwidth(float avgX, float depth) {
   float focal_distance =  WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
-  return depth * (avgX - WIDTH / 2) / focal_distance;
+  return -1 * depth * (avgX - WIDTH / 2) / focal_distance;
 }
 
 float Kinect::getrealheight(float avgY, float depth) {
