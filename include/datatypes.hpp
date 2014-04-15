@@ -6,3 +6,10 @@ struct Location {
 	Z = _z;
     }
 };
+
+Location& operator=(Location other) {
+    this.X = other.X;
+    this.Y = other.Y;
+    this.Z = other.Z;
+    return *this;
+}
