@@ -14,16 +14,20 @@
 class Monitor {
 
 private:
+
+    //shared variables
     std::vector<float> target;
     std::vector<float> location;
     bool lights;
 
+    //mutexes
     pthread_mutex_t target_lock;
     pthread_mutex_t location_lock;
     pthread_mutex_t lights_lock;
 
 public:
 
+    //constructor
     Monitor();
 
     //setters

@@ -9,10 +9,12 @@
 //create protected get & set functions as required (hpp & cpp)
 
 
-Monitor::Monitor(): target(3,0), location(3,0), lights(false),
+//constructor
+Monitor::Monitor(): target(3,0), location(3,0), lights(true),
     target_lock(PTHREAD_MUTEX_INITIALIZER), location_lock(PTHREAD_MUTEX_INITIALIZER), lights_lock(PTHREAD_MUTEX_INITIALIZER)
     {};
 
+//setters
 void Monitor::set_target(std::vector<float> &values){
     pthread_mutex_lock (&target_lock);
     target = values;
@@ -32,6 +34,7 @@ void Monitor::lightswitch(){
 }
 
 
+//getters
 void Monitor::get_target(std::vector<float> &values){
     pthread_mutex_lock (&target_lock);
     values = target;

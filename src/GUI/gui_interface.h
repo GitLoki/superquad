@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <vector>
 #include "../../include/Monitor/monitor.hpp"
+#include "qcustomplot.h"
 
 namespace Ui {
 class GUI_interface;
@@ -20,14 +21,16 @@ public:
 
 private slots:
     void updateLoc(std::vector<float> new_location);
-
-    void on_ButtonUpdateValeus_clicked();
-
+    void on_ButtonUpdateValues_clicked();
     void on_ButtonLights_clicked();
 
 private:
     Ui::GUI_interface *ui;
     Monitor* mon;
+    QCPScatterStyle plotStyle;
+
+    void init_Plot();
+    void refresh_Plot(std::vector<float> location);
 };
 
 #endif // GUI_INTERFACE_H
