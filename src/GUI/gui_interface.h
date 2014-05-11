@@ -24,13 +24,24 @@ private slots:
     void on_ButtonUpdateValues_clicked();
     void on_ButtonLights_clicked();
 
+    void target_upd_x(int newval);
+    void target_upd_y(int newval);
+    void target_upd_z(int newval);
+
+
 private:
     Ui::GUI_interface *ui;
     Monitor* mon;
-    QCPScatterStyle plotStyle;
+    QCPScatterStyle locationStyle;
+    QCPScatterStyle targetStyle;
+
+    //vector to hold values in GUI, as monitor doesn't auto-update
+    std::vector<float> target_buff;
 
     void init_Plot();
-    void refresh_Plot(std::vector<float> location);
+    void plot_Location(std::vector<float> location);
+    void plot_Target(std::vector<float> target);
+
 };
 
 #endif // GUI_INTERFACE_H

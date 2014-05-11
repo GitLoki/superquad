@@ -17,6 +17,7 @@ GUI_interface::GUI_interface(QWidget *parent) :
 
 GUI_interface::GUI_interface(Monitor *_mon) :
     mon(_mon),
+    target_buff(3,0),
     QMainWindow(),
     ui(new Ui::GUI_interface)
 {
@@ -31,6 +32,10 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     connect(ui->spinBoxX,SIGNAL(valueChanged(int)),ui->scrollBarX,SLOT(setValue(int)));
     connect(ui->spinBoxY,SIGNAL(valueChanged(int)),ui->scrollBarY,SLOT(setValue(int)));
     connect(ui->spinBoxZ,SIGNAL(valueChanged(int)),ui->scrollBarZ,SLOT(setValue(int)));
+
+    connect(ui->scrollBarX,SIGNAL(valueChanged(int)),this,SLOT(target_upd_x(int)));
+    connect(ui->scrollBarY,SIGNAL(valueChanged(int)),this,SLOT(target_upd_y(int)));
+    connect(ui->scrollBarZ,SIGNAL(valueChanged(int)),this,SLOT(target_upd_z(int)));
 
     connect(ui->quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
 
@@ -62,7 +67,7 @@ void GUI_interface::updateLoc(std::vector<float> new_location){
     ui->positionZ->setNum(new_location[2]);
 
     //refresh location plot
-    refresh_Plot(new_location);
+    plot_Location(new_location);
 }
 
 void GUI_interface::on_ButtonUpdateValues_clicked()
@@ -77,7 +82,7 @@ void GUI_interface::on_ButtonUpdateValues_clicked()
     mon->set_target(target);
 
     //FOR TESTING ONLY - DELETE LATER
-    mon->set_location(target);
+    //mon->set_location(target);
     //FOR TESTING ONLY - DELETE LATER
 
 }
@@ -87,29 +92,53 @@ void GUI_interface::on_ButtonLights_clicked()
     mon->lightswitch();
 }
 
+void GUI_interface::target_upd_x(int newval){
+    target_buff[0] = newval;
+    plot_Target(target_buff);
+
+}
+
+void GUI_interface::target_upd_y(int newval){
+    target_buff[1] = newval;
+    plot_Target(target_buff);
+}
+
+void GUI_interface::target_upd_z(int newval){
+    target_buff[2] = newval;
+    plot_Target(target_buff);
+}
+
 void GUI_interface::init_Plot(){
 
     //add graph to plot
     ui->Plot->addGraph();
+    ui->Plot->addGraph();
 
     //do not show lines
     ui->Plot->graph(0)->setLineStyle(QCPGraph::lsNone);
+    ui->Plot->graph(1)->setLineStyle(QCPGraph::lsNone);
 
     //set range
     ui->Plot->xAxis->setRange(-3000, 3000);
     ui->Plot->yAxis->setRange(-3000, 3000);
 
     //set plot style
-    plotStyle.setShape(QCPScatterStyle::ssDisc);
-    plotStyle.setBrush(Qt::white);
+    locationStyle.setShape(QCPScatterStyle::ssDisc);
+    locationStyle.setPen(QPen(Qt::blue));
+
+    targetStyle.setShape(QCPScatterStyle::ssDisc);
+    targetStyle.setPen(QPen(Qt::red));
 
     //pass location into plot
     std::vector<float> location(3);
+    std::vector<float> target(3);
     mon->get_location(location);
-    refresh_Plot(location);
+    mon->get_target(target);
+    plot_Location(location);
+    plot_Target(target);
 }
 
-void GUI_interface::refresh_Plot(std::vector<float> location){
+void GUI_interface::plot_Location(std::vector<float> location){
 
     //setData requires a vector even for a single point
     QVector<double> x(1), y(1);
@@ -117,11 +146,30 @@ void GUI_interface::refresh_Plot(std::vector<float> location){
     y[0] = location[1];
 
     //set size based on distance
-    double size = std::max(23-(double)location[2]/100,3.0);
-    plotStyle.setSize(size);
+    double size = std::max(20-(double)location[2]/150,3.0);
+    locationStyle.setSize(size);
 
     //set the data and style, then refresh the plot
     ui->Plot->graph(0)->setData(x, y);
-    ui->Plot->graph(0)->setScatterStyle(plotStyle);
+    ui->Plot->graph(0)->setScatterStyle(locationStyle);
+
+    ui->Plot->replot();
+}
+
+void GUI_interface::plot_Target(std::vector<float> target){
+
+    //setData requires a vector even for a single point
+    QVector<double> x(1), y(1);
+    x[0] = target[0];
+    y[0] = target[1];
+
+    //set size based on distance
+    double size = std::max(20-(double)target[2]/150,3.0);
+    targetStyle.setSize(size);
+
+    //set the data and style, then refresh the plot
+    ui->Plot->graph(1)->setData(x, y);
+    ui->Plot->graph(1)->setScatterStyle(targetStyle);
+
     ui->Plot->replot();
 }
