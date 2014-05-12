@@ -28,6 +28,8 @@ private slots:
     void target_upd_y(int newval);
     void target_upd_z(int newval);
 
+    void plotMousePress(QMouseEvent* event);
+    void plotWheel(QWheelEvent *wheelEvent);
 
 private:
     Ui::GUI_interface *ui;

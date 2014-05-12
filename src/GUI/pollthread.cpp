@@ -15,35 +15,33 @@ void PollThread::poll(){
     //FOR TESTING - DELETE LATER
 
     while(true){
+        mon->get_location(location);
 
-       mon->get_location(location);
-
-       if(location != previous){
-          setNewLoc(location);
-          previous = location;
-       }
+        if(location != previous){
+            setNewLoc(location);
+            previous = location;
+        }
 
 
-       //FOR TESTING - DELETE LATER
-       i++;
+        //FOR TESTING - DELETE LATER
+        i++;
 
-       if(i>50000){
+        if(i>50000){
 
-           mon->get_target(target);
+            mon->get_target(target);
 
-           for(int j=0;j<3;j++){
-               if(location[j] < target[j])
-                   location[j] += 10;
-               else if (location[j] > target[j])
-                   location[j] -= 10;
-           }
+            for(int j=0;j<3;j++){
+                if(location[j] < target[j])
+                    location[j] += 10;
+                else if (location[j] > target[j])
+                    location[j] -= 10;
+            }
 
-           mon->set_location(location);
+            mon->set_location(location);
 
-           i=0;
-       }
+            i=0;
+        }
 
-       //FOR TESTING - DELETE LATER
-
+        //FOR TESTING - DELETE LATER
     }
 }
