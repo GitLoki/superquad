@@ -1,12 +1,21 @@
-// #include <iostream>
-// #include <ncurses.h>
-// #include "../include/Tx/Tx.hpp"
-// #include "../include/Kinect/Kinect.hpp"
-// #include "../include/PhysicsModel/PhysicsModel.hpp"
-// #include "../include/Controller/boost_xbox_controller.hpp"
-
+#include <iostream>
+#include <ncurses.h>
+#include "../include/Tx/Tx.hpp"
+#include "../include/Kinect/Kinect.hpp"
+#include "../include/PhysicsModel/PhysicsModel.hpp"
+#include "../include/Controller/boost_xbox_controller.hpp"
 #include <pthread.h>
 #include <assert.h>
+
+//QT includes
+#include "GUI/gui_interface.h"
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSpinBox>
+#include <QSlider>
+#include <QGroupBox>
+#include "GUI/pollthread.h"
 #include "../include/Monitor/Monitor.hpp"
 
 using namespace std;
@@ -53,10 +62,16 @@ void *guifun(void *argument){
 
     Monitor *mon = (Monitor*) argument;
 
-    QApplication a(void);
-    GUI w(mon);
+    qRegisterMetaType<std::vector<float> >("std::vector<float>");
+
+    QApplication quadcop(argc, argv);
+    GUI_interface w(mon);
+
+    QApplication prog(argc, argv);
+
     w.show();
-    a.exec();
+    
+    quadcop.exec();
 
     return NULL;
 }

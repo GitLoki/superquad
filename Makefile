@@ -1,16 +1,22 @@
 # Compiler options: 
 CXX := g++
 CC := gcc
+DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
--D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3
+-D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3 \
+-m64 -pipe -D_REENTRANT -fPIE $(DEFINES)
 LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
-`sdl2-config --libs` -lpthread -lX11
+`sdl2-config --libs` -lpthread -lX11 -L/usr/X11R6/lib64 -lQt5Widgets \
+-L/usr/lib/x86_64-linux-gnu -lQt5Gui -lQt5Core -lGL
 TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall \
 -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux \
 `pkg-config --cflags opencv` `sdl2-config --cflags`
 TESTLIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
 `sdl2-config --libs` -lpthread -lX11 -lgcov -fprofile-arcs
-INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect
+INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect \
+-I/usr/share/qt5/mkspecs/linux-g++-64 -I. -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets \
+-I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I.
+QMAKE := /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 
 # Directories:
 SRCDIR := src
@@ -36,21 +42,6 @@ endif
 
 # Source files:
 SRCEXT := cpp
-# SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-# MAINSOURCES := $(filter-out src/Test/ModelTest.cpp src/Test/KinectTest.cpp \
-# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-# MODELTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/KinectTest.cpp \
-# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-# KINECTTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
-# src/Test/KinectImageCapture.cpp src/Test/TrackingTest.cpp, $(SOURCES))
-# KINECTIMAGECAPTURESOURCES := $(filter-out src/SuperQuad.cpp \
-# src/Test/ModelTest.cpp src/Test/KinectTest.cpp src/Test/TrackingTest.cpp, \
-# $(SOURCES))
-# TRACKINGTESTSOURCES := $(filter-out src/SuperQuad.cpp src/Test/ModelTest.cpp \
-# src/Test/KinectTest.cpp src/Test/KinectImageCapture.cpp, $(SOURCES))
-
-#$(SRCDIR)/PhysicsModel/extApi.c $(SRCDIR)/PhysicsModel/extApiCustom.c $(SRCDIR)/PhysicsModel/extApiPlatform.c
-
 AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp
 MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
@@ -63,7 +54,11 @@ PIDTESTSOURCES := $(SRCDIR)/PID/PID.cpp $(AUXSOURCES)
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-$(BUILDDIR)/PhysicsModel/extApiCustom.o
+	$(BUILDDIR)/GUI/gui_interface.o \
+	$(BUILDDIR)/GUI/pollthread.o \
+	$(BUILDDIR)/GUI/moc_gui_interface.o \
+	$(BUILDDIR)/GUI/moc_pollthread.o \
+	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 MODELTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(MODELTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
@@ -90,7 +85,7 @@ $(BUILDDIR)/PhysicsModel/extApiCustom.o
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -o \
+	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 -o \
 $(BINDIR)/$(MAINTARGET) $(LIB)
 
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
