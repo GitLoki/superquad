@@ -5,8 +5,7 @@ DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDG
 CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3 \
 -m64 -pipe -D_REENTRANT -fPIE $(DEFINES)
-LIB :=  -L/usr/X11R6/lib64 -lQt5PrintSupport  -lQt5Widgets -lQt5Gui -lQt5Core  `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
-`sdl2-config --libs` -lpthread -lX11 -lGL
+LIB :=  -L/usr/X11R6/lib64 -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5Core `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lGL
 TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall \
 -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux \
 `pkg-config --cflags opencv` `sdl2-config --cflags`
@@ -31,10 +30,9 @@ KINECTTESTTARGET := kinecttest
 KINECTIMAGECAPTURETARGET := kinectimagecapture
 TRACKINGTESTTARGET := trackingtest
 PIDTESTTARGET := pidtest
-TESTTARGETS := $(MODELTESTTARGET) $(KINECTTESTTARGET) \
+TESTTARGETS = $(MODELTESTTARGET) $(KINECTTESTTARGET) \
 $(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET) $(PIDTEST)
 
-# Ignore!:
 ifneq (,$(findstring $(MAKECMDGOALS),$(TESTTARGETS)))
 	CFLAGS = $(TESTFLAGS) 
 	LIB = $(TESTLIB)
@@ -53,38 +51,41 @@ PIDTESTSOURCES := $(SRCDIR)/PID/PID.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
+$(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-	$(BUILDDIR)/PhysicsModel/extApiCustom.o 
+	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 MODELTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(MODELTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+$(MODELTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-$(BUILDDIR)/PhysicsModel/extApiCustom.oKINECTTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(KINECTTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+$(BUILDDIR)/PhysicsModel/extApiCustom.o
+KINECTTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
+$(KINECTTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+$(BUILDDIR)/PhysicsModel/extApiCustom.o
 KINECTIMAGECAPTUREOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(KINECTIMAGECAPTURESOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+$(KINECTIMAGECAPTURESOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+$(BUILDDIR)/PhysicsModel/extApiCustom.o
 TRACKINGTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(TRACKINGTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+$(TRACKINGTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+$(BUILDDIR)/PhysicsModel/extApiCustom.o
 PIDTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
-	$(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+$(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+
 
 # Rules:
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 -o \
-$(BINDIR)/$(MAINTARGET) $(BUILDDIR)/GUI/gui_interface.o \
-$(BUILDDIR)/GUI/pollthread.o \
-$(BUILDDIR)/GUI/moc_gui_interface.o \
-$(BUILDDIR)/GUI/moc_pollthread.o $(LIB)
+	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 
+	$(BUILDDIR)/GUI/gui_interface.o \
+	$(BUILDDIR)/GUI/pollthread.o \
+	$(BUILDDIR)/GUI/moc_gui_interface.o \
+	$(BUILDDIR)/GUI/moc_pollthread.o \
+	-o $(BINDIR)/$(MAINTARGET) $(LIB)
 
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
 	@mkdir -p $(TESTDIR)
