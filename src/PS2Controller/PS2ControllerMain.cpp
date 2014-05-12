@@ -1,8 +1,6 @@
 #include <iostream>
 #include <fstream>
-//y#include "PS2Controller.cpp"
 #include "../../include/Tx/Tx.hpp"
-#include <ncurses.h>
 using namespace std;
 
 char getArdCommand(int controllerCommand){
@@ -31,6 +29,10 @@ int main (int argc, char** argv) {
   in_stream.open("/dev/input/js0");
   tx.setThrust(80);
 
+  // first 9x16 chars are junk
+  for(int i = 0; i!=144; i++){
+    in_stream.get(holderChar);
+  }
 
   /* Main loop of program */
   while(true){
