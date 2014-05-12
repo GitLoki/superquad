@@ -2,9 +2,11 @@
 #define GUI_INTERFACE_H
 
 #include <QMainWindow>
-#include <vector>
 #include "../../include/Monitor/monitor.hpp"
 #include "qcustomplot.h"
+#include "../../include/datatypes.hpp"
+
+
 
 namespace Ui {
 class GUI_interface;
@@ -21,12 +23,12 @@ private:
     QCPScatterStyle targetStyle;
 
     //vector to hold values in GUI, as monitor doesn't auto-update
-    std::vector<float> target_buff;
+    Location target_buff;
 
     //plotting functions
     void init_Plot();
-    void plot_Location(std::vector<float> location);
-    void plot_Target(std::vector<float> target);
+    void plot_Location(Location location);
+    void plot_Target(Location target);
 
 public:
     GUI_interface(Monitor *_mon);
@@ -45,7 +47,7 @@ private slots:
     void target_upd_x(int newval);
     void target_upd_y(int newval);
     void target_upd_z(int newval);
-    void updateLoc(std::vector<float> new_location);
+    void updateLoc(Location new_location);
 
     //Plot mouse event slots
     void plotMousePress(QMouseEvent* event);

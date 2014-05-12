@@ -9,13 +9,12 @@
 //constructor
 GUI_interface::GUI_interface(Monitor *_mon) :
     mon(_mon),
-    target_buff(3,0),
     QMainWindow(),
     ui(new Ui::GUI_interface)
 {
     ui->setupUi(this);
 
-    qRegisterMetaType<std::vector<float> >("stdvec");
+    qRegisterMetaType<Location>("Location");
 
     //connect scrollbars and spinboxes
     connect(ui->scrollBarX,SIGNAL(valueChanged(int)),ui->spinBoxX,SLOT(setValue(int)));
@@ -49,7 +48,7 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     poll->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), poll, SLOT(poll()));
-    connect(poll, SIGNAL(setNewLoc(stdvec)), this, SLOT(updateLoc(stdvec)));
+    connect(poll, SIGNAL(setNewLoc(Location)), this, SLOT(updateLoc(Location)));
     connect(thread, SIGNAL(destroyed()), poll, SLOT(deleteLater()));
 
     thread->start();
@@ -69,12 +68,12 @@ GUI_interface::~GUI_interface()
  *****************/
 
 //SLOT: update current quad location on display
-void GUI_interface::updateLoc(std::vector<float> new_location)
+void GUI_interface::updateLoc(Location new_location)
 {
     //update text boxes on GUI
-    ui->positionX->setNum(new_location[0]);
-    ui->positionY->setNum(new_location[1]);
-    ui->positionZ->setNum(new_location[2]);
+    ui->positionX->setNum(new_location.X);
+    ui->positionY->setNum(new_location.Y);
+    ui->positionZ->setNum(new_location.Z);
 
     //refresh location plot
     plot_Location(new_location);
@@ -84,12 +83,13 @@ void GUI_interface::updateLoc(std::vector<float> new_location)
 void GUI_interface::on_ButtonUpdateValues_clicked()
 {
     //update target values in monitor
-    std::vector<float> target(3);
-    target[0] = (float) ui->spinBoxX->value();
-    target[1] = (float) ui->spinBoxY->value();
-    target[2] = (float) ui->spinBoxZ->value();
+    Location target;
+    target.X = (float) ui->spinBoxX->value();
+    target.Y = (float) ui->spinBoxY->value();
+    target.Z = (float) ui->spinBoxZ->value();
 
     mon->set_target(target);
+
 }
 
 //SLOT: "Land" clicked
@@ -119,21 +119,21 @@ void GUI_interface::on_AdvCheck_toggled(bool checked)
 //SLOT: target x value changed
 void GUI_interface::target_upd_x(int newval)
 {
-    target_buff[0] = newval;
+    target_buff.X = newval;
     plot_Target(target_buff);
 }
 
 //SLOT: target y value changed
 void GUI_interface::target_upd_y(int newval)
 {
-    target_buff[1] = newval;
+    target_buff.Y = newval;
     plot_Target(target_buff);
 }
 
 //SLOT: target z value changed
 void GUI_interface::target_upd_z(int newval)
 {
-    target_buff[2] = newval;
+    target_buff.Z = newval;
     plot_Target(target_buff);
 }
 
@@ -166,8 +166,8 @@ void GUI_interface::init_Plot()
     targetStyle.setPen(QPen(Qt::red));
 
     //pass location and target into plot
-    std::vector<float> target(3);
-    std::vector<float> location(3);
+    Location target;
+    Location location;
     mon->get_target(target);
     mon->get_location(location);
     plot_Target(target);
@@ -175,15 +175,15 @@ void GUI_interface::init_Plot()
 }
 
 //Update the displayed target on the plot
-void GUI_interface::plot_Target(std::vector<float> target)
+void GUI_interface::plot_Target(Location target)
 {
     //setData requires a vector even for a single point
     QVector<double> x(1), y(1);
-    x[0] = target[0];
-    y[0] = target[1];
+    x[0] = target.X;
+    y[0] = target.Y;
 
     //set size based on distance
-    double size = std::max(20-(double)target[2]/150,3.0);
+    double size = std::max(20-(double)target.Z/150,3.0);
     targetStyle.setSize(size);
 
     //set the data and style, then refresh the plot
@@ -194,15 +194,15 @@ void GUI_interface::plot_Target(std::vector<float> target)
 }
 
 //Update the displayed location on the plot
-void GUI_interface::plot_Location(std::vector<float> location){
+void GUI_interface::plot_Location(Location location){
 
     //setData requires a vector even for a single point
     QVector<double> x(1), y(1);
-    x[0] = location[0];
-    y[0] = location[1];
+    x[0] = location.X;
+    y[0] = location.Y;
 
     //set size based on distance
-    double size = std::max(20-(double)location[2]/150,3.0);
+    double size = std::max(20-(double)location.Z/150,3.0);
     locationStyle.setSize(size);
 
     //set the data and style, then refresh the plot

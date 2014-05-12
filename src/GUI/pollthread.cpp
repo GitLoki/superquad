@@ -6,12 +6,12 @@ PollThread::PollThread(Monitor* _mon):mon(_mon){};
 
 void PollThread::poll(){
 
-    std::vector<float> location(3);
-    std::vector<float> previous(3);
+    Location location;
+    Location previous;
 
     //FOR TESTING - DELETE LATER
     int i = 0;
-    std::vector<float> target(3);
+    Location target;
     //FOR TESTING - DELETE LATER
 
     while(true){
@@ -22,11 +22,10 @@ void PollThread::poll(){
             previous = location;
         }
 
-
         //FOR TESTING - DELETE LATER
         i++;
 
-        if(i>50000){
+        if(i>100000){
 
             mon->get_target(target);
 

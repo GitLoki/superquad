@@ -16,11 +16,13 @@ SOURCES += main.cpp\
         qcustomplot.cpp \
         gui_interface.cpp \
         pollthread.cpp \
-        ../Monitor/monitor.cpp
+        ../Monitor/monitor.cpp \
+    ../datatypes.cpp
 
 HEADERS  += gui_interface.h \
         qcustomplot.h \
         pollthread.h \
-        ../../include/Monitor/monitor.hpp
+        ../../include/Monitor/monitor.hpp \
+    ../../include/datatypes.hpp
 
 FORMS    += gui_interface.ui
