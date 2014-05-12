@@ -11,6 +11,11 @@
 #include <cstdlib>
 #include <unistd.h>
 
+#define LEDS_ON = 0x05
+#define LEDS_OFF = 0x06
+#define FLIPS_ON = 0x07
+#define FLIPS_OFF = 0x08
+
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
 const int sigVal = 3;
@@ -30,6 +35,11 @@ public:
   /* sends a command to the Arduino; set verbose to true for debugging 
      information (function expects ncurses mode) */
   void sendCommand(char com, bool verbose);
+
+  // sets flips or LEDS on or off.
+  void setLEDS(bool active);
+  void setFlips(bool active);
+
 
   /* send commands to alter and transmit a specific control value */
   void setThrottle(int _throttle);
