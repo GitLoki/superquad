@@ -166,7 +166,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Lights On</string>
+    <string>Lights</string>
    </property>
   </widget>
   <widget class="QPushButton" name="ButtonLand">
@@ -428,8 +428,8 @@
   <widget class="QPushButton" name="quitButton">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>540</y>
+     <x>810</x>
+     <y>530</y>
      <width>41</width>
      <height>41</height>
     </rect>
