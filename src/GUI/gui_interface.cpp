@@ -6,15 +6,7 @@
 #include <QDebug>
 
 
-/*
-GUI_interface::GUI_interface(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GUI_interface)
-{
-    ui->setupUi(this);
-}
-*/
-
+//constructor
 GUI_interface::GUI_interface(Monitor *_mon) :
     mon(_mon),
     target_buff(3,0),
@@ -39,7 +31,7 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     connect(ui->scrollBarY,SIGNAL(valueChanged(int)),this,SLOT(target_upd_y(int)));
     connect(ui->scrollBarZ,SIGNAL(valueChanged(int)),this,SLOT(target_upd_z(int)));
 
-    //quit button
+    //buttons
     connect(ui->quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
 
     //connect clicking on plot
@@ -48,8 +40,10 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     //connect mousewheel to z
     connect(ui->Plot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(plotWheel(QWheelEvent*)));
 
+    //intialise the plot
     init_Plot();
 
+    //set up polling thread
     QThread *thread = new QThread(this);
     PollThread *poll = new PollThread(mon);
     poll->moveToThread(thread);
@@ -62,25 +56,21 @@ GUI_interface::GUI_interface(Monitor *_mon) :
 
 }
 
+//destructor
 GUI_interface::~GUI_interface()
 {
     delete ui;
 }
 
 
-void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
+
+/*****************
+ *-----SLOTS-----*
+ *****************/
+
+//SLOT: update current quad location on display
+void GUI_interface::updateLoc(std::vector<float> new_location)
 {
-    ui->spinBoxZ->setValue(ui->spinBoxZ->value() - wheelEvent->delta());
-
-    if(ui->spinBoxZ->value() > ui->spinBoxZ->maximum())
-        ui->spinBoxZ->setValue(ui->spinBoxZ->maximum());
-    else if(ui->spinBoxZ->value() < ui->spinBoxZ->minimum())
-        ui->spinBoxZ->setValue(ui->spinBoxZ->minimum());
-
-}
-
-void GUI_interface::updateLoc(std::vector<float> new_location){
-
     //update text boxes on GUI
     ui->positionX->setNum(new_location[0]);
     ui->positionY->setNum(new_location[1]);
@@ -90,9 +80,9 @@ void GUI_interface::updateLoc(std::vector<float> new_location){
     plot_Location(new_location);
 }
 
+//SLOT: "Update Values" clicked
 void GUI_interface::on_ButtonUpdateValues_clicked()
 {
-
     //update target values in monitor
     std::vector<float> target(3);
     target[0] = (float) ui->spinBoxX->value();
@@ -100,36 +90,56 @@ void GUI_interface::on_ButtonUpdateValues_clicked()
     target[2] = (float) ui->spinBoxZ->value();
 
     mon->set_target(target);
-
-    //FOR TESTING ONLY - DELETE LATER
-    //mon->set_location(target);
-    //FOR TESTING ONLY - DELETE LATER
-
 }
 
+//SLOT: "Lights" clicked
 void GUI_interface::on_ButtonLights_clicked()
 {
     mon->lightswitch();
 }
 
+//SLOT: "Land" clicked
+void GUI_interface::on_ButtonLand_clicked()
+{
+    mon->land();
+}
+
+//SLOT: "EMERGENCY STOP" clicked
+void GUI_interface::on_ButtonSTOP_clicked()
+{
+    mon->stop();
+}
+
+//SLOT: target x value changed
 void GUI_interface::target_upd_x(int newval)
 {
     target_buff[0] = newval;
     plot_Target(target_buff);
 }
 
-void GUI_interface::target_upd_y(int newval){
+//SLOT: target y value changed
+void GUI_interface::target_upd_y(int newval)
+{
     target_buff[1] = newval;
     plot_Target(target_buff);
 }
 
-void GUI_interface::target_upd_z(int newval){
+//SLOT: target z value changed
+void GUI_interface::target_upd_z(int newval)
+{
     target_buff[2] = newval;
     plot_Target(target_buff);
 }
 
-void GUI_interface::init_Plot(){
 
+
+/*************************
+ *-----PLOT & TARGET-----*
+ *************************/
+
+//Initialise 2D plot
+void GUI_interface::init_Plot()
+{
     //add graph to plot
     ui->Plot->addGraph();
     ui->Plot->addGraph();
@@ -149,15 +159,35 @@ void GUI_interface::init_Plot(){
     targetStyle.setShape(QCPScatterStyle::ssDisc);
     targetStyle.setPen(QPen(Qt::red));
 
-    //pass location into plot
-    std::vector<float> location(3);
+    //pass location and target into plot
     std::vector<float> target(3);
-    mon->get_location(location);
+    std::vector<float> location(3);
     mon->get_target(target);
-    plot_Location(location);
+    mon->get_location(location);
     plot_Target(target);
+    plot_Location(location);
 }
 
+//Update the displayed target on the plot
+void GUI_interface::plot_Target(std::vector<float> target)
+{
+    //setData requires a vector even for a single point
+    QVector<double> x(1), y(1);
+    x[0] = target[0];
+    y[0] = target[1];
+
+    //set size based on distance
+    double size = std::max(20-(double)target[2]/150,3.0);
+    targetStyle.setSize(size);
+
+    //set the data and style, then refresh the plot
+    ui->Plot->graph(0)->setData(x, y);
+    ui->Plot->graph(0)->setScatterStyle(targetStyle);
+
+    ui->Plot->replot();
+}
+
+//Update the displayed location on the plot
 void GUI_interface::plot_Location(std::vector<float> location){
 
     //setData requires a vector even for a single point
@@ -170,32 +200,28 @@ void GUI_interface::plot_Location(std::vector<float> location){
     locationStyle.setSize(size);
 
     //set the data and style, then refresh the plot
-    ui->Plot->graph(0)->setData(x, y);
-    ui->Plot->graph(0)->setScatterStyle(locationStyle);
-
-    ui->Plot->replot();
-}
-
-void GUI_interface::plot_Target(std::vector<float> target){
-
-    //setData requires a vector even for a single point
-    QVector<double> x(1), y(1);
-    x[0] = target[0];
-    y[0] = target[1];
-
-    //set size based on distance
-    double size = std::max(20-(double)target[2]/150,3.0);
-    targetStyle.setSize(size);
-
-    //set the data and style, then refresh the plot
     ui->Plot->graph(1)->setData(x, y);
-    ui->Plot->graph(1)->setScatterStyle(targetStyle);
+    ui->Plot->graph(1)->setScatterStyle(locationStyle);
 
     ui->Plot->replot();
 }
 
+//Update target when plot is clicked
 void GUI_interface::plotMousePress(QMouseEvent* event)
 {
     ui->spinBoxX->setValue(ui->Plot->xAxis->pixelToCoord(event->x()));
     ui->spinBoxY->setValue(ui->Plot->yAxis->pixelToCoord(event->y()));
+}
+
+//target zooming using mouse wheel on plot
+void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
+{
+    //update spinbox value
+    ui->spinBoxZ->setValue(ui->spinBoxZ->value() - wheelEvent->delta());
+
+    //ensure that within limits
+    if(ui->spinBoxZ->value() > ui->spinBoxZ->maximum())
+        ui->spinBoxZ->setValue(ui->spinBoxZ->maximum());
+    else if(ui->spinBoxZ->value() < ui->spinBoxZ->minimum())
+        ui->spinBoxZ->setValue(ui->spinBoxZ->minimum());
 }

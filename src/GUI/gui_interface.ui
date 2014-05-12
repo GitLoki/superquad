@@ -239,43 +239,6 @@
      <height>61</height>
     </rect>
    </property>
-   <property name="palette">
-    <palette>
-     <active>
-      <colorrole role="Button">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </active>
-     <inactive>
-      <colorrole role="Button">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </inactive>
-     <disabled>
-      <colorrole role="Button">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </disabled>
-    </palette>
-   </property>
    <property name="text">
     <string>Emergency Stop</string>
    </property>
@@ -465,8 +428,8 @@
   <widget class="QPushButton" name="quitButton">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>540</y>
+     <x>810</x>
+     <y>530</y>
      <width>41</width>
      <height>41</height>
     </rect>
