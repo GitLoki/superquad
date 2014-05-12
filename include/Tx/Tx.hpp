@@ -13,10 +13,10 @@
 
 #define CONTROL_PACKET 3
 #define SETTING_PACKET 4
-#define LEDS_ON = 0x05
-#define LEDS_OFF = 0x06
-#define FLIPS_ON = 0x07
-#define FLIPS_OFF = 0x08
+#define LEDS_ON 0x05
+#define LEDS_OFF 0x06
+#define FLIPS_ON 0x07
+#define FLIPS_OFF 0x08
 
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
