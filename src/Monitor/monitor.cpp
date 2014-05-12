@@ -10,81 +10,95 @@
 
 
 //constructor
-Monitor::Monitor(): target(3,0), location(3,0), lights(true), land_quad(false), emergency(false),
-    target_lock(PTHREAD_MUTEX_INITIALIZER), location_lock(PTHREAD_MUTEX_INITIALIZER), lights_lock(PTHREAD_MUTEX_INITIALIZER),
-    land_lock(PTHREAD_MUTEX_INITIALIZER), emergency_lock(PTHREAD_MUTEX_INITIALIZER)
+Monitor::Monitor(): target(3,0), location(3,0), lights(true), land_quad(false), emergency(false), snap_lim(false),
+    monitor_lock(PTHREAD_MUTEX_INITIALIZER)
     {};
 
 
 //setters
 void Monitor::set_target(std::vector<float> &values)
 {
-    pthread_mutex_lock (&target_lock);
+    pthread_mutex_lock (&monitor_lock);
     target = values;
-    pthread_mutex_unlock (&target_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 void Monitor::set_location(std::vector<float> &values)
 {
-    pthread_mutex_lock (&location_lock);
+    pthread_mutex_lock (&monitor_lock);
     location = values;
-    pthread_mutex_unlock (&location_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
-void Monitor::lightswitch()
+void Monitor::lightswitch(bool set_to)
 {
-    pthread_mutex_lock (&lights_lock);
-    lights = !lights;
-    pthread_mutex_unlock (&lights_lock);
+    pthread_mutex_lock (&monitor_lock);
+    lights = set_to;
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 void Monitor::land()
 {
-    pthread_mutex_lock (&land_lock);
+    pthread_mutex_lock (&monitor_lock);
     land_quad = true;
-    pthread_mutex_unlock (&land_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 void Monitor::stop()
 {
-    pthread_mutex_lock (&emergency_lock);
+    pthread_mutex_lock (&monitor_lock);
     emergency = true;
-    pthread_mutex_unlock (&emergency_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
+
+void Monitor::snap(bool set_to)
+{
+    pthread_mutex_lock (&monitor_lock);
+    snap_lim = set_to;
+    pthread_mutex_unlock (&monitor_lock);
+}
+
 
 
 //getters
 void Monitor::get_target(std::vector<float> &values)
 {
-    pthread_mutex_lock (&target_lock);
+    pthread_mutex_lock (&monitor_lock);
     values = target;
-    pthread_mutex_unlock (&target_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 void Monitor::get_location(std::vector<float> &values)
 {
-    pthread_mutex_lock (&location_lock);
+    pthread_mutex_lock (&monitor_lock);
     values = location;
-    pthread_mutex_unlock (&location_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 bool Monitor::get_light()
 {
-    pthread_mutex_lock (&lights_lock);
+    pthread_mutex_lock (&monitor_lock);
     return lights;
-    pthread_mutex_unlock (&lights_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 bool Monitor::get_land()
 {
-    pthread_mutex_lock (&land_lock);
+    pthread_mutex_lock (&monitor_lock);
     return land_quad;
-    pthread_mutex_unlock (&land_lock);
+    pthread_mutex_unlock (&monitor_lock);
 }
 
 bool Monitor::get_stop()
 {
-    pthread_mutex_lock (&emergency_lock);
+    pthread_mutex_lock (&monitor_lock);
     return emergency;
-    pthread_mutex_unlock (&emergency_lock);
+    pthread_mutex_unlock (&monitor_lock);
+}
+
+bool Monitor::get_snap()
+{
+    pthread_mutex_lock (&monitor_lock);
+    return snap_lim;
+    pthread_mutex_unlock (&monitor_lock);
 }

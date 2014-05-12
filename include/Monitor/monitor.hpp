@@ -4,13 +4,6 @@
 #include <vector>
 #include <pthread.h>
 
-//////To add a new shared variable//////
-
-//add private variable to (hpp)
-//create a mutex for that variable (hpp)
-//initialise that mutex in constructor (cpp)
-//create protected get & set functions as required (hpp & cpp)
-
 class Monitor {
 
 private:
@@ -21,14 +14,10 @@ private:
     bool lights;
     bool land_quad;
     bool emergency;
+    bool snap_lim;
 
-    //mutexes
-    pthread_mutex_t target_lock;
-    pthread_mutex_t location_lock;
-    pthread_mutex_t lights_lock;
-    pthread_mutex_t land_lock;
-    pthread_mutex_t emergency_lock;
-
+    //mutex
+    pthread_mutex_t monitor_lock;
 public:
 
     //constructor
@@ -37,9 +26,10 @@ public:
     //setters
     void set_target(std::vector<float> &values);
     void set_location(std::vector<float> &values);
-    void lightswitch();
+    void lightswitch(bool set_to);
     void land();
     void stop();
+    void snap(bool set_to);
 
     //getters
     void get_target(std::vector<float> &values);
@@ -47,6 +37,7 @@ public:
     bool get_light();
     bool get_land();
     bool get_stop();
+    bool get_snap();
 };
 
 #endif

@@ -36,9 +36,10 @@ private slots:
 
     //button slots
     void on_ButtonUpdateValues_clicked();
-    void on_ButtonLights_clicked();
+    void on_ButtonLights_toggled(bool checked);
     void on_ButtonLand_clicked();
     void on_ButtonSTOP_clicked();
+    void on_AdvCheck_toggled(bool checked);
 
     //value update slots
     void target_upd_x(int newval);

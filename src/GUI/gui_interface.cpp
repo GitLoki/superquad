@@ -92,12 +92,6 @@ void GUI_interface::on_ButtonUpdateValues_clicked()
     mon->set_target(target);
 }
 
-//SLOT: "Lights" clicked
-void GUI_interface::on_ButtonLights_clicked()
-{
-    mon->lightswitch();
-}
-
 //SLOT: "Land" clicked
 void GUI_interface::on_ButtonLand_clicked()
 {
@@ -108,6 +102,18 @@ void GUI_interface::on_ButtonLand_clicked()
 void GUI_interface::on_ButtonSTOP_clicked()
 {
     mon->stop();
+}
+
+//SLOT: "Lights" clicked
+void GUI_interface::on_ButtonLights_toggled(bool checked)
+{
+    mon->lightswitch(checked);
+}
+
+//SLOT: "Advanced mode" clicked
+void GUI_interface::on_AdvCheck_toggled(bool checked)
+{
+    mon->snap(!checked);
 }
 
 //SLOT: target x value changed
@@ -225,3 +231,5 @@ void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
     else if(ui->spinBoxZ->value() < ui->spinBoxZ->minimum())
         ui->spinBoxZ->setValue(ui->spinBoxZ->minimum());
 }
+
+
