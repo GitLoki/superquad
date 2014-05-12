@@ -18,8 +18,6 @@ int main(int argc, char *argv[])
     QApplication quadcop(argc, argv);
     GUI_interface w(mon);
 
-    QApplication prog(argc, argv);
-
     w.show();
     
     return quadcop.exec();

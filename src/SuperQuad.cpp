@@ -20,6 +20,12 @@
 
 using namespace std;
 
+struct argstruct {
+    int argcs;
+    char **argvs;
+    Monitor *m;
+};
+
 void *contfun(void *argument);
 
 void *guifun(void *argument);
@@ -27,15 +33,20 @@ void *guifun(void *argument);
 int main (int argc, char** argv) {
 
     int ret_code;
-    Monitor *m = new Monitor;
+    Monitor *mon = new Monitor;
+    argstruct *arguments = new argstruct;
     
+    arguments->argcs = argc;
+    arguments->argvs = argv;
+    arguments->m = mon;
+
     pthread_t guithread, controlthread;
 
     //have both threads call their respective functions
-    ret_code = pthread_create(&guithread,NULL,guifun, (void*) m);
+    ret_code = pthread_create(&guithread,NULL,guifun, (void*) arguments);
     assert(ret_code == 0);
 
-    ret_code = pthread_create(&controlthread,NULL,contfun, (void*) m);
+    ret_code = pthread_create(&controlthread,NULL,contfun, (void*) arguments);
     assert(ret_code == 0);
 
     //wait for both threads to finish
@@ -51,7 +62,7 @@ int main (int argc, char** argv) {
 
 void *contfun(void *argument){
 
-    Monitor *mon = (Monitor*) argument;
+    argstruct *args = (argstruct*) argument;
 
     while(true);
 
@@ -60,14 +71,12 @@ void *contfun(void *argument){
 
 void *guifun(void *argument){
 
-    Monitor *mon = (Monitor*) argument;
+    argstruct *args = (argstruct*) argument;
 
     qRegisterMetaType<std::vector<float> >("std::vector<float>");
 
-    QApplication quadcop(argc, argv);
-    GUI_interface w(mon);
-
-    QApplication prog(argc, argv);
+    QApplication quadcop(args->argcs, args->argvs);
+    GUI_interface w(args->m);
 
     w.show();
     
