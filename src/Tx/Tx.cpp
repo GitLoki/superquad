@@ -161,7 +161,13 @@ void Tx::sendValues(bool verbose) {
 	    controls[i]++;
     }
   */
-	
+	// avoid using packet header values as control values
+  for ( int i = 1 ; i < 5 ; i++ ) {
+      if (controls[i] == CONTROL_PACKET || controls[i] == SETTING_PACKET) {
+          controls[i] = SETTING_PACKET + 1;
+      }
+  }
+
     if(verbose) {
 	int bytes = port->write_some(boost::asio::buffer(controls));
 
