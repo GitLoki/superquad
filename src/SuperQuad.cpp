@@ -16,7 +16,7 @@
 #include <QSlider>
 #include <QGroupBox>
 #include "GUI/pollthread.h"
-#include "../include/Monitor/Monitor.hpp"
+#include "../include/Monitor/monitor.hpp"
 
 using namespace std;
 
