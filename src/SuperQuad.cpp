@@ -1,12 +1,3 @@
-#include <iostream>
-#include <ncurses.h>
-#include "../include/Tx/Tx.hpp"
-#include "../include/Kinect/Kinect.hpp"
-#include "../include/PhysicsModel/PhysicsModel.hpp"
-#include "../include/Controller/boost_xbox_controller.hpp"
-#include <pthread.h>
-#include <assert.h>
-
 //QT includes
 #include "GUI/gui_interface.h"
 #include <QApplication>
@@ -16,7 +7,15 @@
 #include <QSlider>
 #include <QGroupBox>
 #include "GUI/pollthread.h"
-#include "../include/Monitor/Monitor.hpp"
+#include "../include/Monitor/monitor.hpp"
+
+#include <iostream>
+#include "../include/Tx/Tx.hpp"
+#include "../include/Kinect/Kinect.hpp"
+#include "../include/PhysicsModel/PhysicsModel.hpp"
+#include "../include/Controller/boost_xbox_controller.hpp"
+#include <pthread.h>
+#include <assert.h>
 
 using namespace std;
 

@@ -122,29 +122,25 @@ void Tx::sendCommand(char com, bool verbose) {
 }
 
 void Tx::setLEDS(bool active) {
-    uint_8 settings[5];
+    uint8_t settings[5];
     settings[0] = 4;
     settings[1] = (active ? LEDS_ON : LEDS_OFF);
     settings[2] = 0;
     settings[3] = 0;
     settings[4] = 0;
 
-    else {
-        port->write_some(boost::asio::buffer(settings));
-    }
+    port->write_some(boost::asio::buffer(settings));
 } 
 
 void Tx::setFlips(bool active) {
-    uint_8 settings[5];
+    uint8_t settings[5];
     settings[0] = 4;
     settings[1] = (active ? FLIPS_ON : FLIPS_OFF);
     settings[2] = 0;
     settings[3] = 0;
     settings[4] = 0;
 
-    else {
-        port->write_some(boost::asio::buffer(settings));
-    }
+    port->write_some(boost::asio::buffer(settings));
 } 
 
 void Tx::sendValues(bool verbose) {
@@ -161,7 +157,13 @@ void Tx::sendValues(bool verbose) {
 	    controls[i]++;
     }
   */
-	
+	// avoid using packet header values as control values
+  for ( int i = 1 ; i < 5 ; i++ ) {
+      if (controls[i] == CONTROL_PACKET || controls[i] == SETTING_PACKET) {
+          controls[i] = SETTING_PACKET + 1;
+      }
+  }
+
     if(verbose) {
 	int bytes = port->write_some(boost::asio::buffer(controls));
 

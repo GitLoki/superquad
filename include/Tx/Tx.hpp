@@ -11,14 +11,16 @@
 #include <cstdlib>
 #include <unistd.h>
 
-#define LEDS_ON = 0x05
-#define LEDS_OFF = 0x06
-#define FLIPS_ON = 0x07
-#define FLIPS_OFF = 0x08
+#define CONTROL_PACKET 3
+#define SETTING_PACKET 4
+#define LEDS_ON 0x05
+#define LEDS_OFF 0x06
+#define FLIPS_ON 0x07
+#define FLIPS_OFF 0x08
 
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
-const int sigVal = 3;
+const int sigVal = CONTROL_PACKET;
 const int aileronTrim = 127;
 const int elevatorTrim = 137;
 const int rudderTrim = 137;

@@ -1,21 +1,20 @@
 # Compiler options: 
 CXX := g++
 CC := gcc
-DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3 \
 -m64 -pipe -D_REENTRANT -fPIE $(DEFINES)
-LIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
-`sdl2-config --libs` -lpthread -lX11 -L/usr/X11R6/lib64 -lQt5Widgets \
--L/usr/lib/x86_64-linux-gnu -lQt5Gui -lQt5Core -lGL
+LIB :=  -L/usr/X11R6/lib64 -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5Core `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lGL
 TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall \
 -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux \
 `pkg-config --cflags opencv` `sdl2-config --cflags`
 TESTLIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
 `sdl2-config --libs` -lpthread -lX11 -lgcov -fprofile-arcs
-INC := -I include -I /usr/include/boost -I /usr/local/include/libfreenect \
--I/usr/share/qt5/mkspecs/linux-g++-64 -I. -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets \
--I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I. -I.
+INC :=  -I/usr/share/qt5/mkspecs/linux-g++-64 -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets \
+-I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I include \
+-I/usr/include/boost -I/usr/local/include/libfreenect \
+-Isrc/GUI -I/usr/include/qt5/QtPrintSupport
 QMAKE := /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 
 # Directories:
@@ -54,10 +53,6 @@ PIDTESTSOURCES := $(SRCDIR)/PID/PID.cpp $(AUXSOURCES)
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-	$(BUILDDIR)/GUI/gui_interface.o \
-	$(BUILDDIR)/GUI/pollthread.o \
-	$(BUILDDIR)/GUI/moc_gui_interface.o \
-	$(BUILDDIR)/GUI/moc_pollthread.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 MODELTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(MODELTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
@@ -78,15 +73,19 @@ $(BUILDDIR)/PhysicsModel/extApiCustom.o
 PIDTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
-$(BUILDDIR)/PhysicsModel/extApiCustom.o
+	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 
 
 # Rules:
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 -o \
-$(BINDIR)/$(MAINTARGET) $(LIB)
+	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 
+	$(BUILDDIR)/GUI/gui_interface.o \
+	$(BUILDDIR)/GUI/pollthread.o \
+	$(BUILDDIR)/GUI/moc_gui_interface.o \
+	$(BUILDDIR)/GUI/moc_pollthread.o \
+	-o $(BINDIR)/$(MAINTARGET) $(LIB)
 
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
 	@mkdir -p $(TESTDIR)
