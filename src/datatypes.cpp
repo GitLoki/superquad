@@ -158,6 +158,24 @@ Location operator/(double d,Location l)
     return l;
 }
 
+// note - maximum is required to hold positive values
+void Location::limit(Location maximum) {
+    if (this.X > maximum.X)
+        this.X = maximum.X;
+    if (this.X < (maximum.X * -1)
+        this.X = maximum.X * -1;
+
+    if (this.Y > maximum.Y)
+        this.Y = maximum.Y;
+    if (this.Y < (maximum.Y * -1)
+        this.Y = maximum.Y * -1;
+
+    if (this.Z > maximum.Z)
+        this.Z = maximum.Z;
+    if (this.Z < (maximum.Z * -1)
+        this.Z = maximum.Z * -1;
+}
+
 
 
 kinect_frustum::kinect_frustum(double _near, double _far)
