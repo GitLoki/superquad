@@ -98,6 +98,14 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
   }
 }
 
+Location Kinect::query(){
+
+    Location reading;
+    query(reading.X,reading.Y,reading.Z);
+    return reading;
+
+}
+
 int Kinect::rawDepthToMilimeters(int depthValue) {
   if (depthValue < 2047) {
     return (1000 / ((double)(depthValue) * -0.0030711016 + 3.3309495161));
