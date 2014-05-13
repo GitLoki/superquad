@@ -12,6 +12,9 @@ struct Location
     //constructor
     Location();
 
+    // note - maximum is required to hold positive values
+    void limit(Location maximum);
+
     //arithmetic operators
     Location& operator+=(const Location& rhs);
     Location& operator-=(const Location& rhs);
