@@ -5,21 +5,20 @@
 class VelocityControl{
  
 private:
- 
- 	Location K = new Location(5.0, 5.0, 5.0);
-    Location currentValue = new Location(0, 0, 0);
-    Location setPoint = new Location(0, 0, 0);
-    Location snapLimit = new Location(15, 15, 15);
+    Location K;
+    Location currentValue;
+    Location setPoint;
+    Location snapLimit;
 
 public:
-    VelocityControl(Location _K, Location _currentValue, Location _snapLimit) :
-	                    K(_K), currentVelocity(_currentVelocity), snapLimit(_snapLimit) {}
+    VelocityControl(Location _K, Location _snapLimit) :
+                    K(_K), snapLimit(_snapLimit) {}
 
-    VelocityControl() {};
+  VelocityControl() : K(1.0, 1.0, 15.0), snapLimit(8, 8, 15) {};
     
     void changeSetPoint(Location _setPoint);
 
-    int query(Location velocity);
+    Location query(Location velocity);
 };
 
 #endif

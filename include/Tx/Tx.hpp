@@ -62,6 +62,8 @@ public:
 
   /* returns current command values */
   void getValues(int* _values);
+
+  void getValues(Location* _values);
   
   /* set all command values simultaneously */
   void setValues(int* _values);

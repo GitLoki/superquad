@@ -3,20 +3,29 @@
 #include "../datatypes.hpp"
 #include "VelocityControl.hpp"
 #include "AccelerationControl.hpp"
-
+#include <ctime>
 
 class CascadeControl {
 private:
 	VelocityControl* velocityControl;
 	AccelerationControl* accelerationControl;
-	Location currentLocation, currentVelocity(0,0,0), oldVelocity, currentAcceleration(0,0,0), oldAcceleration, startSettings;
+
+        Location currentLocation, oldLocation, 
+	  currentVelocity, oldVelocity, 
+	  currentAcceleration, oldAcceleration, 
+	  startSettings, currentSettings,
+	  deltaL, deltaV, 
+	  velocitySetPoint,
+	  accelerationSetPoint;
+
 	double oldTime, newTime, timeInterval;
 	int counter = 0;
 	int velocityFrequency = 5;
 
 public:
 	CascadeControl(Location _startSettings);
-	query(Location newLocation);
+	Location query(Location newLocation);
+        void changeSetPoint(Location newSetPoint);
 };
 
 #endif

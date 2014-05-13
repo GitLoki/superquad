@@ -74,6 +74,12 @@ void Tx::getValues(int* _values) {
     _values[i-1] = controls[i];
 };
 
+void Tx::getValues(Location* values) {
+  values->X = controls[AILERON];
+  values->Y = controls[ELEVATOR];
+  values->Z = controls[THROTTLE];
+}
+
 void Tx::setValues(int* _values) {
   for (int i = THROTTLE ; i <= ELEVATOR ; i++)
       controls[i] = _values[i-1];
@@ -121,11 +127,11 @@ void Tx::sendCommand(char com, bool segfault = false) {
   sendValues(segfault);
 }
 
-void setValues(Location values) {
-    cotrols[AILERON] = values.X;
+void Tx::setValues(Location values) {
+    controls[AILERON] = values.X;
     controls[ELEVATOR] = values.Y;
     controls[THROTTLE] = values.Z;
-    sendValues();
+    sendValues(false);
 }
 
 void Tx::setLEDS(bool active) {

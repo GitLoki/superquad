@@ -1,14 +1,14 @@
 #include "../../include/CascadeControl/VelocityControl.hpp"
 
-void VelocityControl::changeSetPoint(int _velocity){
-    setPoint = velocity_;
+void VelocityControl::changeSetPoint(Location _velocity){
+    setPoint = _velocity;
 }
 
-double VelocityControl::query(double velocity){
+Location VelocityControl::query(Location velocity){
 
-    Location delta_V = K * (setpoint - velocity);
+    Location delta_V = K * (setPoint - velocity);
 
-    delta_A.limit(snapLimit);
+    delta_V.limit(snapLimit);
 
     currentValue += delta_V;
 

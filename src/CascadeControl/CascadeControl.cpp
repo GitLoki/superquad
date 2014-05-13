@@ -1,8 +1,8 @@
 #include "../../include/CascadeControl/CascadeControl.hpp"
 
 CascadeControl::CascadeControl(Location _startSettings) {
-	accelerationControl = new accelerationControl(_startSettings);
-	velocityControl = new velocityControl;
+	accelerationControl = new AccelerationControl(_startSettings);
+	velocityControl = new VelocityControl;
 	startSettings = _startSettings;
 }
 
@@ -11,7 +11,7 @@ Location CascadeControl::query(Location newLocation) {
 	currentLocation = newLocation;
 
 	if (!counter) {
-		oldTime = clock;
+	        oldTime = clock();
 		currentLocation = newLocation;
 		counter++;
 		oldVelocity = currentVelocity;
@@ -20,8 +20,8 @@ Location CascadeControl::query(Location newLocation) {
 	}
 	
 	// calculate time since last query
-	newTime = clock;
-	timeInterval = newTime - oldTime;
+	newTime = clock();
+	timeInterval = (newTime - oldTime) / CLOCKS_PER_SEC;
 	oldTime = newTime;
 
 	// calculate new velocity and acceleration
@@ -32,12 +32,18 @@ Location CascadeControl::query(Location newLocation) {
 
 
 	if (counter % velocityFrequency == 0) {
-		accelerationSetPoint = velocityControl.query(currentVelocity);
-		accelerationControl.changeSetPoint(accelerationSetPoint);
+		accelerationSetPoint = velocityControl->query(currentVelocity);
+		accelerationControl->changeSetPoint(accelerationSetPoint);
 		counter = 0;
 	}
 
 	counter++;
 
-	return accelerationControl.query(currentAcceleration);
+	currentSettings = accelerationControl->query(currentAcceleration);
+
+	return currentSettings;
+}
+
+void CascadeControl::changeSetPoint(Location newSetPoint) {
+  velocityControl->changeSetPoint(newSetPoint);
 }
