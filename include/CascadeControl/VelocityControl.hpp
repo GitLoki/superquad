@@ -1,16 +1,25 @@
 #ifndef VELOCITY_CONTROL_HPP
 #define VELOCITY_CONTROL_HPP
+#include "../datatypes.hpp"
 
 class VelocityControl{
  
 private:
-    double K = 2.0;              // constant for correction
-    int setPoint = 0.0;          // target velocity
-    int snapLimit = 5.0;         // correction limit
+ 
+ 	Location K = new Location(5.0, 5.0, 5.0);
+    Location currentValue = new Location(0, 0, 0);
+    Location setPoint = new Location(0, 0, 0);
+    Location snapLimit = new Location(15, 15, 15);
 
 public:
-    void changeSetPoint(double _velocity);
-    double query(double velocity);
+    VelocityControl(Location _K, Location _currentValue, Location _snapLimit) :
+	                    K(_K), currentVelocity(_currentVelocity), snapLimit(_snapLimit) {}
+
+    VelocityControl() {};
+    
+    void changeSetPoint(Location _setPoint);
+
+    int query(Location velocity);
 };
 
 #endif

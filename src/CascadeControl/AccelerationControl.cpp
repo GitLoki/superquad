@@ -1,14 +1,16 @@
 #include "../../include/CascadeControl/AccelerationControl.hpp"
 
-void AccelerationControl::changeSetPoint(double _setPoint) {
+void AccelerationControl::changeSetPoint(Location _setPoint) {
     setPoint = _setPoint;
 }
 
-int AccelerationControl::query(double acceleration) { 
-    int delta_A = (int) (K * (setpoint - acceleration));
-    int delta_Val = std::min(jerkLimit, std::abs(delta_A));
+Location AccelerationControl::query(Location acceleration) {
+	
+    Location delta_A = K * (setpoint - acceleration);
 
-    currentValue += delta_Val * (delta_A < 0 ? -1 : 1);
+    delta_A.limit(jerkLimit);
+
+    currentValue += delta_A;
 
     return currentValue;
 }

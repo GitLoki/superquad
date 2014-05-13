@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
+#include "../datatypes.hpp"
 
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
@@ -27,9 +28,9 @@ public:
   /* destructor */
   ~Tx();
 
-  /* sends a command to the Arduino; set verbose to true for debugging 
+  /* sends a command to the Arduino; set segfault to true for debugging 
      information (function expects ncurses mode) */
-  void sendCommand(char com, bool verbose);
+  void sendCommand(char com, bool segfault);
 
   /* send commands to alter and transmit a specific control value */
   void setThrottle(int _throttle);
@@ -53,6 +54,8 @@ public:
   /* set all command values simultaneously */
   void setValues(int* _values);
 
+  void setValues(Location values);
+
 private:
   /* pointer to the input-output service */
 
@@ -67,7 +70,7 @@ private:
   boost::array<unsigned char,5> controls;
   
   /* sanitises the current command values and sends them to the transmitter */
-  void sendValues(bool verbose = false);
+  void sendValues(bool segfault = false);
 };
 
 #endif /* TX_HPP */

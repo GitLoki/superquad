@@ -80,9 +80,9 @@ void Tx::setValues(int* _values) {
   sendValues();
 };
 
-/* sends a command to the Arduino; set verbose to true for debugging 
+/* sends a command to the Arduino; set segfault to true for debugging 
    information*/
-void Tx::sendCommand(char com, bool verbose) {
+void Tx::sendCommand(char com, bool segfault = false) {
   switch(com) {
   case 'd': // roll right
     controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
@@ -115,13 +115,20 @@ void Tx::sendCommand(char com, bool verbose) {
     break;
   }
 
-  if(verbose)
+  if(segfault)
     printw("Char input: %d = %c \n", com, com);
 
-  sendValues(verbose);
+  sendValues(segfault);
 }
 
-void Tx::sendValues(bool verbose) {
+void setValues(Location values) {
+    cotrols[AILERON] = values.X;
+    controls[ELEVATOR] = values.Y;
+    controls[THROTTLE] = values.Z;
+    sendValues();
+}
+
+void Tx::sendValues(bool segfault = false) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
     // Deprecated - santising input inside sendCommand function instead
@@ -136,7 +143,7 @@ void Tx::sendValues(bool verbose) {
     }
   */
 	
-    if(verbose) {
+    if(segfault) {
 	int bytes = port->write_some(boost::asio::buffer(controls));
 
 	printw("Controls: \n");

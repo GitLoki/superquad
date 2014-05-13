@@ -5,10 +5,12 @@ void VelocityControl::changeSetPoint(int _velocity){
 }
 
 double VelocityControl::query(double velocity){
-    double delta_V = (K * (setpoint - velocity));
-    double acceleration = std::min(snapLimit, std::abs(delta_V));
 
-    acceleration *= (delta_V < 0 ? -1 : 1);
+    Location delta_V = K * (setpoint - velocity);
 
-    return acceleration;
+    delta_A.limit(snapLimit);
+
+    currentValue += delta_V;
+
+    return currentValue;
 }
