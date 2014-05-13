@@ -3,29 +3,12 @@
 #include "../../include/Tx/Tx.hpp"
 using namespace std;
 
-char getArdCommand(int controllerCommand){
-  switch(controllerCommand){
-  case 0: return 'd';
-  case 1: return 'x';
-  case 2: return 'w';
-  case 3: return 'a';
-  case 4: return '-';
-  case 5: return 'e';
-  case 6: return '+';
-  case 7: return 'q';
-  case 8: return 'l';
-  case 9:  return '!'; 
-    //unknown key resets orientation
-  default: return ' ';
-  }
-}
 
 int main (int argc, char** argv) {
 
   Tx tx;
   char holderChar;
-  int controllerCommand;
-  char ardCommand;
+  int controllerCommand[8];
   int lights = 0;
   bool flying = true;
 
@@ -40,28 +23,62 @@ int main (int argc, char** argv) {
 
   /* Main loop of program */
   while(flying){
-    int i = 0;
     while(in_stream.get(holderChar)){
-      if(i == 15){
-	controllerCommand = (int)holderChar;
-	cout << controllerCommand << endl; // TO BE REMOVED
-	ardCommand = getArdCommand(controllerCommand);
-	if(ardCommand == 'l'){
-	  lights++;
-	  tx.setLEDS(lights%2);
-	}
-	else if(ardCommand == '!'){
-	  tx.halt();
-	  break;
-	}
-	else tx.sendCommand(ardCommand, true);
-	//usleep(5000);
-	//tx.resetOrientation();  TEST IF THIS IS NEEDED, surely limits flight heavily    	
+      for(int i = 0;, i < 8; i++){
+	controllerCommand[i] = (int)holderChar;
       }
-      i++;
-      if(i == 16){
-	i = 0;
+      // 10 lights
+      if(conrollerCommand[8] == 8){
+	if(controllerCommand[4] == 1){
+	lights++;
+	tx.setLEDS(lights%2);
+	}
       }
+      // 9 ABORT
+      else if(controllerCommand[8] == 9){
+	if(controllerCommand[4] == 1){      
+	tx.halt();
+	flying = false;
+	break;
+	}
+      }
+      // R1 up
+      else if(ControllerCommand[8] == 6){
+	if(controllerCommand[4] == 1) tx.sendCommand('+');
+      }
+      // R2 down
+      else if(controllerCommand[8] == 7){
+	if(controllerCommand[4] == 1) tx.sendCommand('-');
+      }
+      // vertical axis pitch
+      else if(controllerCommand[8] == 4){
+	//backward
+	if(controllerCommand[4] == 1) tx.sendCommand('w');
+	//forward
+	else if(controllerCommand[4] == -1) tx.sendCommand('x');
+	//stop
+	else tx.setElevator(137);
+      }
+      // horizontal axis roll
+      else if(controllerCommand[8] == 4){
+	//left
+	if(controllerCommand[4] == 1) tx.sendCommand('a');
+	//right
+	else if(controllerCommand[4] == -1) tx.sendCommand('d');
+	//stop
+	else tx.setAileron(127);
+      }
+      // 4 turn left
+      else if(controllerCommand[8] == 3){
+	if(controllerCommand[4] == 1) tx.sendCommand('e');
+	else tx.sendCommand('q');
+      }
+      // 1 turn right
+      else if(controllerCommand[8] == 0){
+	if(controllerCommand[4] == 1) tx.sendCommand('q');
+	else tx.sendCommand('e');
+      }
+      else continue;
     }
   }
   return 0;
