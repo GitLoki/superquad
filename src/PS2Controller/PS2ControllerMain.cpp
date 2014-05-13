@@ -13,8 +13,8 @@ char getArdCommand(int controllerCommand){
   case 5: return 'e';
   case 6: return '+';
   case 7: return 'q';
-    //case Lights: return 'l';
-    //case Abort:  return '!'; 
+  case 8: return 'l';
+  case 9:  return '!'; 
     //unknown key resets orientation
   default: return ' ';
   }
@@ -44,7 +44,7 @@ int main (int argc, char** argv) {
     while(in_stream.get(holderChar)){
       if(i == 15){
 	controllerCommand = (int)holderChar;
-	cout << conrollerCommand << endl; // TO BE REMOVED
+	cout << controllerCommand << endl; // TO BE REMOVED
 	ardCommand = getArdCommand(controllerCommand);
 	if(ardCommand == 'l'){
 	  lights++;
