@@ -85,22 +85,22 @@ void Tx::setValues(int* _values) {
 void Tx::sendCommand(char com, bool verbose) {
   switch(com) {
   case 'd': // roll right
-    controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
+    controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 5 : 255; 
     break;
   case 'a': // roll left
-    controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 10 : 0; 
+    controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 5 : 0; 
     break;
   case 'w': // pitch forward
-    controls[ELEVATOR] += 10;
+    controls[ELEVATOR] += 5;
     break;
   case 'x': // pitch backward
-    controls[ELEVATOR] -= 10;
+    controls[ELEVATOR] -= 5;
     break;
   case 'q': // yaw right
-    controls[RUDDER] += 10;
+    controls[RUDDER] += 5;
     break;
   case 'e': // yaw left
-    controls[RUDDER] -= 10;
+    controls[RUDDER] -= 5;
     break;
   case '+': // thrust increase
     controls[THROTTLE] = controls[THROTTLE] <= 245 ? controls[THROTTLE] + 10 : 255; 

@@ -2,19 +2,19 @@
 CXX := g++
 CC := gcc
 DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS := -fPIC -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
+CFLAGS := -fPIC -m64 -g -Wall -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 \
 -D__linux `pkg-config --cflags opencv` `sdl2-config --cflags` -O3 \
 -m64 -pipe -D_REENTRANT -fPIE $(DEFINES)
-LIB :=  -L/usr/X11R6/lib64 -lQt5PrintSupport -lQt5Widgets -lQt5Gui -lQt5Core `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lGL
+LIB :=  -L/usr/X11R6/lib64 -lQt5PrintSupport -L/usr/lib/x86_64-linux-gnu -lQt5Widgets -lQt5Gui -lQt5Core `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect `sdl2-config --libs` -lpthread -lX11 -lGL
 TESTFLAGS := -fPIC -g -pg -fprofile-arcs -ftest-coverage -Wall \
 -DNON_MATLAB_PARSING -DMAX_EXT_API_CONNECTIONS=255 -D__linux \
 `pkg-config --cflags opencv` `sdl2-config --cflags`
 TESTLIB := `pkg-config --libs opencv` -lboost_system  -lncurses -lfreenect \
 `sdl2-config --libs` -lpthread -lX11 -lgcov -fprofile-arcs
-INC :=  -I/usr/share/qt5/mkspecs/linux-g++-64 -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets \
--I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I include \
--I/usr/include/boost -I/usr/local/include/libfreenect \
--Isrc/GUI -I/usr/include/qt5/QtPrintSupport
+INC :=  -I/usr/share/qt5/mkspecs/linux-g++-64 -I /usr/include/qt5 -I /usr/include/qt5/QtWidgets \
+-I /usr/include/qt5/QtGui -I /usr/include/qt5/QtCore -I include \
+-I /usr/include/boost -I /usr/local/include/libfreenect \
+-I src/GUI -I /usr/include/qt5/QtPrintSupport
 QMAKE := /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 
 # Directories:
@@ -41,13 +41,13 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp
 MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
 KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
 KINECTIMAGECAPTURESOURCES := $(SRCDIR)/Test/KinectImageCapture.cpp $(AUXSOURCES)
 TRACKINGTESTSOURCES := $(SRCDIR)/Test/TrackingTest.cpp $(AUXSOURCES)
-PIDTESTSOURCES := $(SRCDIR)/PID/PID.cpp $(AUXSOURCES)
+PIDTESTSOURCES := $(SRCDIR)/Test/PIDTest.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
@@ -80,7 +80,10 @@ $(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
-	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ -m64 
+	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ \
+	$(BUILDDIR)/GUI/qcustomplot.o \
+	$(BUILDDIR)/GUI/monitor.o \
+	$(BUILDDIR)/GUI/moc_qcustomplot.o \
 	$(BUILDDIR)/GUI/gui_interface.o \
 	$(BUILDDIR)/GUI/pollthread.o \
 	$(BUILDDIR)/GUI/moc_gui_interface.o \
