@@ -43,7 +43,7 @@ int main (int argc, char** argv) {
 	}
       }
       // R1 up
-      else if(ControllerCommand[8] == 6){
+      else if(controllerCommand[8] == 6){
 	if(controllerCommand[4] == 1) tx.sendCommand('+');
       }
       // R2 down
