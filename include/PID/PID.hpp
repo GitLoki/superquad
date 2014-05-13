@@ -24,7 +24,7 @@ const double XCENTRE = 378;
 const double YCENTRE = 263;
 const double ZCENTRE = 660;
 
-std::ofstream logfile;
+std::ofstream PIDlogfile;
 
 class PID {
 private:
@@ -49,6 +49,7 @@ public:
     void updateDestination(Location* _destination);
     int goToDestination(Location& _currentLocation);
     void halt();
+    void signalHandler(int signum );
 };
 
 #endif

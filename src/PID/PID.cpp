@@ -22,9 +22,9 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     destination.setValues(XCENTRE, YCENTRE, 900);
 
     // open logfile for logging, write heading
-    logfile.open ("logfile.txt");
-    logfile << "control values :: location\n";
-    logfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
+    PIDlogfile.open ("logfile.txt");
+    PIDlogfile << "control values :: location\n";
+    PIDlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
     
     previous_time = clock();
 
@@ -131,7 +131,7 @@ int PID::goToDestination(Location& _currentLocation) {
         control_vals[1] = STARTPOW;
     */
 
-    logfile << time_diff << "ms :: " 
+    PIDlogfile << time_diff << "ms :: " 
             << "[" << control_vals[2] << ", " 
 	    << control_vals[3] << ", " 
 	    << control_vals[0] << "] :: (" 
@@ -161,41 +161,14 @@ void PID::halt() {
     return;
 }
 
-void signalHandler( int signum )
+void PID::signalHandler( int signum )
 {
   std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
 
   //pid->halt();
-  logfile.close();
+  PIDlogfile.close();
 
   exit(signum);  
 
 }
 
-int main() {
-      
-    Location currentLocation, destination;
-    currentLocation.setValues(XCENTRE, YCENTRE, 0.0);
-    destination.setValues(XCENTRE, YCENTRE, 1400);
-
-    std::cout << "Initialising Kinect..." << std::endl;
-    Kinect* kinect = new Kinect;  
-    std::cout << "Kinect Initialised." << std::endl;
-    std::cout << "Initialising Transmitter..." << std::endl;
-    Tx* tx = new Tx;
-    std::cout << "Transmitter Initialised. Waiting for serial connection..." << std::endl;
-    usleep(1000000 * COUNTDOWN);
-
-    std::cout << "Waiting complete. Initiating automated control..." << std::endl;
-
-    PID* pid = new PID(kinect, tx);
-
-    // register signal SIGINT and signal handler  
-    signal(SIGINT, signalHandler);  
-
-    while (pid->goToDestination(currentLocation)) {
-      //usleep(1000000 / FPS);
-    }
-
-    return 0;
-}
