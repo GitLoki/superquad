@@ -31,7 +31,7 @@ int main (int argc, char** argv) {
 
   ifstream in_stream;
   in_stream.open("/dev/input/js0");
-  tx.setThrust(15);
+  tx.setThrust(100);
 
   // first 9x16 chars are junk
   for(int i = 0; i!=144; i++){
