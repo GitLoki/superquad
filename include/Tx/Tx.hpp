@@ -37,7 +37,7 @@ public:
 
   /* sends a command to the Arduino; set segfault to true for debugging 
      information (function expects ncurses mode) */
-  void sendCommand(char com, bool segfault);
+  void sendCommand(char com, bool segfault = false);
 
   // sets flips or LEDS on or off.
   void setLEDS(bool active);

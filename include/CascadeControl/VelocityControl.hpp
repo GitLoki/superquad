@@ -14,7 +14,7 @@ public:
     VelocityControl(Location _K, Location _snapLimit) :
                     K(_K), snapLimit(_snapLimit) {}
 
-  VelocityControl() : K(1.0, 1.0, 15.0), snapLimit(8, 8, 15) {};
+  VelocityControl() : K(0.1, -0.1, 1.0), snapLimit(5, 5, 15) {};
     
     void changeSetPoint(Location _setPoint);
 

@@ -20,7 +20,7 @@ private:
 
 	double oldTime, newTime, timeInterval;
 	int counter = 0;
-	int velocityFrequency = 5;
+	int velocityFrequency = 10;
 
 public:
 	CascadeControl(Location _startSettings);

@@ -97,7 +97,7 @@ void *contfun(void *argument){
 
     std::cout << "Initialising Control Structure..." << std::endl;
     CascadeControl* cc = new CascadeControl(trim);
-    Location setPoint(0, 0, 50);  
+    Location setPoint(0, 0, 5000);  
     cc->changeSetPoint(setPoint);
 
     std::cout << "Transmitter Initialised. Waiting for serial connection..." << std::endl;

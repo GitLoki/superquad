@@ -4,6 +4,7 @@ void AccelerationControl::changeSetPoint(Location _setPoint) {
     setPoint = _setPoint;
 }
 
+
 Location AccelerationControl::query(Location acceleration) {
 	
     Location delta_A = K * (setPoint - acceleration);

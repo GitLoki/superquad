@@ -17,7 +17,7 @@ public:
 
 //  currentAcceleration(_currentAcceleration), currentValue(_startPoint)
 
-  AccelerationControl(Location _startPoint): currentValue(_startPoint), K(5.0, 5.0, 5.0), jerkLimit(15, 15, 15) {};
+  AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
     
     void changeSetPoint(Location _setPoint);
 

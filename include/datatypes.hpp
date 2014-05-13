@@ -2,7 +2,8 @@
 #define DATATYPES_H
 
 #include <math.h>
-#include <QDebug>
+#include <iostream>
+//#include <QDebug>
 
 struct Location
 {

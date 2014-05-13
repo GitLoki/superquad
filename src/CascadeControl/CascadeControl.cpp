@@ -24,17 +24,21 @@ Location CascadeControl::query(Location newLocation) {
 	timeInterval = (newTime - oldTime) / CLOCKS_PER_SEC;
 	oldTime = newTime;
 
+
 	// calculate new velocity and acceleration
 	deltaL = currentLocation - oldLocation;
-	currentVelocity = deltaL / timeInterval;
+	currentVelocity = (0.5 * currentVelocity) + (0.5 * deltaL / timeInterval);
 	deltaV = currentVelocity - oldVelocity;
-	currentAcceleration = deltaV / timeInterval;
+	currentAcceleration = (0.5 * currentAcceleration) + (0.5 * deltaV / timeInterval);
+	std::cout << "Velocity: " << currentVelocity << std::endl
+	          << "Acceleration: " << currentAcceleration << std::endl;
 
 
 	if (counter % velocityFrequency == 0) {
 		accelerationSetPoint = velocityControl->query(currentVelocity);
 		accelerationControl->changeSetPoint(accelerationSetPoint);
 		counter = 0;
+		std::cout << "Acceleration setpoint: " << accelerationSetPoint << std::endl;
 	}
 
 	counter++;

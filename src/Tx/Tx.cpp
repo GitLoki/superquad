@@ -88,7 +88,7 @@ void Tx::setValues(int* _values) {
 
 /* sends a command to the Arduino; set segfault to true for debugging 
    information*/
-void Tx::sendCommand(char com, bool segfault = false) {
+void Tx::sendCommand(char com, bool segfault) {
   switch(com) {
   case 'd': // roll right
     controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
