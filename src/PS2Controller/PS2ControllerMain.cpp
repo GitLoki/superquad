@@ -54,7 +54,7 @@ int main (int argc, char** argv) {
 	  tx.halt();
 	  break;
 	}
-	else tx.sendCommand(ardCommand, true);
+	else tx.sendCommand(ardCommand, false);
 	//tx.resetOrientation();  TEST IF THIS IS NEEDED, surely limits flight heavily    	
       }
       i++;
