@@ -1,16 +1,17 @@
 #ifndef MONITOR_HPP
 #define MONITOR_HPP
 
-#include <vector>
 #include <pthread.h>
+
+#include "../datatypes.hpp"
 
 class Monitor {
 
 private:
 
     //shared variables
-    std::vector<float> target;
-    std::vector<float> location;
+    Location target;
+    Location location;
     bool lights;
     bool land_quad;
     bool emergency;
@@ -24,16 +25,16 @@ public:
     Monitor();
 
     //setters
-    void set_target(std::vector<float> &values);
-    void set_location(std::vector<float> &values);
+    void set_target(Location &values);
+    void set_location(Location &values);
     void lightswitch(bool set_to);
     void land();
     void stop();
     void snap(bool set_to);
 
     //getters
-    void get_target(std::vector<float> &values);
-    void get_location(std::vector<float> &values);
+    void get_target(Location &values);
+    void get_location(Location &values);
     bool get_light();
     bool get_land();
     bool get_stop();

@@ -1,29 +1,21 @@
 #include "../../include/Monitor/monitor.hpp"
 #include <iostream>
 
-//////To add a new shared variable//////
-
-//add private variable to (hpp)
-//create a mutex for that variable (hpp)
-//initialise that mutex in constructor (cpp)
-//create protected get & set functions as required (hpp & cpp)
-
-
 //constructor
-Monitor::Monitor(): target(3,0), location(3,0), lights(true), land_quad(false), emergency(false), snap_lim(false),
+Monitor::Monitor(): lights(true), land_quad(false), emergency(false), snap_lim(false),
     monitor_lock(PTHREAD_MUTEX_INITIALIZER)
     {};
 
 
 //setters
-void Monitor::set_target(std::vector<float> &values)
+void Monitor::set_target(Location &values)
 {
     pthread_mutex_lock (&monitor_lock);
     target = values;
     pthread_mutex_unlock (&monitor_lock);
 }
 
-void Monitor::set_location(std::vector<float> &values)
+void Monitor::set_location(Location &values)
 {
     pthread_mutex_lock (&monitor_lock);
     location = values;
@@ -61,14 +53,14 @@ void Monitor::snap(bool set_to)
 
 
 //getters
-void Monitor::get_target(std::vector<float> &values)
+void Monitor::get_target(Location &values)
 {
     pthread_mutex_lock (&monitor_lock);
     values = target;
     pthread_mutex_unlock (&monitor_lock);
 }
 
-void Monitor::get_location(std::vector<float> &values)
+void Monitor::get_location(Location &values)
 {
     pthread_mutex_lock (&monitor_lock);
     values = location;
