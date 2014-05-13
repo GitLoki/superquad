@@ -10,11 +10,28 @@
 GUI_interface::GUI_interface(Monitor *_mon) :
     mon(_mon),
     QMainWindow(),
-    ui(new Ui::GUI_interface)
+    ui(new Ui::GUI_interface),
+    valid_space(ZMIN, ZMAX)
 {
     ui->setupUi(this);
 
+    ui->spinBoxX->setMinimum(XMIN);
+    ui->spinBoxX->setMaximum(XMAX);
+    ui->spinBoxY->setMinimum(YMIN);
+    ui->spinBoxY->setMaximum(YMAX);
+    ui->spinBoxZ->setMinimum(ZMIN);
+    ui->spinBoxZ->setMaximum(ZMAX);
+
+    ui->scrollBarX->setMinimum(XMIN);
+    ui->scrollBarX->setMaximum(XMAX);
+    ui->scrollBarY->setMinimum(YMIN);
+    ui->scrollBarY->setMaximum(YMAX);
+    ui->scrollBarZ->setMinimum(ZMIN);
+    ui->scrollBarZ->setMaximum(ZMAX);
+
     qRegisterMetaType<Location>("Location");
+
+    ui->WarnLabel->setStyleSheet("QLabel { color : red; }");
 
     //connect scrollbars and spinboxes
     connect(ui->scrollBarX,SIGNAL(valueChanged(int)),ui->spinBoxX,SLOT(setValue(int)));
@@ -121,6 +138,8 @@ void GUI_interface::target_upd_x(int newval)
 {
     target_buff.X = newval;
     plot_Target(target_buff);
+
+    valid_warning(!valid_space.inside(target_buff));
 }
 
 //SLOT: target y value changed
@@ -128,6 +147,8 @@ void GUI_interface::target_upd_y(int newval)
 {
     target_buff.Y = newval;
     plot_Target(target_buff);
+
+    valid_warning(!valid_space.inside(target_buff));
 }
 
 //SLOT: target z value changed
@@ -135,9 +156,9 @@ void GUI_interface::target_upd_z(int newval)
 {
     target_buff.Z = newval;
     plot_Target(target_buff);
+
+    valid_warning(!valid_space.inside(target_buff));
 }
-
-
 
 /*************************
  *-----PLOT & TARGET-----*
@@ -155,8 +176,8 @@ void GUI_interface::init_Plot()
     ui->Plot->graph(1)->setLineStyle(QCPGraph::lsNone);
 
     //set range
-    ui->Plot->xAxis->setRange(-3000, 3000);
-    ui->Plot->yAxis->setRange(-3000, 3000);
+    ui->Plot->xAxis->setRange(ui->spinBoxX->minimum(), ui->spinBoxX->maximum());
+    ui->Plot->yAxis->setRange(ui->spinBoxY->minimum(), ui->spinBoxY->maximum());
 
     //set plot style
     locationStyle.setShape(QCPScatterStyle::ssDisc);
@@ -194,7 +215,8 @@ void GUI_interface::plot_Target(Location target)
 }
 
 //Update the displayed location on the plot
-void GUI_interface::plot_Location(Location location){
+void GUI_interface::plot_Location(Location location)
+{
 
     //setData requires a vector even for a single point
     QVector<double> x(1), y(1);
@@ -232,4 +254,11 @@ void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
         ui->spinBoxZ->setValue(ui->spinBoxZ->minimum());
 }
 
-
+//Ensure that target is visible by kinect
+void GUI_interface::valid_warning(bool warn)
+{
+    if(warn)
+        ui->WarnLabel->setText("WARNING: INVALID TARGET");
+    else
+        ui->WarnLabel->setText("Fine");
+}

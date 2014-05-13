@@ -1,5 +1,7 @@
 #include "../include/datatypes.hpp"
 
+Location::Location():X(0),Y(0),Z(0){};
+
 void Location::setValues(double _x, double _y, double _z) {
     X = _x;
     Y = _y;
@@ -81,7 +83,8 @@ bool Location::operator!=(const Location& rhs) const {
 
 
 //Array subscription
-double& Location::operator[](int idx){
+double& Location::operator[](int idx)
+{
     switch(idx){
     case 0:
         return X;
@@ -95,7 +98,8 @@ double& Location::operator[](int idx){
     }
 }
 
-double Location::operator[](int idx) const{
+double Location::operator[](int idx) const
+{
     switch(idx){
     case 0:
         return X;
@@ -107,4 +111,83 @@ double Location::operator[](int idx) const{
         return Z;
         break;
     }
+    return 0;
+}
+
+//multiply by a double
+Location& Location::operator*=(double d)
+{
+    X *= d;
+    Y *= d;
+    Z *= d;
+
+    return *this;
+}
+
+Location operator*(Location l, double d)
+{
+    l *= d;
+    return l;
+}
+
+Location operator*(double d,Location l)
+{
+    l *= d;
+    return l;
+}
+
+//divide by a double
+Location& Location::operator/=(double d)
+{
+    X /= d;
+    Y /= d;
+    Z /= d;
+
+    return *this;
+}
+
+Location operator/(Location l, double d)
+{
+    l /= d;
+    return l;
+}
+
+Location operator/(double d,Location l)
+{
+    l /= d;
+    return l;
+}
+
+
+
+kinect_frustum::kinect_frustum(double _near, double _far)
+{
+    near = _near;
+    far = _far;
+    ver_angle = (43.0/2.0)*(M_PI/180.0);
+    hor_angle = (57.0/2.0)*(M_PI/180.0);
+
+    left = near*tan(hor_angle);
+    right = -left;
+    top = near*tan(ver_angle);
+    bottom = -top;
+}
+
+bool kinect_frustum::inside(Location p)
+{
+
+    if(p.Z < near || p.Z > far)
+        return false;
+
+    double bottom_dot, top_dot, left_dot, right_dot;
+
+    //dot products with plane normals
+    bottom_dot = (p.Y*near - p.Z*bottom);
+    top_dot = (p.Z*top - p.Y*near);
+    left_dot = (p.Z*left - p.X*near);
+    right_dot = (p.X*near - p.Z*right);
+
+    if(bottom_dot < 0 || top_dot < 0 || left_dot < 0 || right_dot < 0)
+        return false;
+    return true;
 }

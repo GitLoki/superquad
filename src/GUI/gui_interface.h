@@ -6,7 +6,12 @@
 #include "qcustomplot.h"
 #include "../../include/datatypes.hpp"
 
-
+const int XMIN = -1000;
+const int XMAX = 1000;
+const int YMIN = -1000;
+const int YMAX = 1000;
+const int ZMIN = 50;
+const int ZMAX = 2500;
 
 namespace Ui {
 class GUI_interface;
@@ -21,6 +26,7 @@ private:
     Monitor* mon;
     QCPScatterStyle locationStyle;
     QCPScatterStyle targetStyle;
+    kinect_frustum valid_space;
 
     //vector to hold values in GUI, as monitor doesn't auto-update
     Location target_buff;
@@ -29,6 +35,7 @@ private:
     void init_Plot();
     void plot_Location(Location location);
     void plot_Target(Location target);
+    void valid_warning(bool warn);
 
 public:
     GUI_interface(Monitor *_mon);
