@@ -6,7 +6,10 @@
 #include <QDebug>
 
 
-//constructor
+/***********************
+ *-----CONSTRUCTOR-----*
+ ***********************/
+
 GUI_interface::GUI_interface(Monitor *_mon) :
     QMainWindow(0),
     ui(new Ui::GUI_interface),
@@ -73,6 +76,7 @@ GUI_interface::GUI_interface(Monitor *_mon) :
 
     thread->start();
 }
+
 
 //destructor
 GUI_interface::~GUI_interface()
@@ -262,8 +266,13 @@ void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
 //Ensure that target is visible by kinect
 void GUI_interface::valid_warning(bool warn)
 {
-    if(warn)
+    if(warn){
         ui->WarnLabel->setText("WARNING: INVALID TARGET");
-    else
+        if (ui->ButtonUpdateValues->isEnabled())
+            ui->ButtonUpdateValues->setEnabled(false);
+    } else {
         ui->WarnLabel->setText("");
+        if (!(ui->ButtonUpdateValues->isEnabled()))
+            ui->ButtonUpdateValues->setEnabled(true);
+    }
 }
