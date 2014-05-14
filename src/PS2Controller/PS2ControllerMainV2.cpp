@@ -19,7 +19,7 @@ int main (int argc, char** argv) {
 
   ifstream in_stream;
   in_stream.open("/dev/input/js0");
-  tx.setThrust(80);
+  tx.setThrust(50);
 
   // first 9x16 chars are junk
   for(int i = 0; i!=144; i++){ 
@@ -49,58 +49,48 @@ int main (int argc, char** argv) {
 	}
 	break;
       case 6:
-	//R1 up
+	// R1 up
 	if(controllerCommand[4] == 1) tx.sendCommand('+');
-	
+	break;
 	// R2 down
       case 7:
 	if(controllerCommand[4] == 1) tx.sendCommand('-');
        	break;
 	// Left stick, vertical axis, pitch
       case 1:
-	//stop
-	if(controllerCommand[5] == 0) elevator = 137;
-	//forward
-	else if(controllerCommand[5] > 0) elevator = 137 + (10*((controllerCommand[5]/127)*100));
-	//backwards
-	else elevator = 137 + (10*((controllerCommand[5]/128)*100));
-	tx.setElevator(elevator);
-	break;
-	// Left stick, horizontal axis roll
+          if(controllerCommand[4] == 0) elevator = 137;
+	  //forwards
+	  else if(controllerCommand[5] < 0) elevator = 137 - (((controllerCommand[5]/128)*100)/4);
+	  //backwards
+	  else elevator = 137 + (((controllerCommand[5]/127)*100)/4);
+	  tx.setElevator(elevator);
+	  break;
+	  // Left stick, horizontal axis roll
       case 0:
 	if(controllerCommand[6] == 2){    //left stick
-	//stop
-	  if(controllerCommand[5] == 0) aileron = 127;
-	//left 
-	  if(controllerCommand[5] < 0) aileron = 127 + (10*((controllerCommand[5]/128)*100));
-	//right
-	  else  aileron += 127 + (10*((controllerCommand[5]/127)*100));
+	  
+	  if(controllerCommand[4] == 0) aileron = 127;
+	  //rol left
+	  else if(controllerCommand[5] < 0) aileron = 127 - ((controllerCommand[5]/128)*100/4);
+	  //roll right
+	  else aileron = 127 + ((controllerCommand[5]/128)*100/4);
 	  tx.setAileron(aileron);
 	  break;
 	}
-	else{                           //right stick
-	  //stop 
-	  if(controllerCommand[5] == 0) rudder = 137;
-	  //turn right
-	else rudder = 137 + (10*((controllerCommand[5]/127)*100));
-	  tx.setRudder(rudder);
-	  break;
-	}
-	// Right stick, horizontal axis
-      case 3:
-	//stop 
-	if(controllerCommand[5] == 0) rudder = 137;
-	// turn left
-	else rudder = 137 + (10*((controllerCommand[5]/128)*100));
+   	// Right stick, horizontal axis
+      case 2:
+	//turn right
+	if(controllerCommand[4] == 0) rudder = 137;
+     	else if(controllerCommand[5] > 0) rudder = 137 + ((controllerCommand[5]/127)*100);
+	else rudder = 137 - ((controllerCommand[5]/128)*100);
 	tx.setRudder(rudder);
 	break;
-
       default: continue;
       }  
     }
   }
   return 0;
 }
-  
+
       
 
