@@ -68,14 +68,24 @@ int main (int argc, char** argv) {
 	break;
 	// Left stick, horizontal axis roll
       case 0:
+	if(controllerCommand[6] == 2){    //left stick
 	//stop
-	if(controllerCommand[5] == 0) aileron = 127;
+	  if(controllerCommand[5] == 0) aileron = 127;
 	//left 
-	if(controllerCommand[5] < 0) aileron = 127 + (10*((controllerCommand[5]/128)*100));
+	  if(controllerCommand[5] < 0) aileron = 127 + (10*((controllerCommand[5]/128)*100));
 	//right
-	else  aileron += 127 + (10*((controllerCommand[5]/127)*100));
-       	tx.setAileron(aileron);
-	break;
+	  else  aileron += 127 + (10*((controllerCommand[5]/127)*100));
+	  tx.setAileron(aileron);
+	  break;
+	}
+	else{                           //right stick
+	  //stop 
+	  if(controllerCommand[5] == 0) rudder = 137;
+	  //turn right
+	else rudder = 137 + (10*((controllerCommand[5]/127)*100));
+	  tx.setRudder(rudder);
+	  break;
+	}
 	// Right stick, horizontal axis
       case 3:
 	//stop 
@@ -84,13 +94,7 @@ int main (int argc, char** argv) {
 	else rudder = 137 + (10*((controllerCommand[5]/128)*100));
 	tx.setRudder(rudder);
 	break;
-      case 1:
-	//stop 
-	if(controllerCommand[5] == 0) rudder = 137;
-	//turn right
-	else rudder = 137 + (10*((controllerCommand[5]/127)*100));
-	tx.setRudder(rudder);
-	break;
+
       default: continue;
       }  
     }
