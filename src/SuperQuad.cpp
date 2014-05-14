@@ -1,4 +1,3 @@
-//QT includes
 #include "GUI/gui_interface.h"
 #include <QApplication>
 #include <QHBoxLayout>
@@ -9,7 +8,6 @@
 #include "GUI/pollthread.h"
 #include "../include/Monitor/monitor.hpp"
 #include "../include/config.hpp"
-
 #include <iostream>
 #include "../include/datatypes.hpp"
 #include "../include/Tx/Tx.hpp"
@@ -28,13 +26,25 @@
 
 using namespace std;
 
+// null location object for testing kinect results against
+Location nullLoc(0,0,0);
+
+// set point for velocity calibration
+Location v_setPoint(0, 0, 10);
+
+// data objects for velocity control
+Location v_K(0.1, -0.1, 1.0);
+Location v_snapLimit(5, 5, 15);
+
+// data objects for acceleration control
+Location a_K(0.1, 0.1, 0.5);
+Location a_jerkLimit(5, 5, 15);
 
 struct argstruct {
     int argcs;
     char **argvs;
     Monitor *m;
 };
-
 
 void *contfun(void *argument);
 
@@ -83,19 +93,20 @@ void *contfun(void *argument){
     std::cout << "Initialising Kinect..." << std::endl;
     Kinect* kinect = new Kinect;  
     std::cout << "Kinect Initialised." << std::endl;
-
+    
     std::cout << "Initialising Transmitter..." << std::endl;
-
+    Tx* tx = new Tx;
     Location trim;
     tx->getValues(&trim);
 
     std::cout << "Initialising Control Structure..." << std::endl;
-    CascadeControl* cascadeControl = new CascadeControl(trim);
+    CascadeControl* cascadeControl = new CascadeControl(trim, v_snapLimit, v_K,
+                                                        a_jerkLimit, a_K);
     cascadeControl->changeVelocitySetPoint(v_setPoint);
 
     std::cout << "Transmitter Initialised. Counting down..." << std::endl;
     for ( int i = COUNTDOWN ; i >= 0 ; i-- ) {
-        std::cout << i << "  ";
+        std::cout << i << std::endl;
         usleep(ONE_SECOND);
     }
     std::cout << std::endl << "Liftoff" << std::endl;
@@ -108,7 +119,7 @@ void *contfun(void *argument){
       while (currentLocation == nullLoc);
 
       // query 
-      flightVariables = cascadeControl->query(currentLocation);
+      flightVariables = cascadeControl->query(currentLocation, v_snapLimit);
       tx->setValues(flightVariables);
 
       // Log time and settings for diagnostic reasons

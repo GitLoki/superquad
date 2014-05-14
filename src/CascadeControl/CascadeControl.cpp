@@ -1,6 +1,7 @@
 #include "../../include/CascadeControl/CascadeControl.hpp"
 
-CascadeControl::CascadeControl(Location _startSettings) {
+CascadeControl::CascadeControl(Location _startSettings, Location v_snapLimit, Location v_K,
+                               Location a_jerkLimit, Location a_K) {
 	accelerationControl = new AccelerationControl(_startSettings, a_K, a_jerkLimit);
 	velocityControl = new VelocityControl(v_K, v_snapLimit);
 	startSettings = _startSettings;
@@ -11,7 +12,7 @@ CascadeControl::~CascadeControl() {
 	delete velocityControl;
 }
 
-Location CascadeControl::query(Location newLocation) {
+Location CascadeControl::query(Location newLocation, Location v_snapLimit) {
 	oldLocation = currentLocation;
 	currentLocation = newLocation;
 
@@ -40,7 +41,7 @@ Location CascadeControl::query(Location newLocation) {
 
 
 	if (counter % velocityFrequency == 0) {
-		accelerationSetPoint = velocityControl->query(currentVelocity);
+	         accelerationSetPoint = velocityControl->query(currentVelocity, v_snapLimit);
 		accelerationControl->changeSetPoint(accelerationSetPoint);
 		counter = 0;
 		std::cout << "Acceleration setpoint: " << accelerationSetPoint << std::endl;

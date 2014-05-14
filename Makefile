@@ -120,6 +120,10 @@ $(PIDTESTTARGET): $(PIDTESTOBJECTS)
 	@echo " $(CXX) $^ -o $(PIDTESTTARGET) $(LIB)"; $(CXX) $^ -o \
 $(TESTDIR)/$(PIDTESTTARGET) $(LIB)
 
+#cascade: $(SRCDIR)/CascadeControl/CascadeControl.cpp include/CascadeControl/CascadeControl.hpp
+#	$$(CXX) $(CFLAGS) $(INC) -o $(BUILDDIR)/CascadeControl/CascadeControl.o -c $(SRCDIR)/CascadeControl/CascadeControl.cpp
+#	$(MAKE) superquad
+
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)
 	@mkdir -p $(BUILDDIR)/PhysicsModel
