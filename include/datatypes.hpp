@@ -2,7 +2,8 @@
 #define DATATYPES_H
 
 #include <math.h>
-#include <QDebug>
+#include <iostream>
+//#include <QDebug>
 
 struct Location
 {
@@ -11,6 +12,10 @@ struct Location
 
     //constructor
     Location();
+    Location(double x, double y, double z);
+
+    // note - maximum is required to hold positive values
+    void limit(Location maximum);
 
     //arithmetic operators
     Location& operator+=(const Location& rhs);
@@ -30,8 +35,21 @@ struct Location
     Location& operator*=(double d);
     Location& operator/=(double d);
 
+  
+
 };
 
+
+Location operator+(Location lhs, const Location& rhs);
+Location operator-(Location lhs, const Location& rhs);
+Location operator*(Location lhs, const Location& rhs);
+Location operator/(Location lhs, const Location& rhs);
+
+Location operator*(Location l, double d);
+Location operator*(double d,Location l);
+Location operator/(Location l, double d);
+
+std::ostream& operator<<(std::ostream& os, const Location& l);
 
 struct kinect_frustum
 {

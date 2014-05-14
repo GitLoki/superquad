@@ -74,33 +74,39 @@ void Tx::getValues(int* _values) {
     _values[i-1] = controls[i];
 };
 
+void Tx::getValues(Location* values) {
+  values->X = controls[AILERON];
+  values->Y = controls[ELEVATOR];
+  values->Z = controls[THROTTLE];
+}
+
 void Tx::setValues(int* _values) {
   for (int i = THROTTLE ; i <= ELEVATOR ; i++)
       controls[i] = _values[i-1];
   sendValues();
 };
 
-/* sends a command to the Arduino; set verbose to true for debugging 
+/* sends a command to the Arduino; set segfault to true for debugging 
    information*/
-void Tx::sendCommand(char com, bool verbose) {
+void Tx::sendCommand(char com, bool segfault) {
   switch(com) {
   case 'd': // roll right
-    controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 5 : 255; 
+    controls[AILERON] = controls[AILERON] <= 245 ? controls[AILERON] + 10 : 255; 
     break;
   case 'a': // roll left
-    controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 5 : 0; 
+    controls[AILERON] = controls[AILERON] >= 10 ? controls[AILERON] - 10 : 0; 
     break;
   case 'w': // pitch forward
-    controls[ELEVATOR] += 5;
+    controls[ELEVATOR] += 10;
     break;
   case 'x': // pitch backward
-    controls[ELEVATOR] -= 5;
+    controls[ELEVATOR] -= 10;
     break;
   case 'q': // yaw right
-    controls[RUDDER] += 5;
+    controls[RUDDER] += 10;
     break;
   case 'e': // yaw left
-    controls[RUDDER] -= 5;
+    controls[RUDDER] -= 10;
     break;
   case '+': // thrust increase
     controls[THROTTLE] = controls[THROTTLE] <= 245 ? controls[THROTTLE] + 10 : 255; 
@@ -115,10 +121,17 @@ void Tx::sendCommand(char com, bool verbose) {
     break;
   }
 
-  if(verbose)
+  if(segfault)
     printw("Char input: %d = %c \n", com, com);
 
-  sendValues(verbose);
+  sendValues(segfault);
+}
+
+void Tx::setValues(Location values) {
+    controls[AILERON] = values.X;
+    controls[ELEVATOR] = values.Y;
+    controls[THROTTLE] = values.Z;
+    sendValues(false);
 }
 
 void Tx::setLEDS(bool active) {
@@ -143,7 +156,7 @@ void Tx::setFlips(bool active) {
     port->write_some(boost::asio::buffer(settings));
 } 
 
-void Tx::sendValues(bool verbose) {
+void Tx::sendValues(bool segfault) {
     // ensure all values are legal
     // N.B. avoid using three, for it is cursed. (reserved as control value)
     // Deprecated - santising input inside sendCommand function instead
@@ -164,7 +177,7 @@ void Tx::sendValues(bool verbose) {
       }
   }
 
-    if(verbose) {
+    if(segfault) {
 	int bytes = port->write_some(boost::asio::buffer(controls));
 
 	printw("Controls: \n");

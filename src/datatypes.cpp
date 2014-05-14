@@ -2,6 +2,10 @@
 
 Location::Location():X(0),Y(0),Z(0){};
 
+Location::Location(double x, double y, double z) {
+    setValues(x, y, z);
+}
+
 void Location::setValues(double _x, double _y, double _z) {
     X = _x;
     Y = _y;
@@ -71,6 +75,9 @@ Location operator/(Location lhs, const Location& rhs)
   lhs /= rhs;
   return lhs;
 }
+
+
+
 
 //Comparison
 bool Location::operator==(const Location& rhs) const {
@@ -152,12 +159,30 @@ Location operator/(Location l, double d)
     return l;
 }
 
-Location operator/(double d,Location l)
-{
-    l /= d;
-    return l;
+// note - maximum is required to hold positive values
+void Location::limit(Location maximum) {
+    if (this->X > maximum.X)
+        this->X = maximum.X;
+    if (this->X < (maximum.X * -1))
+        this->X = maximum.X * -1;
+
+    if (this->Y > maximum.Y)
+        this->Y = maximum.Y;
+    if (this->Y < (maximum.Y * -1))
+        this->Y = maximum.Y * -1;
+
+    if (this->Z > maximum.Z)
+        this->Z = maximum.Z;
+    if (this->Z < (maximum.Z * -1))
+        this->Z = maximum.Z * -1;
 }
 
+
+std::ostream& operator<<(std::ostream& os, const Location& l)
+{
+  os << "[" << l.X << "," << l.Y << "," << l.Z << "]";
+  return os;
+}
 
 
 kinect_frustum::kinect_frustum(double _near, double _far)

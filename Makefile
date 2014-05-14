@@ -33,6 +33,7 @@ PIDTESTTARGET := pidtest
 TESTTARGETS = $(MODELTESTTARGET) $(KINECTTESTTARGET) \
 $(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET) $(PIDTEST)
 
+# Option for testing;
 ifneq (,$(findstring $(MAKECMDGOALS),$(TESTTARGETS)))
 	CFLAGS = $(TESTFLAGS) 
 	LIB = $(TESTLIB)
@@ -41,7 +42,7 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp
 MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
 KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
@@ -74,7 +75,6 @@ PIDTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
-
 
 # Rules:
 $(MAINTARGET): $(MAINOBJECTS)
@@ -128,6 +128,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/Controller
 	@mkdir -p $(BUILDDIR)/Test
 	@mkdir -p $(BUILDDIR)/PID
+	@mkdir -p $(BUILDDIR)/CascadeControl
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) \
 $(INC) -c -o $@ $<
 
