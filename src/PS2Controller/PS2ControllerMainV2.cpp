@@ -11,7 +11,7 @@ int main (int argc, char** argv) {
   Tx tx;
   char holderChar;
   int controllerCommand[8];
-  int lights = 0;
+  int lights = 1;
   bool flying = true;
   int aileron = 127;
   int elevator = 137;

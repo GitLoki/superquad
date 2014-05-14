@@ -1,6 +1,7 @@
 #ifndef ACCEL_CONTROL_HPP
 #define ACCEL_CONTROL_HPP
 #include "../datatypes.hpp"
+#include "../include/config.hpp"
 
 class AccelerationControl {
 
@@ -17,7 +18,7 @@ public:
 
 //  currentAcceleration(_currentAcceleration), currentValue(_startPoint)
 
-  AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
+  //AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
     
     void changeSetPoint(Location _setPoint);
 

@@ -1,6 +1,7 @@
 #ifndef CASCADE_CONTROL_HPP
 #define CASCADE_CONTROL_HPP
 #include "../datatypes.hpp"
+#include "../config.hpp"
 #include "VelocityControl.hpp"
 #include "AccelerationControl.hpp"
 #include <ctime>
@@ -10,7 +11,7 @@ private:
 	VelocityControl* velocityControl;
 	AccelerationControl* accelerationControl;
 
-        Location currentLocation, oldLocation, 
+    Location currentLocation, oldLocation, 
 	  currentVelocity, oldVelocity, 
 	  currentAcceleration, oldAcceleration, 
 	  startSettings, currentSettings,
@@ -23,9 +24,11 @@ private:
 	int velocityFrequency = 10;
 
 public:
-	CascadeControl(Location _startSettings);
-	Location query(Location newLocation);
-        void changeSetPoint(Location newSetPoint);
+        CascadeControl(Location _startSettings, Location v_snapLimit, Location v_K,
+		       Location a_jerkLimit, Location a_K);
+	~CascadeControl();
+  Location query(Location newLocation, Location v_snapLimit);
+        void changeVelocitySetPoint(Location newSetPoint);
 };
 
 #endif
