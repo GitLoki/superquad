@@ -8,9 +8,9 @@
 
 //constructor
 GUI_interface::GUI_interface(Monitor *_mon) :
-    mon(_mon),
     QMainWindow(),
     ui(new Ui::GUI_interface),
+    mon(_mon),
     valid_space(ZMIN, ZMAX)
 {
     ui->setupUi(this);
@@ -125,6 +125,7 @@ void GUI_interface::on_ButtonSTOP_clicked()
 void GUI_interface::on_ButtonLights_toggled(bool checked)
 {
     mon->lightswitch(checked);
+
 }
 
 //SLOT: "Advanced mode" clicked
@@ -260,5 +261,5 @@ void GUI_interface::valid_warning(bool warn)
     if(warn)
         ui->WarnLabel->setText("WARNING: INVALID TARGET");
     else
-        ui->WarnLabel->setText("Fine");
+        ui->WarnLabel->setText("");
 }

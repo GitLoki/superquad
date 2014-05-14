@@ -160,10 +160,13 @@
    <property name="geometry">
     <rect>
      <x>520</x>
-     <y>380</y>
+     <y>370</y>
      <width>131</width>
      <height>61</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>Lights</string>
@@ -179,7 +182,7 @@
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>380</y>
+     <y>370</y>
      <width>131</width>
      <height>61</height>
     </rect>
@@ -244,6 +247,11 @@
      <width>141</width>
      <height>61</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 0, 0);
+font: 75 12pt &quot;Ubuntu&quot;;
+color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
     <string>EMERGENCY STOP</string>
@@ -434,7 +442,7 @@
   <widget class="QPushButton" name="quitButton">
    <property name="geometry">
     <rect>
-     <x>810</x>
+     <x>780</x>
      <y>530</y>
      <width>41</width>
      <height>41</height>
@@ -470,17 +478,17 @@
   <widget class="QLabel" name="WarnLabel">
    <property name="geometry">
     <rect>
-     <x>496</x>
+     <x>500</x>
      <y>310</y>
-     <width>341</width>
-     <height>20</height>
+     <width>331</width>
+     <height>17</height>
     </rect>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignHCenter|Qt::AlignTop</set>
    </property>
   </widget>
  </widget>
