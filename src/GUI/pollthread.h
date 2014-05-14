@@ -14,6 +14,8 @@ class PollThread : public QObject
 private:
     Monitor* mon;
 
+    void delay(int ms);
+
 public slots:
     void poll();
 

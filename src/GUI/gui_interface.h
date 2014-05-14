@@ -5,7 +5,9 @@
 #include "../../include/Monitor/monitor.hpp"
 #include "qcustomplot.h"
 #include "../../include/datatypes.hpp"
+#include "pollthread.h"
 
+//visible range
 const int XMIN = -1000;
 const int XMAX = 1000;
 const int YMIN = -1000;
@@ -17,19 +19,30 @@ namespace Ui {
 class GUI_interface;
 }
 
+
 class GUI_interface : public QMainWindow
 {
+
     Q_OBJECT
     
 private:
     Ui::GUI_interface *ui;
     Monitor* mon;
+
+    //required for multithreading
+    QThread *thread;
+    PollThread *poll;
+
+    //style for plot
     QCPScatterStyle locationStyle;
     QCPScatterStyle targetStyle;
+
+    //valid target locations
     kinect_frustum valid_space;
 
     //vector to hold values in GUI, as monitor doesn't auto-update
     Location target_buff;
+
 
     //plotting functions
     void init_Plot();
@@ -38,6 +51,7 @@ private:
     void valid_warning(bool warn);
 
 public:
+    //constructor/destructor
     GUI_interface(Monitor *_mon);
     ~GUI_interface();
 

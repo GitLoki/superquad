@@ -8,13 +8,15 @@
 
 //constructor
 GUI_interface::GUI_interface(Monitor *_mon) :
-    QMainWindow(),
+    QMainWindow(0),
     ui(new Ui::GUI_interface),
     mon(_mon),
     valid_space(ZMIN, ZMAX)
 {
     ui->setupUi(this);
+    qRegisterMetaType<Location>("Location");
 
+    //set spinbox/scrollbar ranges
     ui->spinBoxX->setMinimum(XMIN);
     ui->spinBoxX->setMaximum(XMAX);
     ui->spinBoxY->setMinimum(YMIN);
@@ -29,9 +31,9 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     ui->scrollBarZ->setMinimum(ZMIN);
     ui->scrollBarZ->setMaximum(ZMAX);
 
-    qRegisterMetaType<Location>("Location");
-
+    //set warning label (invalid location) to red text
     ui->WarnLabel->setStyleSheet("QLabel { color : red; }");
+
 
     //connect scrollbars and spinboxes
     connect(ui->scrollBarX,SIGNAL(valueChanged(int)),ui->spinBoxX,SLOT(setValue(int)));
@@ -47,34 +49,36 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     connect(ui->scrollBarY,SIGNAL(valueChanged(int)),this,SLOT(target_upd_y(int)));
     connect(ui->scrollBarZ,SIGNAL(valueChanged(int)),this,SLOT(target_upd_z(int)));
 
-    //buttons
+    //connect quit button
     connect(ui->quitButton,SIGNAL(clicked()),qApp,SLOT(quit()));
 
     //connect clicking on plot
     connect(ui->Plot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(plotMousePress(QMouseEvent*)));
 
-    //connect mousewheel to z
+    //connect mousewheel on plot
     connect(ui->Plot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(plotWheel(QWheelEvent*)));
+
 
     //intialise the plot
     init_Plot();
 
-    //set up polling thread
-    QThread *thread = new QThread(this);
-    PollThread *poll = new PollThread(mon);
+    //set up polling thread that reads and updates quadcopter location
+    thread = new QThread(this);
+    poll = new PollThread(mon);
     poll->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), poll, SLOT(poll()));
     connect(poll, SIGNAL(setNewLoc(Location)), this, SLOT(updateLoc(Location)));
-    connect(thread, SIGNAL(destroyed()), poll, SLOT(deleteLater()));
+    //connect(thread, SIGNAL(destroyed()), poll, SLOT(deleteLater()));
 
     thread->start();
-
 }
 
 //destructor
 GUI_interface::~GUI_interface()
 {
+    delete thread;
+    delete poll;
     delete ui;
 }
 
