@@ -4,6 +4,7 @@
 #include "../../include/Tx/Tx.hpp"
 using namespace std;
 
+//MAKE SURE ANALOG IS LIGHT UP!!!!!
 
 int main (int argc, char** argv) {
 
@@ -32,81 +33,70 @@ int main (int argc, char** argv) {
 	in_stream.get(holderChar);
 	controllerCommand[i] = (int)holderChar;
       }
-      for(int i = 0; i < 8; i++) cout << controllerCommand[i];
-      cout << endl;
-      // 10 lights
-      if(controllerCommand[7] == 8){
+      switch(controllerCommand[7]){
+	// 10 lights
+      case 8:
 	if(controllerCommand[4] == 1){
-	lights++;
-	tx.setLEDS(lights%2);
+	  lights++;
+	  tx.setLEDS(lights%2);
 	}
-      }
-      // 9 ABORT
-      else if(controllerCommand[7] == 9){
-	if(controllerCommand[4] == 1){      
-	tx.halt();
-	flying = false;
 	break;
+      case 9:
+	// 9 ABORT
+	if(controllerCommand[4] == 1){      
+	  tx.halt();
+	  flying = false;
 	}
-      }
-      // R1 up
-      else if(controllerCommand[7] == 6){
+	break;
+      case 6:
+	//R1 up
 	if(controllerCommand[4] == 1) tx.sendCommand('+');
-      }
-      // R2 down
-      else if(controllerCommand[7] == 7){
-	  if(controllerCommand[4] == 1) tx.sendCommand('-');
-      }
-      // Left stick, vertical axis, pitch
-      else if(controllerCommand[7] == 1){
-	//backward
-	if(controllerCommand[4] == 1){
-	  // ouput is unsigned 8 bit ints, negative output for high 
-	  // pressure, positive for low
-	  elevator -= 10 * ((127-abs(controllerCommand[1]))/255);
-	}
+	
+	// R2 down
+      case 7:
+	if(controllerCommand[4] == 1) tx.sendCommand('-');
+       	break;
+	// Left stick, vertical axis, pitch
+      case 1:
+	//stop
+	if(controllerCommand[5] == 0) elevator = 137;
 	//forward
-	else if(controllerCommand[4] == -1){
-	  elevator += 10 * ((127-abs(controllerCommand[1]))/255);
-	}
-	//stop
-	else{
-	  elevator = 137;
-	}
+	else if(controllerCommand[5] > 0) elevator = 137 + (10*((controllerCommand[5]/127)*100));
+	//backwards
+	else elevator = 137 + (10*((controllerCommand[5]/128)*100));
 	tx.setElevator(elevator);
-      }
-      // Left stick, horizontal axis roll
-      else if(controllerCommand[7] == 0){
-	//left
-	if(controllerCommand[4] == 1){
-	  aileron -= 10 * ((127-abs(controllerCommand[1]))/255);
-	}
-	//right
-	else if(controllerCommand[4] == -1){
-	  aileron += 10 * ((127-abs(controllerCommand[1]))/255);
-	}
+	break;
+	// Left stick, horizontal axis roll
+      case 0:
 	//stop
-	else aileron = 127;
-	tx.setAileron(aileron);
-      }
-      //  Right stick, horizontal axis
-      else if(controllerCommand[7] == 3){
+	if(controllerCommand[5] == 0) aileron = 127;
+	//left 
+	if(controllerCommand[5] < 0) aileron = 127 + (10*((controllerCommand[5]/128)*100));
+	//right
+	else  aileron += 127 + (10*((controllerCommand[5]/127)*100));
+       	tx.setAileron(aileron);
+	break;
+	// Right stick, horizontal axis
+      case 3:
+	//stop 
+	if(controllerCommand[5] == 0) rudder = 137;
 	// turn left
-	if(controllerCommand[4] == 1){
- 	  rudder -= 10 * ((127-abs(controllerCommand[1]))/255);
-	}
-	// turn right
-	else if(controllerCommand[4] == 1){
-	  rudder += 10 * ((127-abs(controllerCommand[1]))/255);	
-	}
-	else rudder = 137;
+	else rudder = 137 + (10*((controllerCommand[5]/128)*100));
 	tx.setRudder(rudder);
-      }
-      else continue;
+	break;
+      case 1:
+	//stop 
+	if(controllerCommand[5] == 0) rudder = 137;
+	//turn right
+	else rudder = 137 + (10*((controllerCommand[5]/127)*100));
+	tx.setRudder(rudder);
+	break;
+      default: continue;
+      }  
     }
   }
   return 0;
 }
-
+  
       
 
