@@ -24,15 +24,17 @@
 #include <pthread.h>
 #include <assert.h>
 #include <ctime>
-//#include <unistd.h>
+#include <unistd.h>
 
 using namespace std;
+
 
 struct argstruct {
     int argcs;
     char **argvs;
     Monitor *m;
 };
+
 
 void *contfun(void *argument);
 
@@ -42,28 +44,27 @@ int main (int argc, char** argv) {
 
     int ret_code;
 
-    argstruct *arguments = new argstruct;
+    argstruct arguments;
 
-//    Monitor *mon = new Monitor;
+    Monitor mon;
 
-    arguments->argcs = argc;
-    arguments->argvs = argv;
-    arguments->m = NULL; //mon;
+    arguments.argcs = argc;
+    arguments.argvs = argv;
+    arguments.m = &mon;
 
-    pthread_t controlthread; //guithread, 
+    pthread_t controlthread, guithread;
 
-/*
     //have both threads call their respective functions
-    ret_code = pthread_create(&guithread,NULL,guifun, (void*) arguments);
+    ret_code = pthread_create(&controlthread, NULL, contfun, &arguments);
     assert(ret_code == 0);
-*/
-    ret_code = pthread_create(&controlthread,NULL,contfun, (void*) arguments);
+
+    ret_code = pthread_create(&guithread, NULL, guifun, &arguments);
     assert(ret_code == 0);
-/*
+
     //wait for both threads to finish
     ret_code = pthread_join(guithread, NULL);
     assert(ret_code == 0);
-*/
+
     ret_code = pthread_join(controlthread, NULL);
     assert(ret_code == 0);
 
@@ -137,6 +138,9 @@ void *guifun(void *argument){
     return NULL;
 }
 
+//////////////////////////
+// Old PID testing loop://
+//////////////////////////
 /*
 {
    Location currentLocation, destination;
