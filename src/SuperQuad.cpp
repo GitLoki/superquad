@@ -20,6 +20,7 @@
 #include "../include/CascadeControl/CascadeControl.hpp"
 #include "../include/CascadeControl/AccelerationControl.hpp"
 #include "../include/CascadeControl/VelocityControl.hpp"
+#include "../include/config.hpp"
 #include <pthread.h>
 #include <assert.h>
 #include <ctime>
@@ -89,8 +90,7 @@ void *contfun(void *argument){
 
     std::cout << "Initialising Control Structure..." << std::endl;
     CascadeControl* cascadeControl = new CascadeControl(trim);
-    Location setPoint(0, 0, 5000);  
-    cascadeControl->changeSetPoint(setPoint);
+    cascadeControl->changeVelocitySetPoint(v_setPoint);
 
     std::cout << "Transmitter Initialised. Counting down..." << std::endl;
     for ( int i = COUNTDOWN ; i >= 0 ; i-- ) {

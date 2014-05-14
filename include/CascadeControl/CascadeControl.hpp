@@ -10,7 +10,7 @@ private:
 	VelocityControl* velocityControl;
 	AccelerationControl* accelerationControl;
 
-        Location currentLocation, oldLocation, 
+    Location currentLocation, oldLocation, 
 	  currentVelocity, oldVelocity, 
 	  currentAcceleration, oldAcceleration, 
 	  startSettings, currentSettings,
@@ -24,6 +24,7 @@ private:
 
 public:
 	CascadeControl(Location _startSettings);
+	~CascadeControl();
 	Location query(Location newLocation);
         void changeSetPoint(Location newSetPoint);
 };
