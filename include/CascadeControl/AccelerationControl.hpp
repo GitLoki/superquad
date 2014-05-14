@@ -1,6 +1,7 @@
 #ifndef ACCEL_CONTROL_HPP
 #define ACCEL_CONTROL_HPP
 #include "../datatypes.hpp"
+#include "../include/config.hpp"
 
 class AccelerationControl {
 

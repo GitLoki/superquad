@@ -1,6 +1,7 @@
 #ifndef VELOCITY_CONTROL_HPP
 #define VELOCITY_CONTROL_HPP
 #include "../datatypes.hpp"
+#include "../include/config.hpp"
 
 class VelocityControl{
  
