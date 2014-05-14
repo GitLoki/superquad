@@ -49,7 +49,7 @@ int main (int argc, char** argv) {
 	}
 	break;
       case 6:
-	//R1 up
+	// R1 up
 	if(controllerCommand[4] == 1) tx.sendCommand('+');
 	break;
 	// R2 down
@@ -59,9 +59,9 @@ int main (int argc, char** argv) {
 	// Left stick, vertical axis, pitch
       case 1:
 	if(controllerCommand[6] == 2){
-	  if(controllerCommand[4] == 0) elevator = 137; 
-          //forwards
-	  else if(controllerCommand[4] == 1) elevator = 137 + (((controllerCommand[5]/128)*100)/4);
+          if(controllerCommand[4] == 0) elevator = 137;
+	  //forwards
+	  else if(controllerCommand[5] < 0) elevator = 137 + (((controllerCommand[5]/128)*100)/4);
 	  //backwards
 	  else elevator = 137 + (((controllerCommand[5]/127)*100)/4);
 	  tx.setElevator(elevator);
@@ -70,7 +70,7 @@ int main (int argc, char** argv) {
 	else if(controllerCommand[6] == 1){                           
         //right stick
 	  if(controllerCommand[4] == 0) rudder = 137;
-// turn left
+	  // turn left
 	  else rudder = 137 + ((controllerCommand[5]/128)*100);
 	  tx.setRudder(rudder);
 	  break;
@@ -81,7 +81,7 @@ int main (int argc, char** argv) {
 
 	  if(controllerCommand[4] == 0) aileron = 127;
 	  //rol left
-	  else if(controllerCommand[4] == -1) aileron = 127 + ((controllerCommand[5]/128)*100/4);
+	  else if(controllerCommand[5] < 0) aileron = 127 + ((controllerCommand[5]/128)*100/4);
 	  //roll right
 	  else aileron = 127 + ((controllerCommand[5]/128)*100/4);
 	  tx.setAileron(aileron);
