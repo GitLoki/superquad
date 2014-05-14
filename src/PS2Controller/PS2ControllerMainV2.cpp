@@ -58,43 +58,33 @@ int main (int argc, char** argv) {
        	break;
 	// Left stick, vertical axis, pitch
       case 1:
-	if(controllerCommand[6] == 2){
           if(controllerCommand[4] == 0) elevator = 137;
 	  //forwards
-	  else if(controllerCommand[5] < 0) elevator = 137 + (((controllerCommand[5]/128)*100)/4);
+	  else if(controllerCommand[5] < 0) elevator = 137 - (((controllerCommand[5]/128)*100)/4);
 	  //backwards
 	  else elevator = 137 + (((controllerCommand[5]/127)*100)/4);
 	  tx.setElevator(elevator);
 	  break;
-	}
-	else if(controllerCommand[6] == 1){                           
-        //right stick
-	  if(controllerCommand[4] == 0) rudder = 137;
-	  // turn left
-	  else rudder = 137 + ((controllerCommand[5]/128)*100);
-	  tx.setRudder(rudder);
-	  break;
-	}
-	// Left stick, horizontal axis roll
+	  // Left stick, horizontal axis roll
       case 0:
 	if(controllerCommand[6] == 2){    //left stick
-
+	  
 	  if(controllerCommand[4] == 0) aileron = 127;
 	  //rol left
-	  else if(controllerCommand[5] < 0) aileron = 127 + ((controllerCommand[5]/128)*100/4);
+	  else if(controllerCommand[5] < 0) aileron = 127 - ((controllerCommand[5]/128)*100/4);
 	  //roll right
 	  else aileron = 127 + ((controllerCommand[5]/128)*100/4);
 	  tx.setAileron(aileron);
 	  break;
 	}
    	// Right stick, horizontal axis
-      case 3:
+      case 2:
 	//turn right
 	if(controllerCommand[4] == 0) rudder = 137;
-     	else rudder = 137 + ((controllerCommand[5]/128)*100);
+     	else if(controllerCommand[5] > 0) rudder = 137 + ((controllerCommand[5]/127)*100);
+	else rudder = 137 - ((controllerCommand[5]/128)*100);
 	tx.setRudder(rudder);
 	break;
-	
       default: continue;
       }  
     }
