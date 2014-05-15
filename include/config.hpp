@@ -8,7 +8,7 @@
 // centre of kinect field of vision
 const double XCENTRE = 378;
 const double YCENTRE = 263;
-const double ZCENTRE = 660;
+const double ZCENTRE = 1000;
 
 // frequency of main loop
 const int FPS = 100;

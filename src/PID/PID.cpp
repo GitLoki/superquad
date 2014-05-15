@@ -38,7 +38,7 @@ int PID::updateLocation() {
 
     // get new location out of kinect
     if (kinect->query(new_location.X, new_location.Y, new_location.Z)) {
-        // else, update the current location according to new_locatikn and weight
+        // else, update the current location according to new_location and weight
         location.X = weight * new_location.X + (1-weight) * location.X;
         location.Y = weight * new_location.Y + (1-weight) * location.Y;
         location.Z = weight * new_location.Z + (1-weight) * location.Z;

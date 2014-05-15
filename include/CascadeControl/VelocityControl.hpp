@@ -19,7 +19,7 @@ public:
     
     void changeSetPoint(Location _setPoint);
 
-  Location query(Location velocity, Location v_snapLimit);
+  Location query(Location velocity);
 };
 
 #endif

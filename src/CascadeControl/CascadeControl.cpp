@@ -1,24 +1,28 @@
 #include "../../include/CascadeControl/CascadeControl.hpp"
 
-CascadeControl::CascadeControl(Location _startSettings, Location v_snapLimit, Location v_K,
-                               Location a_jerkLimit, Location a_K) {
+CascadeControl::CascadeControl(Location _startSettings, 
+	    Location p_shiftLimit, Location p_K, 
+	    Location v_snapLimit, Location v_K,
+	    Location a_jerkLimit, Location a_K) {
 	accelerationControl = new AccelerationControl(_startSettings, a_K, a_jerkLimit);
 	velocityControl = new VelocityControl(v_K, v_snapLimit);
+	positionControl = new PositionControl(p_K, p_shiftLimit);
 	startSettings = _startSettings;
 }
 
 CascadeControl::~CascadeControl() {
 	delete accelerationControl;
 	delete velocityControl;
+	delete positionControl;
 }
 
-Location CascadeControl::query(Location newLocation, Location v_snapLimit) {
-	oldLocation = currentLocation;
-	currentLocation = newLocation;
+Location CascadeControl::query(Location newPosition, Location v_snapLimit) {
+	oldVerbose = currentVerbose;
+	currentVerbose = newVerbose;
 
 	if (!counter) {
-	        oldTime = clock();
-		currentLocation = newLocation;
+	    oldTime = clock();
+		currentPosition = newVerbose;
 		counter++;
 		oldVelocity = currentVelocity;
 		oldAcceleration = currentAcceleration;
@@ -32,28 +36,37 @@ Location CascadeControl::query(Location newLocation, Location v_snapLimit) {
 
 
 	// calculate new velocity and acceleration
-	deltaL = currentLocation - oldLocation;
+	deltaP = currentVerbose - oldVerbose;
 	currentVelocity = (0.5 * currentVelocity) + (0.5 * deltaL / timeInterval);
 	deltaV = currentVelocity - oldVelocity;
 	currentAcceleration = (0.5 * currentAcceleration) + (0.5 * deltaV / timeInterval);
 	std::cout << "Velocity: " << currentVelocity << std::endl
 	          << "Acceleration: " << currentAcceleration << std::endl;
 
+	if (counter % positionFrequency == 0) {
+	         velocitySetPoint = positionControl->query(currentVerbose);
+		velocityControl->changeSetPoint(velocitySetPoint);
+		counter = 0;
+		std::cout << "Velocity setpoint: " << velocitySetPoint << std::endl;
+	}
 
 	if (counter % velocityFrequency == 0) {
-	         accelerationSetPoint = velocityControl->query(currentVelocity, v_snapLimit);
+	         accelerationSetPoint = velocityControl->query(currentVelocity);
 		accelerationControl->changeSetPoint(accelerationSetPoint);
-		counter = 0;
 		std::cout << "Acceleration setpoint: " << accelerationSetPoint << std::endl;
 	}
 
-	counter++;
-
 	currentSettings = accelerationControl->query(currentAcceleration);
+
+	counter++;
 
 	return currentSettings;
 }
 
 void CascadeControl::changeVelocitySetPoint(Location newSetPoint) {
   velocityControl->changeSetPoint(newSetPoint);
+}
+
+void CascadeControl::changePositionSetPoint(Location newSetPoint) {
+  positionControl->changeSetPoint(newSetPoint);
 }
