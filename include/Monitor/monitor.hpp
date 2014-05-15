@@ -5,6 +5,17 @@
 
 #include "../datatypes.hpp"
 
+
+//struct that holds a bool for each variable the GUI can change (i.e. not location)
+//If this has been changed, set that bool to true.
+//these are only changed from within mutex functions in this object
+
+struct ChangeTracker
+{
+    bool target,lights,land,stop,snap;
+};
+
+
 class Monitor {
 
 private:
@@ -19,7 +30,11 @@ private:
 
     //mutex
     pthread_mutex_t monitor_lock;
+
+
 public:
+
+    ChangeTracker changed;
 
     //constructor
     Monitor();
