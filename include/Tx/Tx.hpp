@@ -22,8 +22,8 @@
 enum controlIndices {SIGNAL, THROTTLE, RUDDER, AILERON, ELEVATOR};
 
 const int sigVal = CONTROL_PACKET;
-const int aileronTrim = 127;
-const int elevatorTrim = 137;
+const int aileronTrim = 127; // more = right
+const int elevatorTrim = 137; // more = forwards
 const int rudderTrim = 137;
 
 class Tx {

@@ -22,14 +22,14 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     destination.setValues(XCENTRE, YCENTRE, 900);
 
     // open logfile for logging, write heading
-    PIlogfile.open ("logfile.txt");
-    PIlogfile << "control values :: location\n";
-    PIlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
+    //PIDlogfile.open ("logfile.txt");
+    //PIDlogfile << "control values :: location\n";
+    //PIDlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
     
     previous_time = clock();
-	previous_delta.X = 0;
-	previous_delta.Y = 0;
-	previous_delta.Z = 0;
+    previous_delta.X = 0;
+    previous_delta.Y = 0;
+    previous_delta.Z = 0;
 };
 
 int PID::updateLocation() { 
@@ -65,19 +65,19 @@ int PID::updateRatios() {
     // 220, 220, 1200 :: 6k, 6k, 90k
 
     // Proportional parameters
-    const double KP_x = 1000;
-    const double KP_y = 1000;
-    const double KP_z = 1000;
+    const double KP_x = 2000000;
+    const double KP_y = 2000000;
+    const double KP_z = 2000000;
 
     // Integral parameters
-    const double KI_x = 10000;
-    const double KI_y = 10000;
-    const double KI_z = 10000;
+    const double KI_x = 10000000;
+    const double KI_y = 10000000;
+    const double KI_z = 10000000;
 
-	// Differential parameters
-	const double KD_x = 10000;
-	const double KD_y = 10000;
-	const double KD_z = 10000;
+    // Differential parameters
+    const double KD_x = 10000000;
+    const double KD_y = 10000000;
+    const double KD_z = 10000000;
     
     current_time = clock();
     time_diff = (current_time - previous_time) / 1000; // milliseconds
@@ -97,16 +97,16 @@ int PID::updateRatios() {
 
     ratios.X = 1 - (delta.X / KP_x) - (integrals.X / KI_x) 
 		- (partial_derivatives.X / KD_x);
-    ratios.Y = 1 - (delta.Y / KP_y) - integrals.Y / KI_y
+    ratios.Y = 1 - (delta.Y / KP_y) - (integrals.Y / KI_y)
 		- (partial_derivatives.Y / KD_y);
-	ratios.Z = 1 + (delta.Z / KP_z); 
-	// + integrals.Z / KI_z  - (partial_derivatives.Z / KD_z);;
+    ratios.Z = 1 + (delta.Z / KP_z); 
+    // + integrals.Z * KI_z  - (partial_derivatives.Z * KD_z);;
       
-	previous_delta.X = delta.X;
-	previous_delta.Y = delta.Y;
-	previous_delta.Z = delta.Z;
+    previous_delta.X = delta.X;
+    previous_delta.Y = delta.Y;
+    previous_delta.Z = delta.Z;
 
-    //std::cout << ratios.X << ", " << ratios.Y << ", " << ratios.Z << std::endl;
+    std::cout << ratios.X << ", " << ratios.Y << ", " << ratios.Z << std::endl;
 
     return 1;
 }
@@ -149,13 +149,13 @@ int PID::goToDestination(Location& _currentLocation) {
         control_vals[1] = STARTPOW;
     */
 
-    PIlogfile << time_diff << "ms :: " 
-            << "[" << control_vals[2] << ", " 
-	    << control_vals[3] << ", " 
-	    << control_vals[0] << "] :: (" 
-	    << location.X << ", " 
-	    << location.Y << ", " 
-	    << location.Z << ")\n";
+//    PIDlogfile << time_diff << "ms :: " 
+//            << "[" << control_vals[2] << ", " 
+//	      << control_vals[3] << ", " 
+//	      << control_vals[0] << "] :: (" 
+//	      << location.X << ", " 
+//	      << location.Y << ", " 
+//	      << location.Z << ")\n";
 
     std::cout << time_diff << "ms :: " 
 	      << "[" << control_vals[2] << ", " 
@@ -184,9 +184,8 @@ void PID::signalHandler( int signum )
   std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
 
   //pid->halt();
-  PIlogfile.close();
+  //PIDlogfile.close();
 
   exit(signum);  
 
 }
-

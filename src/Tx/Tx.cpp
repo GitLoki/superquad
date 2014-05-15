@@ -82,7 +82,7 @@ void Tx::getValues(Location* values) {
 
 void Tx::setValues(int* _values) {
   for (int i = THROTTLE ; i <= ELEVATOR ; i++)
-    controls[i] = (int) _values[i-1];
+      controls[i] = _values[i-1];
   sendValues();
 };
 
