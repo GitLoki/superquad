@@ -92,7 +92,8 @@ int main (int argc, char** argv) {
 
 void *contfun(void *argument){
 
-    argstruct *args = (argstruct*) argument;
+    Monitor *mon = ((argstruct*) argument)->m;
+    ChangeTracker changed = mon->changed;
 
     Location currentLocation, destination, flightVariables;
     
@@ -122,13 +123,33 @@ void *contfun(void *argument){
     clock_gettime(CLOCK_REALTIME, &oldTime);
 
     while (true) {
+
+
+      //Check for changes in monitor
+      if(changed.target){
+        //use mon->get_target(Location) to get new location
+      }
       
+      if(changed.lights){
+        //set lights according to mon->get_light()
+      }
+      if(changed.land){
+        //land if mon->get_land() is true
+      }
+      if(changed.stop){
+        //kill motors if mon->get_stop() is true
+      }
+      if(changed.snap){
+        //turn on/off snap limiting according to mon->get_snap()
+      }
+
+
       // query kinect until a valid reading is acquired
       do currentLocation = kinect->query();
       while (currentLocation == nullLoc);
 
       // inform monitor of current location
-      args->m->set_location(currentLocation);
+      mon->set_location(currentLocation);
 
       // query 
       flightVariables = cascadeControl->query(currentLocation, v_snapLimit);
