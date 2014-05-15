@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 #include "../../include/Tx/Tx.hpp"
+#include "../../include/PhysicsModel/PhysicsModel.hpp"
 
 //Global Constants
 //base (neutral) value for elevator
@@ -17,6 +18,7 @@ const int SPEED = 40;
 
 class Controller{
 private:
+  PhysicsModel* pm;
   Tx* tx;
   char holderChar;
   int controllerCommand[8];
@@ -40,11 +42,12 @@ private:
   void set_aileron();
   void set_rudder();
   void set_switch();
+  void resetOrientation();
 
 public:
-  Controller(Tx* t);
+  Controller(Tx* t, PhysicsModel* p);
   void flight_loop();
-  ~Controller(){ delete tx; }
+  ~Controller(){ delete tx; delete pm; }
 };
 
 #endif

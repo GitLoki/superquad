@@ -65,14 +65,14 @@ int PID::updateRatios() {
     // 220, 220, 1200 :: 6k, 6k, 90k
 
     // Proportional parameters
-    const double KP_x = 2000000;
-    const double KP_y = 2000000;
-    const double KP_z = 2000000;
+    const double KP_x = 7000;
+    const double KP_y = 7000;
+    const double KP_z = 10000000;
 
     // Integral parameters
-    const double KI_x = 10000000;
-    const double KI_y = 10000000;
-    const double KI_z = 10000000;
+    const double KI_x = 100000;
+    const double KI_y = 100000;
+    const double KI_z = 100000;
 
     // Differential parameters
     const double KD_x = 10000000;
@@ -97,7 +97,7 @@ int PID::updateRatios() {
 
     ratios.X = 1 - (delta.X / KP_x) - (integrals.X / KI_x) 
 		- (partial_derivatives.X / KD_x);
-    ratios.Y = 1 - (delta.Y / KP_y) - (integrals.Y / KI_y)
+    ratios.Y = 1 + (delta.Y / KP_y) + (integrals.Y / KI_y)
 		- (partial_derivatives.Y / KD_y);
     ratios.Z = 1 + (delta.Z / KP_z); 
     // + integrals.Z * KI_z  - (partial_derivatives.Z * KD_z);;
@@ -157,16 +157,22 @@ int PID::goToDestination(Location& _currentLocation) {
 //	      << location.Y << ", " 
 //	      << location.Z << ")\n";
 
+    if(control_vals[THROTTLE - 1] > 180) {
+      std::cout << "Throttle: " << control_vals[THROTTLE] << std::endl; 
+      control_vals[THROTTLE - 1] = 180;
+    }
+
     std::cout << time_diff << "ms :: " 
-	      << "[" << control_vals[2] << ", " 
-	      << control_vals[3] << ", " 
-	      << control_vals[0] << "] :: (" 
+	      << "[" << control_vals[AILERON - 1] << ", " 
+	      << control_vals[ELEVATOR - 1] << ", " 
+	      << control_vals[THROTTLE - 1] << "] :: (" 
 	      << location.X << ", " 
 	      << location.Y << ", " 
 	      << location.Z << ")" << std::endl;
 
     // safeguard against rudder being changed. Also, adjust the rudder trim
-    control_vals[1] = 117; 
+    // control_vals[1] = 117; 
+
 
     tx->setValues(control_vals);
     _currentLocation.setValues(location.X, location.Y, location.Z);

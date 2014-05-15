@@ -6,8 +6,8 @@
 #define ONE_SECOND 1000000
 
 // centre of kinect field of vision
-const double XCENTRE = 378;
-const double YCENTRE = 263;
+const double XCENTRE = -50;
+const double YCENTRE = 5;
 const double ZCENTRE = 1000;
 
 // frequency of main loop

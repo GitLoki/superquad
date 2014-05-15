@@ -16,8 +16,8 @@ Location AccelerationControl::query(Location acceleration) {
       currentValue.Y = 255;
     else if(currentValue.Y < 0)
       currentValue.Y = 0;
-    if(currentValue.Z > 255)
-      currentValue.Z = 255;
+    if(currentValue.Z > 190)
+      currentValue.Z = 190;
     else if(currentValue.Z < 0)
       currentValue.Z = 0;
 

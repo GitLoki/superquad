@@ -27,7 +27,7 @@
 using namespace std;
 
 // centre of the Kinect's fustrum
-const Location fieldCentre(378, 263, 1000);
+const Location fieldCentre(XCENTRE, YCENTRE, ZCENTRE);
 
 // null location object for testing kinect results against
 Location nullLoc(0,0,0);

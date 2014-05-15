@@ -1,7 +1,9 @@
 #include "../../include/PS2ControllerV2/V2.hpp"  
 
-Controller::Controller(Tx* t){
+
+Controller::Controller(Tx* t, PhysicsModel* p){
   //intialize variables
+  pm = p;
   tx = t;
   flying = true;
   lights = 1; aileron = A_BASE; elevator = E_BASE; rudder = R_BASE;
@@ -9,6 +11,8 @@ Controller::Controller(Tx* t){
   
   prev_thrust = 0;
   thrust = 70;
+ 
+  pm->startSimulation();
 
   //Check controller input found
   if(in_stream.fail()){
@@ -114,6 +118,17 @@ void Controller::set_rudder(){
   tx->setRudder(rudder);
   }
 
+void Controller::resetOrientation(){
+  aileron = A_BASE;
+  rudder = R_BASE;
+  elevator = E_BASE;
+  thrust = 140;
+  tx->setAileron(aileron);
+  tx->setRudder(rudder);
+  tx->setElevator(elevator);
+  tx->setThrust(thrust);
+}
+
 void Controller::set_switch(){
   //Interpret controller instruction
   switch(controllerCommand[7]){
@@ -128,6 +143,9 @@ void Controller::set_switch(){
     break;
   case 3:
     set_thrust();
+    break;
+  case 4:
+    resetOrientation();
     break;
   case 6:
     thrust_up();
