@@ -27,7 +27,7 @@ Controller::Controller(Tx* t){
   }  
 }
 
-void Controller::do_lights(){
+void Controller::set_lights(){
   //Change boolean value in Tx
   //controllerCommand[4] == 0 means 'unpress' so do nothing
   if(controllerCommand[4] == 1){
@@ -60,7 +60,7 @@ void Controller::thrust_down(){
   }
 }
 
-void Controller::do_thrust(){
+void Controller::set_thrust(){
   //power stick released
   if(controllerCommand[4] == 0){ thrust = prev_thrust;}
   //if power up
@@ -80,7 +80,7 @@ void Controller::do_thrust(){
 }
 
 
-void Controller::do_elevator(){
+void Controller::set_elevator(){
   //stop
   if(controllerCommand[5] == 0){ elevator = E_BASE;}
   //forwards
@@ -92,7 +92,7 @@ void Controller::do_elevator(){
   tx->setElevator(elevator);
 }
 
-void Controller::do_aileron(){
+void Controller::set_aileron(){
   //Left joystick, x-axis
   //stop
   if(controllerCommand[5] == 0){ aileron = A_BASE;}
@@ -103,33 +103,31 @@ void Controller::do_aileron(){
   tx->setAileron(aileron);
 }
 
-void Controller::do_rudder(){
+void Controller::set_rudder(){
   //Right joystick, x-axis
   //stop 
   if(controllerCommand[5] == 0){ rudder = R_BASE;}
   //turn right
   else if(controllerCommand[5] < 0){ rudder = R_BASE - ((controllerCommand[5]/128)*100);}
-  //std::cout << "RIGHT VALUE IS " <<  controllerCommand[5] << std::endl;}
 //turn left
   else if(controllerCommand[5] > 0){ rudder = R_BASE - ((controllerCommand[5]/127)*100);}
-  //std::cout << "LEFT VALUE IS " << controllerCommand[5] << std::endl;}
   tx->setRudder(rudder);
   }
 
-void Controller::do_switch(){
+void Controller::set_switch(){
   //Interpret controller instruction
   switch(controllerCommand[7]){
   case 0:
-    do_aileron();
+    set_aileron();
     break;
   case 1:
-    do_elevator();
+    set_elevator();
     break;
   case 2: 
-    do_rudder();
+    set_rudder();
     break;
   case 3:
-    do_thrust();
+    set_thrust();
     break;
   case 6:
     thrust_up();
@@ -138,7 +136,7 @@ void Controller::do_switch(){
     thrust_down();
     break;
   case 8:
-    do_lights();
+    set_lights();
     break;
   case 9:
     abort();
@@ -155,7 +153,7 @@ void Controller::flight_loop(){
 	controllerCommand[i] = int(holderChar);
       }
       //interpret and execute instruction
-      do_switch();
+      set_switch();
     }
   }
 }
