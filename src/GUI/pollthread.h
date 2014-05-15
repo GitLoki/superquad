@@ -23,7 +23,7 @@ public:
     PollThread(Monitor* _mon);
 
 signals:
-    void setNewLoc(Location new_loc);
+    void set_new_loc(Location newLoc);
 };
 
 #endif // POLLTHREAD_H

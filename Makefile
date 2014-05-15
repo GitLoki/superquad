@@ -30,8 +30,10 @@ KINECTTESTTARGET := kinecttest
 KINECTIMAGECAPTURETARGET := kinectimagecapture
 TRACKINGTESTTARGET := trackingtest
 PIDTESTTARGET := pidtest
+CONTROLLERTESTTARGET := controllertest
 TESTTARGETS = $(MODELTESTTARGET) $(KINECTTESTTARGET) \
-$(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET) $(PIDTEST)
+$(KINECTIMAGECAPTURETARGET) $(TRACKINGTESTTARGET) \
+$(PIDTESTTARGET) $(CONTROLLERTESTTARGET)
 
 # Option for testing;
 ifneq (,$(findstring $(MAKECMDGOALS),$(TESTTARGETS)))
@@ -42,13 +44,14 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp $(SRCDIR)/PS2ControllerV2/V2.cpp
 MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
 KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
 KINECTIMAGECAPTURESOURCES := $(SRCDIR)/Test/KinectImageCapture.cpp $(AUXSOURCES)
 TRACKINGTESTSOURCES := $(SRCDIR)/Test/TrackingTest.cpp $(AUXSOURCES)
 PIDTESTSOURCES := $(SRCDIR)/Test/PIDTest.cpp $(AUXSOURCES)
+CONTROLLERTESTSOURCES := $(SRCDIR)/Test/ControllerTest.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
@@ -73,6 +76,10 @@ $(TRACKINGTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 $(BUILDDIR)/PhysicsModel/extApiCustom.o
 PIDTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(PIDTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
+	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
+	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+CONTROLLERTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
+$(CONTROLLERTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 
@@ -120,6 +127,12 @@ $(PIDTESTTARGET): $(PIDTESTOBJECTS)
 	@echo " $(CXX) $^ -o $(PIDTESTTARGET) $(LIB)"; $(CXX) $^ -o \
 $(TESTDIR)/$(PIDTESTTARGET) $(LIB)
 
+$(CONTROLLERTESTTARGET): $(CONTROLLERTESTOBJECTS)
+	@mkdir -p $(TESTDIR)
+	@echo " Linking..."
+	@echo " $(CXX) $^ -o $(CONTROLLERTESTTARGET) $(LIB)"; $(CXX) $^ -o \
+$(TESTDIR)/$(CONTROLLERTESTTARGET) $(LIB)
+
 #cascade: $(SRCDIR)/CascadeControl/CascadeControl.cpp include/CascadeControl/CascadeControl.hpp
 #	$$(CXX) $(CFLAGS) $(INC) -o $(BUILDDIR)/CascadeControl/CascadeControl.o -c $(SRCDIR)/CascadeControl/CascadeControl.cpp
 #	$(MAKE) superquad
@@ -133,6 +146,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/Test
 	@mkdir -p $(BUILDDIR)/PID
 	@mkdir -p $(BUILDDIR)/CascadeControl
+	@mkdir -p $(BUILDDIR)/PS2ControllerV2
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) \
 $(INC) -c -o $@ $<
 

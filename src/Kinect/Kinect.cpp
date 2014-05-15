@@ -1,70 +1,39 @@
 #include "../../include/Kinect/Kinect.hpp"
 
+
+/*PUBLIC FUNCTIONS*/
+
 //Constructor
 Kinect::Kinect():
     depthMat(new cv::Mat(cv::Size(640,480),CV_16UC1)),
     depthf  (new cv::Mat(cv::Size(640,480),CV_8UC1)),
     rgbMat  (new cv::Mat(cv::Size(640,480),CV_8UC3,cv::Scalar(0)))
-{}
+    {}
 
 //destructor
-Kinect::~Kinect(){
+Kinect::~Kinect() {
     delete depthMat;
     delete depthf;
     delete rgbMat;
     cv::destroyAllWindows();
 }
 
-//display rgb and depth images, and save both if spacebar pressed
-void Kinect::save_frame(std::string filename){
-
-    cvStartWindowThread(); // fixes the 'force quit' problem on close
-
-    cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
-    cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
-
-    std::string suffix(".png");
-    int i_snap = 0;
-
-    while(true){
-	update(); //get new RGB and depth
-
-	imshow("rgb", *rgbMat);
-	depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
-	imshow("depth",*depthf);
-
-	char k = cvWaitKey(10);
-	// taking a screenshot by "space"
-	if( k == 32 ) { 
-
-	    std::ostringstream file;
-	    file << filename << i_snap << "_rgb" << suffix;
-	    std::cout << "You just saved out: " << file.str();
-	    imwrite(file.str(),*rgbMat);
-    
-	    file.str(""); // clear the string stream
-	    file << filename << i_snap << "_dep" << suffix;
-	    std::cout << " and " << file.str() << std::endl;
-	    imwrite(file.str(),*depthf);
-	    i_snap++;
-	}
-
-	if( k == 27 ) { 
-	    // esc key was pressed
-	    cvDestroyWindow("rgb");
-	    cvDestroyWindow("depth");
-	    return;
-	}
-    }
-}
 
 //query the kinect for the location of an object
 // expect this function to be called inside a loop continuously
 
-bool Kinect::query(double& realX, double& realY, double& avgDepth) {
+bool Kinect::query(double& realX, double& realY, double& avgDepth, cv::Mat* inMat) {
 
-    //read in depth matrix
-    if( !camera.getDepth(*depthMat) ) return false;
+    //inMat can be used to provide a depth matrix, instead of obtaining it from the Kinect.
+
+    if(inMat && (inMat->rows == WIDTH) && (inMat->cols == HEIGHT)){
+	//if a valid depth matrix has been supplied
+	depthMat = inMat;
+    } else {
+	//read in depth matrix
+	if(!camera.getDepth(*depthMat) ) return false;
+    }
+    
     depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
 
     int mmDepth;
@@ -78,7 +47,7 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
 	for(int x = 0 ; x < 640 ; x++) {
       
 	    //convert the raw depth reading into a mm value
-	    mmDepth = rawDepthToMilimeters(depthMat->at<unsigned short>(y,x));
+	    mmDepth = rawDepthToMillimeters(depthMat->at<unsigned short>(y,x));
       
 	    //if an object was recorded here, mark it as such.
 	    if(mmDepth < THRESHOLD && mmDepth != 0){	
@@ -96,8 +65,8 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth) {
 	float avgX = (float) sumX / count;
 	float avgY = (float) sumY / count;
 
-	realX = getrealwidth(avgX, avgDepth);
-	realY = getrealheight(avgY, avgDepth);
+	realX = getRealWidth(avgX, avgDepth);
+	realY = getRealHeight(avgY, avgDepth);
 	return true;
     }
     //if nothing was recorded, set all readings to 0.
@@ -119,16 +88,8 @@ Location Kinect::query(){
 
 }
 
-//convert 11-bit depth reading into a distance in mm
-int Kinect::rawDepthToMilimeters(int depthValue) {
-    if (depthValue < 2047) {
-	return (1000 / ((double)(depthValue) * -0.0030711016 + 3.3309495161));
-    }
-    return 0;
-}
-
 //save a video of both rgb and depth
-void Kinect::save_video(std::string filename, int frames){
+void Kinect::saveVideo(std::string filename, int frames){
 
 
     cv::VideoWriter writer;
@@ -178,20 +139,76 @@ void Kinect::save_video(std::string filename, int frames){
     delete depth3;
 }
 
+//display rgb and depth images, and save both if spacebar pressed
+void Kinect::saveFrame(std::string filename){
+
+    cvStartWindowThread(); // fixes the 'force quit' problem on close
+
+    cv::namedWindow("rgb",CV_WINDOW_AUTOSIZE);
+    cv::namedWindow("depth",CV_WINDOW_AUTOSIZE);
+
+    std::string suffix(".png");
+    int i_snap = 0;
+
+    while(true){
+	update(); //get new RGB and depth
+
+	imshow("rgb", *rgbMat);
+	depthMat->convertTo(*depthf, CV_8UC1, 1.0/8.03);
+	imshow("depth",*depthf);
+
+	char k = cvWaitKey(10);
+	// taking a screenshot by "space"
+	if( k == 32 ) { 
+
+	    std::ostringstream file;
+	    file << filename << i_snap << "_rgb" << suffix;
+	    std::cout << "You just saved out: " << file.str();
+	    imwrite(file.str(),*rgbMat);
+    
+	    file.str(""); // clear the string stream
+	    file << filename << i_snap << "_dep" << suffix;
+	    std::cout << " and " << file.str() << std::endl;
+	    imwrite(file.str(),*depthf);
+	    i_snap++;
+	}
+
+	if( k == 27 ) { 
+	    // esc key was pressed
+	    cvDestroyWindow("rgb");
+	    cvDestroyWindow("depth");
+	    return;
+	}
+    }
+}
+
+
+/*PRIVATE FUNCTIONS*/
+
 void  Kinect::update(){
     // loop both video and depth until they have updated
     while( !camera.getDepth(*depthMat)) ;
     while( !camera.getVideo(*rgbMat)  ) ;
 }
 
+//convert 11-bit depth reading into a distance in mm
+int Kinect::rawDepthToMillimeters(int depthValue) {
+    if (depthValue < 2047) {
+	return (1000 / ((double)(depthValue) * -0.0030711016 + 3.3309495161));
+    }
+
+    //a value of 2047 means no reading
+    return 0;
+}
+
 //convert x pixels on screen to mm distance from kinect origin
-float Kinect::getrealwidth(float avgX, float depth) {
+float Kinect::getRealWidth(float avgX, float depth) {
     float focal_distance =  WIDTH/(2*tan((57.0/2.0)*(PI/180.0)));
     return -1 * depth * (avgX - WIDTH / 2) / focal_distance;
 }
 
 //convert y pixels on screen to mm distance from kinect origin
-float Kinect::getrealheight(float avgY, float depth) {
+float Kinect::getRealHeight(float avgY, float depth) {
     float focal_distance =  HEIGHT/(2*tan((43.0/2.0)*(PI/180.0)));
     return -1 * depth * (avgY - HEIGHT / 2) / focal_distance;
 }

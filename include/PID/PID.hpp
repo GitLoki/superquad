@@ -24,7 +24,7 @@ const double XCENTRE = 378;
 const double YCENTRE = 263;
 const double ZCENTRE = 660;
 
-std::ofstream PIDlogfile;
+std::ofstream PIlogfile;
 
 class PID {
 private:
@@ -37,7 +37,9 @@ private:
     Location location;
     Location ratios; 
     Location integrals;
+    Location partial_derivatives;
     Location delta;
+    Location previous_delta;
     Kinect* kinect;
     Tx* tx;
     int updateLocation();

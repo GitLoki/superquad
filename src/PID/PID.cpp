@@ -22,12 +22,14 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     destination.setValues(XCENTRE, YCENTRE, 900);
 
     // open logfile for logging, write heading
-    PIDlogfile.open ("logfile.txt");
-    PIDlogfile << "control values :: location\n";
-    PIDlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
+    PIlogfile.open ("logfile.txt");
+    PIlogfile << "control values :: location\n";
+    PIlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
     
     previous_time = clock();
-
+	previous_delta.X = 0;
+	previous_delta.Y = 0;
+	previous_delta.Z = 0;
 };
 
 int PID::updateLocation() { 
@@ -37,8 +39,8 @@ int PID::updateLocation() {
     Location new_location;
 
     // get new location out of kinect
-    if (kinect->query(new_location.X, new_location.Y, new_location.Z)) {
-        // else, update the current location according to new_location and weight
+    if (kinect->query(new_location.X, new_location.Y, new_location.Z, NULL)) {
+        // else, update the current location according to new_locatikn and weight
         location.X = weight * new_location.X + (1-weight) * location.X;
         location.Y = weight * new_location.Y + (1-weight) * location.Y;
         location.Z = weight * new_location.Z + (1-weight) * location.Z;
@@ -71,25 +73,41 @@ int PID::updateRatios() {
     const double KI_x = 10000;
     const double KI_y = 10000;
     const double KI_z = 10000;
+
+	// Differential parameters
+	const double KD_x = 10000;
+	const double KD_y = 10000;
+	const double KD_z = 10000;
     
     current_time = clock();
     time_diff = (current_time - previous_time) / 1000; // milliseconds
     previous_time = current_time;
 
-    delta.X = (destination.X - location.X) / time_diff;
-    delta.Y = (destination.Y - location.Y) / time_diff;
-    delta.Z = (destination.Z - location.Z) / time_diff;
+    delta.X = destination.X - location.X;
+    delta.Y = destination.Y - location.Y;
+    delta.Z = destination.Z - location.Z;
 
     integrals.X += delta.X;
     integrals.Y += delta.Y;
     integrals.Z += delta.Z;
-    
-    ratios.X = 1 - (destination.X - location.X) / KP_x - integrals.X / KI_x;
-    ratios.Y = 1 - (destination.Y - location.Y) / KP_y - integrals.Y / KI_y;
-    ratios.Z = 1 + (destination.Z - location.Z) / KP_z; // + integrals.Z / KI_z;
-    
-    //std::cout << ratios.X << ", " << ratios.Y << ", " << ratios.Z << std::endl;
+
+    partial_derivatives.X = (delta.X - previous_delta.X) / time_diff;
+    partial_derivatives.Y = (delta.Y - previous_delta.Y) / time_diff;
+    partial_derivatives.Z = (delta.Z - previous_delta.Z) / time_diff;
+
+    ratios.X = 1 - (delta.X / KP_x) - (integrals.X / KI_x) 
+		- (partial_derivatives.X / KD_x);
+    ratios.Y = 1 - (delta.Y / KP_y) - integrals.Y / KI_y
+		- (partial_derivatives.Y / KD_y);
+	ratios.Z = 1 + (delta.Z / KP_z); 
+	// + integrals.Z / KI_z  - (partial_derivatives.Z / KD_z);;
       
+	previous_delta.X = delta.X;
+	previous_delta.Y = delta.Y;
+	previous_delta.Z = delta.Z;
+
+    //std::cout << ratios.X << ", " << ratios.Y << ", " << ratios.Z << std::endl;
+
     return 1;
 }
 

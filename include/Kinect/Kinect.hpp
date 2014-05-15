@@ -14,28 +14,39 @@
 const double PI = 3.14159265;
 const int WIDTH = 640;
 const int HEIGHT = 480;
-const int THRESHOLD = 1600; // 1.3 meters
+const int THRESHOLD = 1600; //in mm
 
-class Kinect {
+class Kinect
+{
+private:
+
+    cv::Mat* depthMat;
+    cv::Mat* depthf;
+    cv::Mat* rgbMat;
+    Camera camera;
+
+    //update rgb and depth readings
+    void update();
+
+    //conversion of readings to useful mm values
+    int rawDepthToMillimeters(int depthValue);
+    float getRealWidth(float avgX, float depth);
+    float getRealHeight(float avgY, float depth);
+
 
 public:
-  Kinect();
-  ~Kinect();
-  bool query(double& x, double& y, double& z);
-  Location query();
-  void save_video(std::string filename, int frames);
-  void save_frame(std::string filename = "snapshot");
-  float getrealwidth(float avgX, float depth);
-  float getrealheight(float avgY, float depth);
 
-private:
-  void update();
-  int rawDepthToMilimeters(int depthValue);
+    //constructor & destructor
+    Kinect();
+    ~Kinect();
 
-  cv::Mat* depthMat;
-  cv::Mat* depthf;
-  cv::Mat* rgbMat;
-  Camera camera;
+    //main function - returns location of object
+    bool query(double& x, double& y, double& z, cv::Mat* = NULL);
+    Location query();
+
+    //functions to save a video or a single frame
+    void saveVideo(std::string filename, int frames);
+    void saveFrame(std::string filename = "snapshot");
 };
 
 #endif /* KINECT_HPP */
