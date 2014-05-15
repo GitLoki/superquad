@@ -11,11 +11,9 @@ const double YCENTRE = 263;
 const double ZCENTRE = 660;
 
 // frequency of main loop
-const int FPS = 100;
+const int FPS = 50;
 
 // amount of time allowed to put quadcopter in launch cradle and hide under a table
 const int COUNTDOWN = 15;
-
-
 
 #endif // CONFIG_HPP

@@ -30,15 +30,15 @@ using namespace std;
 Location nullLoc(0,0,0);
 
 // set point for velocity calibration
-Location v_setPoint(0, 0, 10);
+Location v_setPoint(0, 0, 150);
 
 // data objects for velocity control
-Location v_K(0.1, -0.1, 1.0);
-Location v_snapLimit(5, 5, 15);
+Location v_K(0.1, 0.1, 1.0);
+Location v_snapLimit(20, 20, 60);
 
 // data objects for acceleration control
 Location a_K(0.1, 0.1, 0.5);
-Location a_jerkLimit(5, 5, 15);
+Location a_jerkLimit(10, 10, 30);
 
 struct argstruct {
     int argcs;
@@ -84,9 +84,7 @@ int main (int argc, char** argv) {
 
 void *contfun(void *argument){
 
-    argstruct *args = (argstruct*) argument;
-
-    double oldtime, newtime;
+  //argstruct *args = (argstruct*) argument;
 
     Location currentLocation, destination, flightVariables;
     
@@ -110,7 +108,11 @@ void *contfun(void *argument){
         usleep(ONE_SECOND);
     }
     std::cout << std::endl << "Liftoff" << std::endl;
-    oldtime = clock();
+
+    //double oldtime, newtime;
+    //oldtime = clock();
+    timespec oldTime, newTime;
+    clock_gettime(CLOCK_REALTIME, &oldTime);
 
     while (true) {
       
@@ -123,9 +125,11 @@ void *contfun(void *argument){
       tx->setValues(flightVariables);
 
       // Log time and settings for diagnostic reasons
-      newtime = clock();
-      std::cout << "time: " << (newtime - oldtime) / CLOCKS_PER_SEC << std::endl;
-      oldtime = newtime;
+      //newtime = clock();
+      clock_gettime(CLOCK_REALTIME, &newTime);
+      std::cout << "time nanoseconds: " << (newTime.tv_sec - oldTime.tv_sec) << std::endl;
+      oldTime.tv_sec = newTime.tv_sec;
+      oldTime.tv_nsec = newTime.tv_nsec;
       std::cout << "Kinect: " << currentLocation << std::endl;
       std::cout << "FlightVars: " << flightVariables << std::endl << std::endl;
 
