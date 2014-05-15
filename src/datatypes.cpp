@@ -185,20 +185,20 @@ std::ostream& operator<<(std::ostream& os, const Location& l)
 }
 
 
-kinect_frustum::kinect_frustum(double _near, double _far)
+KinectFrustum::KinectFrustum(double _near, double _far)
 {
     near = _near;
     far = _far;
-    ver_angle = (43.0/2.0)*(M_PI/180.0);
-    hor_angle = (57.0/2.0)*(M_PI/180.0);
+    vertAngle = (43.0/2.0)*(M_PI/180.0);
+    horzAngle = (57.0/2.0)*(M_PI/180.0);
 
-    left = near*tan(hor_angle);
+    left = near*tan(horzAngle);
     right = -left;
-    top = near*tan(ver_angle);
+    top = near*tan(vertAngle);
     bottom = -top;
 }
 
-bool kinect_frustum::inside(Location p)
+bool KinectFrustum::inside(Location p)
 {
 
     if(p.Z < near || p.Z > far)

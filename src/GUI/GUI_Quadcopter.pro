@@ -24,21 +24,3 @@ HEADERS  += gui_interface.h \
         ../../include/datatypes.hpp
 
 FORMS    += gui_interface.ui
-
-test {
-    message(Test build)
-
-    QT += testlib
-    TARGET = GUI_test
-
-    SOURCES -= main.cpp
-
-    HEADERS += \
-        test/testGUI.h
-
-    SOURCES += \
-        test/main.cpp \
-        test/testGUI.cpp
-} else {
-    message(Normal build)
-}
