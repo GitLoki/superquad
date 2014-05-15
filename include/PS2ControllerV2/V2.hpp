@@ -5,17 +5,15 @@
 #include <fstream>
 #include "../../include/Tx/Tx.hpp"
 
-using namespace std;
-
 //Global Constants
 //base (neutral) value for elevator
-const int E_BASE = 139;
+const int E_BASE = 147;
 //base (neutral) value for aileron
 const int A_BASE = 127;
 const int R_BASE = 137;
 //multiplier for joystick values. used by aileron and elevator 
 //rudder is less sensitive
-const int SPEED = 25;
+const int SPEED = 40;
 
 class Controller{
 private:
@@ -27,11 +25,15 @@ private:
   int aileron;
   int elevator;
   int rudder;
-  ifstream in_stream;
+  std::ifstream in_stream;
+  int thrust;
+  //when thrust joystick released we can return to previous thrust
+  int prev_thrust;
 
   void do_lights();
   void abort();
   //TODO void resetOrientation;
+  void do_thrust();
   void thrust_up();
   void thrust_down();
   void do_elevator();

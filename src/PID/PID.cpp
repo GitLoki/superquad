@@ -27,9 +27,9 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
     //PIDlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
     
     previous_time = clock();
-    previous_delta.X = 0;
-    previous_delta.Y = 0;
-    previous_delta.Z = 0;
+	previous_delta.X = 0;
+	previous_delta.Y = 0;
+	previous_delta.Z = 0;
 };
 
 int PID::updateLocation() { 
@@ -189,3 +189,4 @@ void PID::signalHandler( int signum )
   exit(signum);  
 
 }
+

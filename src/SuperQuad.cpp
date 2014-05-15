@@ -26,6 +26,9 @@
 
 using namespace std;
 
+// centre of the Kinect's fustrum
+const Location fieldCentre(378, 263, 1000);
+
 // null location object for testing kinect results against
 Location nullLoc(0,0,0);
 
@@ -39,6 +42,11 @@ Location v_snapLimit(20, 20, 60);
 // data objects for acceleration control
 Location a_K(0.1, 0.1, 0.5);
 Location a_jerkLimit(10, 10, 30);
+
+// data objects for position control
+Location p_K(0.1, 0.1, 0.5);
+Location p_shiftLimit(30, 30, 100);
+
 
 struct argstruct {
     int argcs;
@@ -98,9 +106,8 @@ void *contfun(void *argument){
     tx->getValues(&trim);
 
     std::cout << "Initialising Control Structure..." << std::endl;
-    CascadeControl* cascadeControl = new CascadeControl(trim, v_snapLimit, v_K,
-                                                        a_jerkLimit, a_K);
-    cascadeControl->changeVelocitySetPoint(v_setPoint);
+    CascadeControl* cascadeControl = new CascadeControl(trim, p_shiftLimit, p_K, v_snapLimit, v_K, a_jerkLimit, a_K);
+    cascadeControl->changePositionSetPoint(fieldCentre);
 
     std::cout << "Transmitter Initialised. Counting down..." << std::endl;
     for ( int i = COUNTDOWN ; i >= 0 ; i-- ) {

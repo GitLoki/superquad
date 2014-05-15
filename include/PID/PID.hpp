@@ -4,6 +4,7 @@
 #include "../Kinect/Kinect.hpp"
 #include "../Tx/Tx.hpp"
 #include "../datatypes.hpp"
+#include "../config.hpp"
 #include <cmath>
 #include <unistd.h>
 
@@ -17,14 +18,16 @@
 const int STARTPOW = 180;
 const int MINDEPTH = 800;
 
+/*
 const int FPS = 100;
 const int COUNTDOWN = 15;
 
 const double XCENTRE = 378;
 const double YCENTRE = 263;
 const double ZCENTRE = 660;
+*/
 
-std::ofstream PIlogfile;
+//std::ofstream PIDlogfile;
 
 class PID {
 private:

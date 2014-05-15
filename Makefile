@@ -24,7 +24,8 @@ BINDIR := bin
 TESTDIR := test
 
 # Targets:
-MAINTARGET := superquad
+MAINTARGET := superquad_cascade
+MAIN2TARGET := superquad_pid
 MODELTESTTARGET := modeltest
 KINECTTESTTARGET := kinecttest
 KINECTIMAGECAPTURETARGET := kinectimagecapture
@@ -44,18 +45,23 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp $(SRCDIR)/PS2ControllerV2/V2.cpp
-MAINSOURCES := $(SRCDIR)/SuperQuad.cpp $(AUXSOURCES)
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp
+MAINSOURCES := $(SRCDIR)/SuperQuadCascade.cpp $(AUXSOURCES)
+MAIN2SOURCES := $(SRCDIR)/SuperQuadPID.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
 KINECTTESTSOURCES := $(SRCDIR)/Test/KinectTest.cpp $(AUXSOURCES)
 KINECTIMAGECAPTURESOURCES := $(SRCDIR)/Test/KinectImageCapture.cpp $(AUXSOURCES)
 TRACKINGTESTSOURCES := $(SRCDIR)/Test/TrackingTest.cpp $(AUXSOURCES)
 PIDTESTSOURCES := $(SRCDIR)/Test/PIDTest.cpp $(AUXSOURCES)
-CONTROLLERTESTSOURCES := $(SRCDIR)/Test/ControllerTest.cpp $(AUXSOURCES)
+CONTROLLERTESTSOURCES := $(SRCDIR)/Test/ControllerTest.cpp $(SRCDIR)/PS2ControllerV2/V2.cpp $(AUXSOURCES)
 
 # Object files:
 MAINOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
 $(MAINSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
+	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
+	$(BUILDDIR)/PhysicsModel/extApiCustom.o
+MAIN2OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
+$(MAIN2SOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o  \
 	$(BUILDDIR)/PhysicsModel/extApiPlatform.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 MODELTESTOBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,\
@@ -84,6 +90,10 @@ $(CONTROLLERTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 	$(BUILDDIR)/PhysicsModel/extApiCustom.o
 
 # Rules:
+default:
+	$(MAKE) $(MAINTARGET)
+	$(MAKE) $(MAIN2TARGET)
+
 $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
@@ -96,6 +106,19 @@ $(MAINTARGET): $(MAINOBJECTS)
 	$(BUILDDIR)/GUI/moc_gui_interface.o \
 	$(BUILDDIR)/GUI/moc_pollthread.o \
 	-o $(BINDIR)/$(MAINTARGET) $(LIB)
+
+$(MAIN2TARGET): $(MAIN2OBJECTS)
+	@mkdir -p $(BINDIR)
+	@echo " Linking..."
+	@echo " $(CXX) $^ -o $(MAIN2TARGET) $(LIB)"; $(CXX) $^ \
+	$(BUILDDIR)/GUI/qcustomplot.o \
+	$(BUILDDIR)/GUI/monitor.o \
+	$(BUILDDIR)/GUI/moc_qcustomplot.o \
+	$(BUILDDIR)/GUI/gui_interface.o \
+	$(BUILDDIR)/GUI/pollthread.o \
+	$(BUILDDIR)/GUI/moc_gui_interface.o \
+	$(BUILDDIR)/GUI/moc_pollthread.o \
+	-o $(BINDIR)/$(MAIN2TARGET) $(LIB)
 
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
 	@mkdir -p $(TESTDIR)

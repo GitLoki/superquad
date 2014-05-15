@@ -35,9 +35,9 @@ public:
   /* destructor */
   ~Tx();
 
-  /* sends a command to the Arduino; set segfault to true for debugging 
+  /* sends a command to the Arduino; set verbose to true for debugging 
      information (function expects ncurses mode) */
-  void sendCommand(char com, bool segfault = false);
+  void sendCommand(char com, bool verbose = false);
 
   // sets flips or LEDS on or off.
   void setLEDS(bool active);
@@ -84,7 +84,7 @@ private:
   boost::array<unsigned char,5> controls;
   
   /* sanitises the current command values and sends them to the transmitter */
-  void sendValues(bool segfault = false);
+  void sendValues(bool verbose = false);
 };
 
 #endif /* TX_HPP */
