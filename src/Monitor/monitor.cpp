@@ -75,32 +75,48 @@ void Monitor::get_location(Location &values)
 
 bool Monitor::get_light()
 {
+    bool tempLights;
+
     pthread_mutex_lock (&monitor_lock);
-    return lights;
+    tempLights = lights;
     changed.lights = false;
     pthread_mutex_unlock (&monitor_lock);
+
+    return tempLights;
 }
 
 bool Monitor::get_land()
 {
+    bool tempLand;
+
     pthread_mutex_lock (&monitor_lock);
-    return land_quad;
+    tempLand = land_quad;
     changed.land = false;
     pthread_mutex_unlock (&monitor_lock);
+
+    return tempLand;
 }
 
 bool Monitor::get_stop()
 {
+    bool tempStop;
+
     pthread_mutex_lock (&monitor_lock);
-    return emergency;
+    tempStop = emergency;
     changed.stop = false;
     pthread_mutex_unlock (&monitor_lock);
+
+    return tempStop;
 }
 
 bool Monitor::get_snap()
 {
+    bool tempSnap;
+
     pthread_mutex_lock (&monitor_lock);
-    return snap_lim;
+    tempSnap = snap_lim;
     changed.snap = false;
     pthread_mutex_unlock (&monitor_lock);
+
+    return tempSnap;
 }

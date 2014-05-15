@@ -14,6 +14,6 @@ const double ZCENTRE = 1000;
 const int FPS = 50;
 
 // amount of time allowed to put quadcopter in launch cradle and hide under a table
-const int COUNTDOWN = 15;
+const int COUNTDOWN = 2;
 
 #endif // CONFIG_HPP

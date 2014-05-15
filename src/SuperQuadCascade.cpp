@@ -93,7 +93,7 @@ int main (int argc, char** argv) {
 void *contfun(void *argument){
 
     Monitor *mon = ((argstruct*) argument)->m;
-    ChangeTracker changed = mon->changed;
+    ChangeTracker changed;
 
     Location currentLocation, destination, flightVariables;
     
@@ -124,6 +124,7 @@ void *contfun(void *argument){
 
     while (true) {
 
+      changed = mon->changed;
 
       //Check for changes in monitor
       if(changed.target){
@@ -131,16 +132,17 @@ void *contfun(void *argument){
       }
       
       if(changed.lights){
-        //set lights according to mon->get_light()
+	tx->setLEDS(mon->get_light());
       }
       if(changed.land){
         //land if mon->get_land() is true
       }
       if(changed.stop){
-        //kill motors if mon->get_stop() is true
+	tx->halt();
+	return NULL;
       }
       if(changed.snap){
-        //turn on/off snap limiting according to mon->get_snap()
+	tx->setFlips(mon->get_snap());
       }
 
 
