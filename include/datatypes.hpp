@@ -51,19 +51,19 @@ Location operator/(Location l, double d);
 
 std::ostream& operator<<(std::ostream& os, const Location& l);
 
-struct kinect_frustum
+struct KinectFrustum
 {
     double near;
     double far;
-    double ver_angle;
-    double hor_angle;
+    double vertAngle;
+    double horzAngle;
     double left; //left near edge
     double right; //right near edge
     double top; //top near edge
     double bottom; //bottom near edge
 
     //constructor
-    kinect_frustum(double _near, double _far);
+    KinectFrustum(double _near, double _far);
 
     //check if a point is inside frustum
     bool inside(Location p);

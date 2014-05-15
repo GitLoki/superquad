@@ -14,7 +14,7 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     QMainWindow(0),
     ui(new Ui::GUI_interface),
     mon(_mon),
-    valid_space(ZMIN, ZMAX)
+    validSpace(ZMIN, ZMAX)
 {
     ui->setupUi(this);
     qRegisterMetaType<Location>("Location");
@@ -71,8 +71,8 @@ GUI_interface::GUI_interface(Monitor *_mon) :
     poll->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), poll, SLOT(poll()));
-    connect(poll, SIGNAL(setNewLoc(Location)), this, SLOT(updateLoc(Location)));
-    //connect(thread, SIGNAL(destroyed()), poll, SLOT(deleteLater()));
+    connect(poll, SIGNAL(set_new_loc(Location)), this, SLOT(update_location(Location)));
+    connect(thread, SIGNAL(destroyed()), poll, SLOT(deleteLater()));
 
     thread->start();
 }
@@ -93,15 +93,15 @@ GUI_interface::~GUI_interface()
  *****************/
 
 //SLOT: update current quad location on display
-void GUI_interface::updateLoc(Location new_location)
+void GUI_interface::update_location(Location newLoc)
 {
     //update text boxes on GUI
-    ui->positionX->setNum(new_location.X);
-    ui->positionY->setNum(new_location.Y);
-    ui->positionZ->setNum(new_location.Z);
+    ui->positionX->setNum(newLoc.X);
+    ui->positionY->setNum(newLoc.Y);
+    ui->positionZ->setNum(newLoc.Z);
 
     //refresh location plot
-    plot_Location(new_location);
+    plot_Location(newLoc);
 }
 
 //SLOT: "Update Values" clicked
@@ -145,28 +145,28 @@ void GUI_interface::on_AdvCheck_toggled(bool checked)
 //SLOT: target x value changed
 void GUI_interface::target_upd_x(int newval)
 {
-    target_buff.X = newval;
-    plot_Target(target_buff);
+    targetBuff.X = newval;
+    plot_Target(targetBuff);
 
-    valid_warning(!valid_space.inside(target_buff));
+    valid_target(validSpace.inside(targetBuff));
 }
 
 //SLOT: target y value changed
 void GUI_interface::target_upd_y(int newval)
 {
-    target_buff.Y = newval;
-    plot_Target(target_buff);
+    targetBuff.Y = newval;
+    plot_Target(targetBuff);
 
-    valid_warning(!valid_space.inside(target_buff));
+    valid_target(validSpace.inside(targetBuff));
 }
 
 //SLOT: target z value changed
 void GUI_interface::target_upd_z(int newval)
 {
-    target_buff.Z = newval;
-    plot_Target(target_buff);
+    targetBuff.Z = newval;
+    plot_Target(targetBuff);
 
-    valid_warning(!valid_space.inside(target_buff));
+    valid_target(validSpace.inside(targetBuff));
 }
 
 /*************************
@@ -264,15 +264,18 @@ void GUI_interface::plotWheel(QWheelEvent *wheelEvent)
 }
 
 //Ensure that target is visible by kinect
-void GUI_interface::valid_warning(bool warn)
+void GUI_interface::valid_target(bool valid)
 {
-    if(warn){
-        ui->WarnLabel->setText("WARNING: INVALID TARGET");
-        if (ui->ButtonUpdateValues->isEnabled())
-            ui->ButtonUpdateValues->setEnabled(false);
-    } else {
+    //location is valid - enable button, remove warning
+    if(valid){
         ui->WarnLabel->setText("");
         if (!(ui->ButtonUpdateValues->isEnabled()))
             ui->ButtonUpdateValues->setEnabled(true);
+
+    //location is invalid - disable button, show warning
+    } else {
+        ui->WarnLabel->setText("WARNING: INVALID TARGET");
+        if (ui->ButtonUpdateValues->isEnabled())
+            ui->ButtonUpdateValues->setEnabled(false);
     }
 }

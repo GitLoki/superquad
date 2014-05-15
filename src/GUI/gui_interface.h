@@ -38,17 +38,17 @@ private:
     QCPScatterStyle targetStyle;
 
     //valid target locations
-    kinect_frustum valid_space;
+    KinectFrustum validSpace;
 
     //vector to hold values in GUI, as monitor doesn't auto-update
-    Location target_buff;
+    Location targetBuff;
 
 
     //plotting functions
     void init_Plot();
     void plot_Location(Location location);
     void plot_Target(Location target);
-    void valid_warning(bool warn);
+    void valid_target(bool valid);
 
 public:
     //constructor/destructor
@@ -68,12 +68,11 @@ private slots:
     void target_upd_x(int newval);
     void target_upd_y(int newval);
     void target_upd_z(int newval);
-    void updateLoc(Location new_location);
+    void update_location(Location new_location);
 
     //Plot mouse event slots
     void plotMousePress(QMouseEvent* event);
     void plotWheel(QWheelEvent *wheelEvent);
-
 };
 
 #endif // GUI_INTERFACE_H
