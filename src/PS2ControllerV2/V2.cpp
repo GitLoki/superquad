@@ -7,15 +7,21 @@ Controller::Controller(Tx* t){
   lights = 1; aileron = A_BASE; elevator = E_BASE; rudder = R_BASE;
   in_stream.open("/dev/input/js0");
   
+  prev_thrust = 0;
+  thrust = 70;
+
   //Check controller input found
   if(in_stream.fail()){
-    cout << "Controller not found" << endl;
+    std::cout << "Controller not found" << std::endl;
     exit(1);
   }
   //prepare for flight
-  tx->setThrust(80);
-  
-  //first 9x16 chars are junk - discarded
+  tx->setThrust(thrust);
+  tx->setElevator(E_BASE);
+  tx->setRudder(R_BASE);
+  tx->setAileron(A_BASE);  
+
+  //first 9x16 chars are junk - discard them
   for(int i = 0; i!=144; i++){ 
     in_stream.get(holderChar);
   }  
@@ -38,24 +44,50 @@ void Controller::abort(){
 
 void Controller::thrust_up(){
   //R1 up
-  if(controllerCommand[4] == 1) tx->sendCommand('+');
+  if(controllerCommand[4] == 1){
+    tx->sendCommand('+');
+    thrust += 10;
+    prev_thrust += 10; //NEED THIS?
+  }
 }
 
 void Controller::thrust_down(){
   //R2 down
-  if(controllerCommand[4] == 1) tx->sendCommand('-');
+  if(controllerCommand[4] == 1){
+    tx->sendCommand('-');
+    thrust -= 10;
+    prev_thrust -= 10; //NEED THIS?
+  }
 }
+
+void Controller::do_thrust(){
+  //power stick released
+  if(controllerCommand[4] == 0){ thrust = prev_thrust;}
+  //if power up
+  else if(controllerCommand[5] < 0){
+    //set prev thrust to thrust, so we can return to original thrust
+    //when stick released
+    prev_thrust = thrust;
+    //limit thrust to 255
+    thrust = std::min((thrust - ((controllerCommand[5]/128)*SPEED)), 255);
+  }
+  //otherwise power down
+  else if(controllerCommand[5] > 0){
+    prev_thrust = thrust;
+    thrust = std::max((thrust-((controllerCommand[5]/127)*SPEED)), 0);
+  }
+  tx->setThrust(thrust);
+}
+
 
 void Controller::do_elevator(){
   //stop
-  if(controllerCommand[4] == 0) elevator = E_BASE;
+  if(controllerCommand[5] == 0){ elevator = E_BASE;}
   //forwards
   //two's compliment binary: -128 to 127
-  else if(controllerCommand[5] < 0){ 
-    elevator = E_BASE - ((controllerCommand[5]/128)*SPEED);
-    cout << ((controllerCommand[5]/128)*SPEED) << endl;}
+  else if(controllerCommand[5] < 0){ elevator = E_BASE + ((controllerCommand[5]/128)*SPEED);}
   //backwards
-  else elevator = E_BASE - ((controllerCommand[5]/127)*SPEED);
+  else if(controllerCommand[5] > 0){ elevator = E_BASE + ((controllerCommand[5]/127)*SPEED);}
   //send new Euler angle value to tx (arduino)
   tx->setElevator(elevator);
 }
@@ -63,24 +95,26 @@ void Controller::do_elevator(){
 void Controller::do_aileron(){
   //Left joystick, x-axis
   //stop
-  if(controllerCommand[4] == 0) aileron = A_BASE;
+  if(controllerCommand[5] == 0){ aileron = A_BASE;}
   //roll left
-  else if(controllerCommand[5] < 0) aileron = A_BASE - ((controllerCommand[5]/128)*SPEED);
+  else if(controllerCommand[5] < 0){ aileron = A_BASE + ((controllerCommand[5]/128)*SPEED);}
   //roll right
-  else aileron = A_BASE + ((controllerCommand[5]/128)*SPEED);
+  else if(controllerCommand[5] > 0){ aileron = A_BASE + ((controllerCommand[5]/127)*SPEED);}
   tx->setAileron(aileron);
 }
 
 void Controller::do_rudder(){
   //Right joystick, x-axis
   //stop 
-  if(controllerCommand[4] == 0) rudder = R_BASE;
+  if(controllerCommand[5] == 0){ rudder = R_BASE;}
   //turn right
-  else if(controllerCommand[5] > 0) rudder = R_BASE + ((controllerCommand[5]/127)*100);
-  //turn left
-  else rudder = R_BASE - ((controllerCommand[5]/128)*100);
+  else if(controllerCommand[5] < 0){ rudder = R_BASE + ((controllerCommand[5]/128)*100);}
+  //std::cout << "RIGHT VALUE IS " <<  controllerCommand[5] << std::endl;}
+//turn left
+  else if(controllerCommand[5] > 0){ rudder = R_BASE + ((controllerCommand[5]/127)*100);}
+  //std::cout << "LEFT VALUE IS " << controllerCommand[5] << std::endl;}
   tx->setRudder(rudder);
-}
+  }
 
 void Controller::do_switch(){
   //Interpret controller instruction
@@ -93,6 +127,9 @@ void Controller::do_switch(){
     break;
   case 2: 
     do_rudder();
+    break;
+  case 3:
+    do_thrust();
     break;
   case 6:
     thrust_up();
