@@ -109,10 +109,8 @@ void Controller::do_rudder(){
   if(controllerCommand[5] == 0){ rudder = R_BASE;}
   //turn right
   else if(controllerCommand[5] < 0){ rudder = R_BASE - ((controllerCommand[5]/128)*100);}
-  //std::cout << "RIGHT VALUE IS " <<  controllerCommand[5] << std::endl;}
 //turn left
   else if(controllerCommand[5] > 0){ rudder = R_BASE - ((controllerCommand[5]/127)*100);}
-  //std::cout << "LEFT VALUE IS " << controllerCommand[5] << std::endl;}
   tx->setRudder(rudder);
   }
 
@@ -120,16 +118,16 @@ void Controller::do_switch(){
   //Interpret controller instruction
   switch(controllerCommand[7]){
   case 0:
-    do_aileron();
+    set_aileron();
     break;
   case 1:
-    do_elevator();
+    set_elevator();
     break;
   case 2: 
-    do_rudder();
+    set_rudder();
     break;
   case 3:
-    do_thrust();
+    set_thrust();
     break;
   case 6:
     thrust_up();
@@ -138,7 +136,7 @@ void Controller::do_switch(){
     thrust_down();
     break;
   case 8:
-    do_lights();
+    set_lights();
     break;
   case 9:
     abort();
@@ -155,7 +153,7 @@ void Controller::flight_loop(){
 	controllerCommand[i] = int(holderChar);
       }
       //interpret and execute instruction
-      do_switch();
+      set_switch();
     }
   }
 }

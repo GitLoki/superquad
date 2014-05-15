@@ -30,16 +30,16 @@ private:
   //when thrust joystick released we can return to previous thrust
   int prev_thrust;
 
-  void do_lights();
+  void set_lights();
   void abort();
   //TODO void resetOrientation;
-  void do_thrust();
+  void set_thrust();
   void thrust_up();
   void thrust_down();
-  void do_elevator();
-  void do_aileron();
-  void do_rudder();
-  void do_switch();
+  void set_elevator();
+  void set_aileron();
+  void set_rudder();
+  void set_switch();
 
 public:
   Controller(Tx* t);
