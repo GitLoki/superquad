@@ -13,6 +13,9 @@
 struct ChangeTracker
 {
     bool target,lights,land,stop,snap;
+
+    ChangeTracker():target(false),lights(false),land(false),stop(false),snap(false){}
+
 };
 
 
