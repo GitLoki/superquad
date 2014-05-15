@@ -45,7 +45,7 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp $(SRCDIR)/CascadeControl/PositionControl.cpp $(SRCDIR)/CascadeControl/Control.cpp 
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp $(SRCDIR)/CascadeControl/PositionControl.cpp $(SRCDIR)/CascadeControl/Control.cpp  $(SRCDIR)/Monitor/monitor.cpp
 MAINSOURCES := $(SRCDIR)/SuperQuadCascade.cpp $(AUXSOURCES)
 MAIN2SOURCES := $(SRCDIR)/SuperQuadPID.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)
@@ -99,7 +99,6 @@ $(MAINTARGET): $(MAINOBJECTS)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ \
 	$(BUILDDIR)/GUI/qcustomplot.o \
-	$(BUILDDIR)/GUI/monitor.o \
 	$(BUILDDIR)/GUI/moc_qcustomplot.o \
 	$(BUILDDIR)/GUI/gui_interface.o \
 	$(BUILDDIR)/GUI/pollthread.o \
@@ -112,7 +111,6 @@ $(MAIN2TARGET): $(MAIN2OBJECTS)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(MAIN2TARGET) $(LIB)"; $(CXX) $^ \
 	$(BUILDDIR)/GUI/qcustomplot.o \
-	$(BUILDDIR)/GUI/monitor.o \
 	$(BUILDDIR)/GUI/moc_qcustomplot.o \
 	$(BUILDDIR)/GUI/gui_interface.o \
 	$(BUILDDIR)/GUI/pollthread.o \
@@ -170,6 +168,7 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/PID
 	@mkdir -p $(BUILDDIR)/CascadeControl
 	@mkdir -p $(BUILDDIR)/PS2ControllerV2
+	@mkdir -p $(BUILDDIR)/Monitor
 	@echo " $(CXX) $(CFLAGS) $(INC) -c -o $@ $<"; $(CXX) $(CFLAGS) \
 $(INC) -c -o $@ $<
 

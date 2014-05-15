@@ -27,6 +27,7 @@ Location CascadeControl::query(Location newPosition, Location v_snapLimit) {
 		oldVelocity = currentVelocity;
 		oldAcceleration = currentAcceleration;
 		return startSettings;
+
 	}
 	
 	// calculate time since last query
