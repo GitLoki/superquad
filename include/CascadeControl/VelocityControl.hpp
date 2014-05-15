@@ -11,7 +11,7 @@ private:
 
 public:
     VelocityControl(Location _K, Location _snapLimit) :
-        Control(_K), snapLimit(_snapLimit) {}
+      Control(_K), snapLimit(_snapLimit) {}
 
     //VelocityControl() : K(0.1, -0.1, 1.0), snapLimit(5, 5, 15) {};
 

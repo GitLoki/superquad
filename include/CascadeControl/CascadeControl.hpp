@@ -2,6 +2,7 @@
 #define CASCADE_CONTROL_HPP
 #include "../datatypes.hpp"
 #include "../config.hpp"
+#include "Control.hpp"
 #include "VelocityControl.hpp"
 #include "AccelerationControl.hpp"
 #include "PositionControl.hpp"

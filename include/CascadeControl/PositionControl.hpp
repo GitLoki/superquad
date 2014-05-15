@@ -11,7 +11,7 @@ private:
 
 public:
     PositionControl(Location _K, Location _shiftLimit) :
-        Control(_K), shiftLimit(_shiftLimit) {};
+      Control(_K), shiftLimit(_shiftLimit) {};
 
     Location query(Location position);
 };
