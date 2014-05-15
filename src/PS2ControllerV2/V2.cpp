@@ -85,9 +85,9 @@ void Controller::do_elevator(){
   if(controllerCommand[5] == 0){ elevator = E_BASE;}
   //forwards
   //two's compliment binary: -128 to 127
-  else if(controllerCommand[5] < 0){ elevator = E_BASE + ((controllerCommand[5]/128)*SPEED);}
+  else if(controllerCommand[5] < 0){ elevator = E_BASE - ((controllerCommand[5]/128)*SPEED);}
   //backwards
-  else if(controllerCommand[5] > 0){ elevator = E_BASE + ((controllerCommand[5]/127)*SPEED);}
+  else if(controllerCommand[5] > 0){ elevator = E_BASE - ((controllerCommand[5]/127)*SPEED);}
   //send new Euler angle value to tx (arduino)
   tx->setElevator(elevator);
 }
@@ -97,9 +97,9 @@ void Controller::do_aileron(){
   //stop
   if(controllerCommand[5] == 0){ aileron = A_BASE;}
   //roll left
-  else if(controllerCommand[5] < 0){ aileron = A_BASE + ((controllerCommand[5]/128)*SPEED);}
+  else if(controllerCommand[5] < 0){ aileron = A_BASE - ((controllerCommand[5]/128)*SPEED);}
   //roll right
-  else if(controllerCommand[5] > 0){ aileron = A_BASE + ((controllerCommand[5]/127)*SPEED);}
+  else if(controllerCommand[5] > 0){ aileron = A_BASE - ((controllerCommand[5]/127)*SPEED);}
   tx->setAileron(aileron);
 }
 
@@ -108,10 +108,10 @@ void Controller::do_rudder(){
   //stop 
   if(controllerCommand[5] == 0){ rudder = R_BASE;}
   //turn right
-  else if(controllerCommand[5] < 0){ rudder = R_BASE + ((controllerCommand[5]/128)*100);}
+  else if(controllerCommand[5] < 0){ rudder = R_BASE - ((controllerCommand[5]/128)*100);}
   //std::cout << "RIGHT VALUE IS " <<  controllerCommand[5] << std::endl;}
 //turn left
-  else if(controllerCommand[5] > 0){ rudder = R_BASE + ((controllerCommand[5]/127)*100);}
+  else if(controllerCommand[5] > 0){ rudder = R_BASE - ((controllerCommand[5]/127)*100);}
   //std::cout << "LEFT VALUE IS " << controllerCommand[5] << std::endl;}
   tx->setRudder(rudder);
   }
