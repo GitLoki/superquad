@@ -27,7 +27,7 @@ Controller::Controller(Tx* t){
   }  
 }
 
-void Controller::do_lights(){
+void Controller::set_lights(){
   //Change boolean value in Tx
   //controllerCommand[4] == 0 means 'unpress' so do nothing
   if(controllerCommand[4] == 1){
@@ -60,7 +60,7 @@ void Controller::thrust_down(){
   }
 }
 
-void Controller::do_thrust(){
+void Controller::set_thrust(){
   //power stick released
   if(controllerCommand[4] == 0){ thrust = prev_thrust;}
   //if power up
@@ -80,7 +80,7 @@ void Controller::do_thrust(){
 }
 
 
-void Controller::do_elevator(){
+void Controller::set_elevator(){
   //stop
   if(controllerCommand[5] == 0){ elevator = E_BASE;}
   //forwards
@@ -92,7 +92,7 @@ void Controller::do_elevator(){
   tx->setElevator(elevator);
 }
 
-void Controller::do_aileron(){
+void Controller::set_aileron(){
   //Left joystick, x-axis
   //stop
   if(controllerCommand[5] == 0){ aileron = A_BASE;}
@@ -103,7 +103,7 @@ void Controller::do_aileron(){
   tx->setAileron(aileron);
 }
 
-void Controller::do_rudder(){
+void Controller::set_rudder(){
   //Right joystick, x-axis
   //stop 
   if(controllerCommand[5] == 0){ rudder = R_BASE;}
@@ -114,7 +114,7 @@ void Controller::do_rudder(){
   tx->setRudder(rudder);
   }
 
-void Controller::do_switch(){
+void Controller::set_switch(){
   //Interpret controller instruction
   switch(controllerCommand[7]){
   case 0:
