@@ -2,27 +2,22 @@
 #define ACCEL_CONTROL_HPP
 #include "../datatypes.hpp"
 #include "../include/config.hpp"
+#include "Control.hpp"
 
-class AccelerationControl {
+class AccelerationControl : public Control {
 
 private:
-
-    Location K;
-    Location currentValue;
-    Location setPoint;
     Location jerkLimit;
 
 public:
     AccelerationControl(Location _startPoint, Location _K, Location _jerkLimit) :
-      K(_K), jerkLimit(_jerkLimit), currentValue(_startPoint) {};
+        Control(_k), jerkLimit(_jerkLimit), currentValue(_startPoint) {};
 
-//  currentAcceleration(_currentAcceleration), currentValue(_startPoint)
+    //currentAcceleration(_currentAcceleration), currentValue(_startPoint)
 
-  //AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
-    
-    void changeSetPoint(Location _setPoint);
+    //AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
 
     Location query(Location acceleration);
 };
 
-#endif
+#endif //ACCEL_CONTROL_HPP

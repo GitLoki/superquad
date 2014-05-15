@@ -2,24 +2,20 @@
 #define VELOCITY_CONTROL_HPP
 #include "../datatypes.hpp"
 #include "../include/config.hpp"
+#include "Control.hpp"
 
-class VelocityControl{
+class VelocityControl : public Control {
  
 private:
-    Location K;
-    Location currentValue;
-    Location setPoint;
     Location snapLimit;
 
 public:
     VelocityControl(Location _K, Location _snapLimit) :
-                    K(_K), snapLimit(_snapLimit) {}
+        Control(_K), snapLimit(_snapLimit) {}
 
     //VelocityControl() : K(0.1, -0.1, 1.0), snapLimit(5, 5, 15) {};
-    
-    void changeSetPoint(Location _setPoint);
 
-  Location query(Location velocity);
+    Location query(Location velocity);
 };
 
-#endif
+#endif //VELOCITY_CONTROL_HPP

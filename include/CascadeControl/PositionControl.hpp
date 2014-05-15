@@ -2,24 +2,18 @@
 #define POSITION_CONTROL_HPP
 #include "../datatypes.hpp"
 #include "../include/config.hpp"
+#include "Control.hpp"
 
-class PositionControl {
+class PositionControl : public Control {
 
 private:
-
-    Location K;
-    Location currentValue;
-    Location setPoint;
     Location shiftLimit;
 
 public:
     PositionControl(Location _K, Location _shiftLimit) :
-      K(_K), shiftLimit(_shiftLimit) {};
-
-    void changeSetPoint(Location _setPoint);
+        Control(_K), shiftLimit(_shiftLimit) {};
 
     Location query(Location position);
 };
 
-#endif 
-// LOC_CONTROL_HPP
+#endif // POSITION_CONTROL_HPP

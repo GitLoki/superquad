@@ -9,11 +9,10 @@ private:
     Location K;
     Location currentValue;
     Location setPoint;
-    Location snapLimit;
 
 public:
     Control(Location _K, Location _snapLimit) :
-                    K(_K), snapLimit(_snapLimit) {}
+                    K(_K){}
 
     void changeSetPoint(Location _setPoint);
 

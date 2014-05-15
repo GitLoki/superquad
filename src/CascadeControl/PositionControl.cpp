@@ -1,9 +1,5 @@
 #include "../../include/CascadeControl/PositionControl.hpp"
 
-void PositionControl::changeSetPoint(Location _setPoint) {
-    setPoint = _setPoint;
-}
-
 Location PositionControl::query(Location position) {
 	
     Location delta_P = K * (setPoint - position);
