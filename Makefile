@@ -45,7 +45,7 @@ endif
 
 # Source files:
 SRCEXT := cpp
-AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp
+AUXSOURCES := $(SRCDIR)/Controller/boost_xbox_controller.cpp $(SRCDIR)/Kinect/Kinect.cpp $(SRCDIR)/Kinect/camera.cpp $(SRCDIR)/PhysicsModel/PhysicsModel.cpp  $(SRCDIR)/Tx/Tx.cpp  $(SRCDIR)/PID/PID.cpp $(SRCDIR)/datatypes.cpp $(SRCDIR)/CascadeControl/CascadeControl.cpp $(SRCDIR)/CascadeControl/AccelerationControl.cpp $(SRCDIR)/CascadeControl/VelocityControl.cpp $(SRCDIR)/CascadeControl/PositionControl.cpp 
 MAINSOURCES := $(SRCDIR)/SuperQuadCascade.cpp $(AUXSOURCES)
 MAIN2SOURCES := $(SRCDIR)/SuperQuadPID.cpp $(AUXSOURCES)
 MODELTESTSOURCES :=  $(SRCDIR)/Test/ModelTest.cpp $(AUXSOURCES)

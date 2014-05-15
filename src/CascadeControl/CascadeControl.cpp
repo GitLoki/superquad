@@ -17,12 +17,12 @@ CascadeControl::~CascadeControl() {
 }
 
 Location CascadeControl::query(Location newPosition, Location v_snapLimit) {
-	oldVerbose = currentVerbose;
-	currentVerbose = newVerbose;
+        oldPosition = currentPosition;
+        currentPosition = newPosition;
 
 	if (!counter) {
 	    oldTime = clock();
-		currentPosition = newVerbose;
+		currentPosition = newPosition;
 		counter++;
 		oldVelocity = currentVelocity;
 		oldAcceleration = currentAcceleration;
@@ -34,9 +34,8 @@ Location CascadeControl::query(Location newPosition, Location v_snapLimit) {
 	timeInterval = (newTime - oldTime) / CLOCKS_PER_SEC;
 	oldTime = newTime;
 
-
 	// calculate new velocity and acceleration
-	deltaP = currentVerbose - oldVerbose;
+	deltaP = currentPosition - oldPosition;
 	currentVelocity = (0.5 * currentVelocity) + (0.5 * deltaL / timeInterval);
 	deltaV = currentVelocity - oldVelocity;
 	currentAcceleration = (0.5 * currentAcceleration) + (0.5 * deltaV / timeInterval);
@@ -44,7 +43,7 @@ Location CascadeControl::query(Location newPosition, Location v_snapLimit) {
 	          << "Acceleration: " << currentAcceleration << std::endl;
 
 	if (counter % positionFrequency == 0) {
-	         velocitySetPoint = positionControl->query(currentVerbose);
+	        velocitySetPoint = positionControl->query(currentPosition);
 		velocityControl->changeSetPoint(velocitySetPoint);
 		counter = 0;
 		std::cout << "Velocity setpoint: " << velocitySetPoint << std::endl;

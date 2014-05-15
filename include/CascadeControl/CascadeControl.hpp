@@ -4,6 +4,7 @@
 #include "../config.hpp"
 #include "VelocityControl.hpp"
 #include "AccelerationControl.hpp"
+#include "PositionControl.hpp"
 #include <ctime>
 
 class CascadeControl {
@@ -16,9 +17,9 @@ private:
 	  currentVelocity, oldVelocity, 
 	  currentAcceleration, oldAcceleration, 
 	  startSettings, currentSettings,
-	  deltaP, deltaV, 
+          deltaP, deltaV, deltaL, 
 	  velocitySetPoint,
-	  accelerationSetPoint;
+          accelerationSetPoint;
 
 	double oldTime, newTime, timeInterval;
 	int counter = 0,

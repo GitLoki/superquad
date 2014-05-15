@@ -8,9 +8,9 @@ Location PositionControl::query(Location position) {
 	
     Location delta_P = K * (setPoint - position);
 
-    delta_A.limit(shiftLimit);
+    delta_P.limit(shiftLimit);
 
-    currentValue += delta_A;
+    currentValue += delta_P;
 
     if(currentValue.X > 255)
       currentValue.X = 255;
