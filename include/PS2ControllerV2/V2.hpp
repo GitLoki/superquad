@@ -18,6 +18,7 @@ const int SPEED = 40;
 class Controller{
 private:
   Tx* tx;
+  //Next char in input stream
   char holderChar;
   int controllerCommand[8];
   int lights;
@@ -30,16 +31,25 @@ private:
   //when thrust joystick released we can return to previous thrust
   int prev_thrust;
 
+  //Button 9
   void set_lights();
+  //Button 10
   void abort();
-  //TODO void resetOrientation;
+  //Right joystick, vertical axis
   void set_thrust();
+  //R1
   void thrust_up();
+  //R2
   void thrust_down();
+  //Left joystick, vertical axis
   void set_elevator();
+  //Left joystick, horizontal axis
   void set_aileron();
+  //Right joystick, horizontal axis
   void set_rudder();
+  //interprets controller input
   void set_switch();
+  //Stabilises flight, thrust aims to hover
   void resetOrientation();
 
 public:
