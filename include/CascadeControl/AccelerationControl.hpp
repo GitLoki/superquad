@@ -13,10 +13,6 @@ public:
   AccelerationControl(Location _startPoint, Location _K, Location _jerkLimit) :
     Control(_K, _startPoint), jerkLimit(_jerkLimit) {};
   
-  //currentAcceleration(_currentAcceleration), currentValue(_startPoint)
-  
-  //AccelerationControl(Location _startPoint): currentValue(_startPoint), K(0.1, 0.1, 0.5), jerkLimit(5, 5, 15) {};
-
   Location query(Location acceleration);
 };
 

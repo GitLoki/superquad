@@ -10,7 +10,8 @@ Controller::Controller(Tx* t){
   
   prev_thrust = 0;
   thrust = 70;
- 
+  speed_increment = 15;
+
   //Check controller input found
   if(in_stream.fail()){
     std::cout << "Controller not found" << std::endl;
@@ -47,8 +48,8 @@ void Controller::thrust_up(){
   //R1 up
   if(controllerCommand[4] == 1){
     tx->sendCommand('+');
-    thrust += 10;
-    prev_thrust += 10; //NEED THIS?
+    thrust += speed_increment;
+    prev_thrust += speed_increment; //NEED THIS?
   }
 }
 
@@ -56,8 +57,8 @@ void Controller::thrust_down(){
   //R2 down
   if(controllerCommand[4] == 1){
     tx->sendCommand('-');
-    thrust -= 10;
-    prev_thrust -= 10; //NEED THIS?
+    thrust -= speed_increment;
+    prev_thrust -= speed_increment; //NEED THIS?
   }
 }
 

@@ -9,6 +9,7 @@
 
 class Navigator {
 private:
+
     static const double epsilon = 5;
     static const double loop_time = 1000; 
     Location* waypoints;
@@ -16,7 +17,9 @@ private:
     Location currentlocation; 
     int goToWaypoint(Location* Waypoint);
     double findDistance(Location* A, Location* B);
+
 public:
+
     Navigator(){};
     int followWaypoints(Location* Waypoints, int NumberOfWaypoints);
 };

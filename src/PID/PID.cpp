@@ -55,13 +55,13 @@ int PID::updateRatios() {
     // lower parameters  => more aggressive correction 
 
     // Proportional parameters
-    const double KP_x = 7000;
-    const double KP_y = 7000;
+    const double KP_x = 6500;
+    const double KP_y = 6500;
     const double KP_z = 10000000;
 
     // Integral parameters
-    const double KI_x = 100000;
-    const double KI_y = 100000;
+    const double KI_x = 50000;
+    const double KI_y = 50000;
     const double KI_z = 100000;
 
     // Differential parameters
@@ -134,9 +134,9 @@ int PID::goToDestination(Location& _currentLocation) {
     }
  
 
-    if(control_vals[THROTTLE - 1] > 180) {
+    if(control_vals[THROTTLE - 1] > 220) {
       std::cout << "Throttle: " << control_vals[THROTTLE] << std::endl; 
-      control_vals[THROTTLE - 1] = 180;
+      control_vals[THROTTLE - 1] = 220;
     }
 
     std::cout << time_diff << "ms :: " 

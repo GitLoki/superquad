@@ -18,7 +18,7 @@ void updateVectors(int time, Location currentLocation, Location lastLocation, Lo
     acceleration.Z = (currentVelocity.Z - lastVelocity.Z) / time;
 }
     
-
+// this program whether tests the cascade control is functioning correctly
 int main() {
     Tx* tx = new Tx;
     Kinect* kinect = new Kinect;

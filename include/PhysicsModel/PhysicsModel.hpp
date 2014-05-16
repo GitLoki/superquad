@@ -13,58 +13,58 @@ extern "C" {
 class PhysicsModel{
 
 public:
-  /* Constructor */
-  PhysicsModel();
+	/* Constructor */
+	PhysicsModel();
 
-  /* Destructor */
-  ~PhysicsModel();
+	/* Destructor */
+	~PhysicsModel();
 
-  /* Initialises communication with VREP and sets object handles, returns -1 if 
-     there is a communication error, else returns clientID */
-  int init();
+	/* Initialises communication with VREP and sets object handles, returns -1 if 
+	   there is a communication error, else returns clientID */
+	int init();
 
-  /* Starts the simulation running */
-  int startSimulation();
+	/* Starts the simulation running */
+	int startSimulation();
 
-  /* Sends the command corresponding to 'ch' to the physics model */
-  void sendCommand(char ch);
+	/* Sends the command corresponding to 'ch' to the physics model */
+	void sendCommand(char ch);
 
-  simxInt err;     
+	simxInt err;     
 
-  void stop();
+	// stop the simulation
+	void stop();
+
+	// fetch the Euler angles of the drone
+	void getRotation(double angles[3]);
+
+	// fetch the position of the drone
+	void getPosition(double position[3]);
   
-  void getRotation(double angles[3]);
-  
-  void getPosition(double position[3]);
-  
-  void rectify();
+	// rectifies position inside model
+	void rectify();
 
-  void moveTarget(double coords[3]);
+	// sets the location that the quadcopter is heading towards inside the model
+	void moveTarget(double coords[3]);
 
-  void setPosition(double position[3]);
+	// sets the position of the quadcopter inside the model
+	void setPosition(double position[3]);
   
-  double kinX, kinY, kinZ;
+	double kinX, kinY, kinZ;
 
 private:
-  simxInt clientID;
-  simxInt errGetHandle[6];
-  simxInt quadHandle, targetHandle, propellerRespondable[4];
-  simxInt scriptHandle;
+	simxInt clientID;
+	simxInt errGetHandle[6];
+	simxInt quadHandle, targetHandle, propellerRespondable[4];
+	simxInt scriptHandle;
 
-  int thrustVal;
-  /*
-  simxUChar thrustStr[2];
-  simxUChar** replyData;
-  simxInt replySize;
-  */
+	int thrustVal;
 
-  simxFloat* quadPosWrite;
-  simxFloat* quadPosRead;
-  simxFloat* eulerAnglesRead;
-  simxFloat* eulerAnglesWrite;
+	simxFloat* quadPosWrite;
+	simxFloat* quadPosRead;
+	simxFloat* eulerAnglesRead;
+	simxFloat* eulerAnglesWrite;
 
-  // TO BE CALCULATED
-  double coord_ratio;
+	double coord_ratio;
 };
 
 #endif /* PHYSICSMODEL_HPP */

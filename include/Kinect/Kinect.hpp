@@ -4,13 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-
 #include "camera.h"
 #include "../../include/datatypes.hpp"
 
+// useful constants
 const double PI = 3.14159265;
 const int WIDTH = 640;
 const int HEIGHT = 480;

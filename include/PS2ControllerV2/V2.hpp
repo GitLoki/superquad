@@ -5,14 +5,15 @@
 #include <fstream>
 #include "../../include/Tx/Tx.hpp"
 
-//Global Constants
+//Global Constants. Seperate variables to allow tuning
 //base (neutral) value for elevator
-const int E_BASE = 147;
+const int E_BASE = 129;
 //base (neutral) value for aileron
 const int A_BASE = 127;
-const int R_BASE = 137;
+const int R_BASE = 127;
 //multiplier for joystick values. used by aileron and elevator 
-//rudder is less sensitive
+//rudder is less sensitive and so left as a percentage of 
+//max value
 const int SPEED = 40;
 
 class Controller{
@@ -30,6 +31,7 @@ private:
   int thrust;
   //when thrust joystick released we can return to previous thrust
   int prev_thrust;
+  int speed_increment;
 
   //Button 9
   void set_lights();

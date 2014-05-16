@@ -34,21 +34,17 @@ struct Location
     //constant mult/div
     Location& operator*=(double d);
     Location& operator/=(double d);
-
-  
-
 };
 
 
+// operator overloading
 Location operator+(Location lhs, const Location& rhs);
 Location operator-(Location lhs, const Location& rhs);
 Location operator*(Location lhs, const Location& rhs);
 Location operator/(Location lhs, const Location& rhs);
-
 Location operator*(Location l, double d);
 Location operator*(double d,Location l);
 Location operator/(Location l, double d);
-
 std::ostream& operator<<(std::ostream& os, const Location& l);
 
 struct KinectFrustum

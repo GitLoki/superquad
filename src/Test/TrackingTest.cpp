@@ -8,8 +8,8 @@
 #include "../include/Controller/boost_xbox_controller.hpp"
 using namespace std;
 
-//CLOCKS_PER_SEC
-
+// this is an early test used previously to test that the kinect was
+// functioning correctly. It has now been superseded by KinectTest.cpp
 
 int main(int argc, char** argv){
 
@@ -59,12 +59,6 @@ int main(int argc, char** argv){
       x_store /= count; y_store /= count; z_store /= count;
       
       printw("Readings: %d %d %d \n", x_store, y_store, z_store);
-
-      //outf << old_time << " : " << (int)x_store << " , "
-      //   << (int)y_store << " , " << (int)z_store
-      //   << "   (Readings: " << count << ")\n\n";
-      //
-
 
       if(readings && x_store > 350) {
 	tx.sendCommand('a', false);

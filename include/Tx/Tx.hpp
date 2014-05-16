@@ -71,8 +71,6 @@ public:
   void setValues(Location values);
 
 private:
-  /* pointer to the input-output service */
-
 
   /* pointer to the port we are writing data to */
   boost::asio::serial_port* port;

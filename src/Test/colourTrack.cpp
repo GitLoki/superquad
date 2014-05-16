@@ -54,15 +54,6 @@ void createTrackbars(){
 
 	//create memory to store trackbar name on window
 	char TrackbarName[50];
-	/*
-	CHANGED THESE LINES BELOW - REMOVED LAST ARGUMENT BECAUSE COMPILER COMPLAINED - MILO *
-	sprintf( TrackbarName, "H_MIN", H_MIN);
-	sprintf( TrackbarName, "H_MAX", H_MAX);
-	sprintf( TrackbarName, "S_MIN", S_MIN);
-	sprintf( TrackbarName, "S_MAX", S_MAX);
-	sprintf( TrackbarName, "V_MIN", V_MIN);
-	sprintf( TrackbarName, "V_MAX", V_MAX);
-	*/
 
 	sprintf( TrackbarName, "H_MIN");
 	sprintf( TrackbarName, "H_MAX");
@@ -82,6 +73,4 @@ void createTrackbars(){
 	createTrackbar( "S_MAX", trackbarWindowName, &S_MAX, S_MAX, on_trackbar );
 	createTrackbar( "V_MIN", trackbarWindowName, &V_MIN, V_MAX, on_trackbar );
 	createTrackbar( "V_MAX", trackbarWindowName, &V_MAX, V_MAX, on_trackbar );
-
-
 }

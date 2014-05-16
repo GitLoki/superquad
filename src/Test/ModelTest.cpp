@@ -49,6 +49,9 @@ void test_down(double before[3], double after[3]){
 
 int main () {
 
+  // just iterate through array of moves and check that they display correctly
+  // in the model
+
   PhysicsModel testMod = PhysicsModel();
   testMod.init();
   char testMoves[] = {'+','+','+','+','+','+','+',
