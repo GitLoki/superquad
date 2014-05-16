@@ -1,4 +1,5 @@
 # Compiler options: 
+SHELL := /bin/bash
 CXX := g++
 CC := gcc
 DEFINES := -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
@@ -91,6 +92,8 @@ $(CONTROLLERTESTSOURCES:.$(SRCEXT)=.o)) $(BUILDDIR)/PhysicsModel/extApi.o \
 
 # Rules:
 default:
+	cd src/GUI && qmake
+	cd src/GUI && $(MAKE)
 	$(MAKE) $(MAINTARGET)
 	$(MAKE) $(MAIN2TARGET)
 
@@ -98,24 +101,24 @@ $(MAINTARGET): $(MAINOBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(MAINTARGET) $(LIB)"; $(CXX) $^ \
-	$(BUILDDIR)/GUI/qcustomplot.o \
-	$(BUILDDIR)/GUI/moc_qcustomplot.o \
-	$(BUILDDIR)/GUI/gui_interface.o \
-	$(BUILDDIR)/GUI/pollthread.o \
-	$(BUILDDIR)/GUI/moc_gui_interface.o \
-	$(BUILDDIR)/GUI/moc_pollthread.o \
+	$(SRCDIR)/GUI/qcustomplot.o \
+	$(SRCDIR)/GUI/moc_qcustomplot.o \
+	$(SRCDIR)/GUI/gui_interface.o \
+	$(SRCDIR)/GUI/pollthread.o \
+	$(SRCDIR)/GUI/moc_gui_interface.o \
+	$(SRCDIR)/GUI/moc_pollthread.o \
 	-o $(BINDIR)/$(MAINTARGET) $(LIB)
 
 $(MAIN2TARGET): $(MAIN2OBJECTS)
 	@mkdir -p $(BINDIR)
 	@echo " Linking..."
 	@echo " $(CXX) $^ -o $(MAIN2TARGET) $(LIB)"; $(CXX) $^ \
-	$(BUILDDIR)/GUI/qcustomplot.o \
-	$(BUILDDIR)/GUI/moc_qcustomplot.o \
-	$(BUILDDIR)/GUI/gui_interface.o \
-	$(BUILDDIR)/GUI/pollthread.o \
-	$(BUILDDIR)/GUI/moc_gui_interface.o \
-	$(BUILDDIR)/GUI/moc_pollthread.o \
+	$(SRCDIR)/GUI/qcustomplot.o \
+	$(SRCDIR)/GUI/moc_qcustomplot.o \
+	$(SRCDIR)/GUI/gui_interface.o \
+	$(SRCDIR)/GUI/pollthread.o \
+	$(SRCDIR)/GUI/moc_gui_interface.o \
+	$(SRCDIR)/GUI/moc_pollthread.o \
 	-o $(BINDIR)/$(MAIN2TARGET) $(LIB)
 
 $(MODELTESTTARGET): $(MODELTESTOBJECTS)
@@ -192,3 +195,4 @@ clean:
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET)"; $(RM) -r $(BUILDDIR) $(TARGET)
 
 .PHONY: clean
+.FORCE:
