@@ -20,11 +20,6 @@ PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
 
     // set destination
     destination.setValues(XCENTRE, YCENTRE, 900);
-
-    // open logfile for logging, write heading
-    //PIDlogfile.open ("logfile.txt");
-    //PIDlogfile << "control values :: location\n";
-    //PIDlogfile << "  [X, Y, Z]    :: [X, Y, Z]\n";
     
     previous_time = clock();
 	previous_delta.X = 0;
@@ -57,12 +52,7 @@ void PID::updateDestination(Location* _destination) {
 }
 
 int PID::updateRatios() {
-    // const double K = 400;
-    // const double K2 = 300;
-    // lower => more aggressive correction 
-
-    // 150, 160, 1000 - last best config
-    // 220, 220, 1200 :: 6k, 6k, 90k
+    // lower parameters  => more aggressive correction 
 
     // Proportional parameters
     const double KP_x = 7000;
@@ -100,7 +90,6 @@ int PID::updateRatios() {
     ratios.Y = 1 + (delta.Y / KP_y) + (integrals.Y / KI_y)
 		- (partial_derivatives.Y / KD_y);
     ratios.Z = 1 + (delta.Z / KP_z); 
-    // + integrals.Z * KI_z  - (partial_derivatives.Z * KD_z);;
       
     previous_delta.X = delta.X;
     previous_delta.Y = delta.Y;
@@ -143,19 +132,7 @@ int PID::goToDestination(Location& _currentLocation) {
 	if (control_vals[index] <= 5)
 	    control_vals[index] = 5;
     }
-  
-    /*
-    if (location.Z <= 40)
-        control_vals[1] = STARTPOW;
-    */
-
-//    PIDlogfile << time_diff << "ms :: " 
-//            << "[" << control_vals[2] << ", " 
-//	      << control_vals[3] << ", " 
-//	      << control_vals[0] << "] :: (" 
-//	      << location.X << ", " 
-//	      << location.Y << ", " 
-//	      << location.Z << ")\n";
+ 
 
     if(control_vals[THROTTLE - 1] > 180) {
       std::cout << "Throttle: " << control_vals[THROTTLE] << std::endl; 
@@ -169,10 +146,6 @@ int PID::goToDestination(Location& _currentLocation) {
 	      << location.X << ", " 
 	      << location.Y << ", " 
 	      << location.Z << ")" << std::endl;
-
-    // safeguard against rudder being changed. Also, adjust the rudder trim
-    // control_vals[1] = 117; 
-
 
     tx->setValues(control_vals);
     _currentLocation.setValues(location.X, location.Y, location.Z);
@@ -189,10 +162,6 @@ void PID::signalHandler( int signum )
 {
   std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
 
-  //pid->halt();
-  //PIDlogfile.close();
-
-  exit(signum);  
-
+  exit(signum);
 }
 

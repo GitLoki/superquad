@@ -1,8 +1,5 @@
 #include "../../include/Kinect/Kinect.hpp"
 
-
-/*PUBLIC FUNCTIONS*/
-
 //Constructor
 Kinect::Kinect():
     depthMat(new cv::Mat(cv::Size(640,480),CV_16UC1)),
@@ -18,14 +15,11 @@ Kinect::~Kinect() {
     cv::destroyAllWindows();
 }
 
-
-//query the kinect for the location of an object
+// query the kinect for the location of an object
 // expect this function to be called inside a loop continuously
-
 bool Kinect::query(double& realX, double& realY, double& avgDepth, cv::Mat* inMat) {
 
     //inMat can be used to provide a depth matrix, instead of obtaining it from the Kinect.
-
     if(inMat && (inMat->rows == WIDTH) && (inMat->cols == HEIGHT)){
 	//if a valid depth matrix has been supplied
 	depthMat = inMat;
@@ -78,7 +72,6 @@ bool Kinect::query(double& realX, double& realY, double& avgDepth, cv::Mat* inMa
     }
 }
 
-
 //query function that returns a Location object
 Location Kinect::query(){
 
@@ -90,7 +83,6 @@ Location Kinect::query(){
 
 //save a video of both rgb and depth
 void Kinect::saveVideo(std::string filename, int frames){
-
 
     cv::VideoWriter writer;
 
@@ -182,10 +174,7 @@ void Kinect::saveFrame(std::string filename){
     }
 }
 
-
-/*PRIVATE FUNCTIONS*/
-
-void  Kinect::update(){
+void Kinect::update(){
     // loop both video and depth until they have updated
     while( !camera.getDepth(*depthMat)) ;
     while( !camera.getVideo(*rgbMat)  ) ;

@@ -8,6 +8,7 @@ Location PositionControl::query(Location position) {
 
     currentValue += delta_P;
 
+	// make sure only sensible values can be sent to the transmitter
     if(currentValue.X > 255)
       currentValue.X = 255;
     else if(currentValue.X < 0)

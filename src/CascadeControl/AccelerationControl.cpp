@@ -8,6 +8,7 @@ Location AccelerationControl::query(Location acceleration) {
 
     currentValue += delta_A;
 
+	// make sure only sensible values are sent to the transmitter
     if(currentValue.X > 255)
       currentValue.X = 255;
     else if(currentValue.X < 0)

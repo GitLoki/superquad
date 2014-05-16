@@ -55,8 +55,6 @@ void Monitor::snap(bool set_to)
     pthread_mutex_unlock (&monitor_lock);
 }
 
-
-
 //getters
 void Monitor::get_target(Location &values)
 {

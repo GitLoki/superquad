@@ -20,13 +20,13 @@ PhysicsModel::~PhysicsModel() {
 
 int PhysicsModel::init() {
 
-  /* Initialise communication thread */
+  // initialise communication thread 
   clientID = simxStart((simxChar*) "127.0.0.1", (simxInt) 19997,
 		       (simxChar) true, 
 		       (simxChar) true,
 		       (simxInt) 3000, (simxInt) 5);
 
-  /* Get object handles */
+  // get object handles
   err = simxGetObjectHandle(clientID, (simxChar*) 
 			    "Quadricopter_base#", &quadHandle, 
 			    (simxInt) simx_opmode_oneshot_wait);
@@ -51,12 +51,10 @@ int PhysicsModel::init() {
 			    simx_opmode_oneshot_wait);
 
   thrustVal = 0;
-  /*
-  thrustStr[0] = '0';
-  thrustStr[1] = '\0';
-  */
 
+  // tell model to begin
   startSimulation();
+
   return clientID;
 }
 
@@ -110,7 +108,7 @@ void PhysicsModel::setPosition(double position[3]) {
 
 void PhysicsModel::sendCommand(char ch) {
   
-  /* If lateral movement change Eulers angles */
+  // if lateral movement then change Euler angles...
   if(ch != '+' && ch != '-'){
     
     err = simxGetObjectOrientation(clientID, quadHandle, -1,
@@ -144,75 +142,18 @@ void PhysicsModel::sendCommand(char ch) {
     return;
   }
   
-  /* Otherwise set position */
+  // ...otherwise set position
   else {
-
-    /*
-    err = simxGetObjectPosition(clientID, quadHandle, -1,
-				quadPosRead, 
-				simx_opmode_oneshot_wait);
-    */
-
     switch(ch){
     case '+':
       thrustVal++;
-	// simxQuery(clientID,"thrust",(simxUChar*) "increase",12,
-	//	"reply",replyData,&replySize,5000);
-      
-      // thrust = thrust <= 8 ? thrust + 1 : 9;
-      // quadPosRead[2] -= 0.05;
       break;
     case '-':
       thrustVal = thrustVal > 0 ? thrustVal - 1 : 0;
-  //simxQuery(clientID,"thrust",(simxUChar*) "decrease",12,
-  //		"reply",replyData,&replySize,5000);
-      // thrust = thrust >= 1 ? thrust - 1 : 0;
-      // quadPosRead[2] += 0.05;
       break;
     }
-    
+
     simxSetIntegerSignal(clientID,"thrust",thrustVal,simx_opmode_oneshot_wait);
-
-    /*
-    switch(thrust) {
-    case 0:
-    thrustStr[0] = '0';
-    break;
-    case 1:
-    thrustStr[0] = '1';
-    break;
-    case 2:
-    thrustStr[0] = '2';
-    break;
-    case 3:
-    thrustStr[0] = '3';
-    break;
-    case 4:
-    thrustStr[0] = '4';
-    break;
-    case 5:
-    thrustStr[0] = '5';
-    break;
-    case 6:
-    thrustStr[0] = '6';
-    break;
-    case 7:
-    thrustStr[0] = '7';
-    break;
-    case 8:
-    thrustStr[0] = '8';
-    break;
-    case 9:
-    thrustStr[0] = '9';
-    break;
-    }
-    */
-
-    /*
-    err = simxSetObjectPosition(clientID, quadHandle, -1,
-				quadPosRead,
-				simx_opmode_oneshot_wait);
-    */
   }
 }
 

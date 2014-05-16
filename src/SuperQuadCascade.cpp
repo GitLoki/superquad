@@ -14,7 +14,6 @@
 #include "../include/Kinect/Kinect.hpp"
 #include "../include/PhysicsModel/PhysicsModel.hpp"
 #include "../include/Controller/boost_xbox_controller.hpp"
-//#include "../include/PID/PID.hpp"
 #include "../include/CascadeControl/CascadeControl.hpp"
 #include "../include/CascadeControl/AccelerationControl.hpp"
 #include "../include/CascadeControl/VelocityControl.hpp"
@@ -26,7 +25,7 @@
 
 using namespace std;
 
-// centre of the Kinect's fustrum
+// centre of the Kinect's frustum
 const Location fieldCentre(XCENTRE, YCENTRE, ZCENTRE);
 
 // null location object for testing kinect results against
@@ -47,15 +46,17 @@ Location a_jerkLimit(10, 10, 15);
 Location p_K(-0.1, -0.1, 0.5);
 Location p_shiftLimit(30, 30, 100);
 
-
+// structure to hold arguments being passed to threads
 struct argstruct {
     int argcs;
     char **argvs;
     Monitor *m;
 };
 
+// controller function to be run by own thread
 void *contfun(void *argument);
 
+// gui function to be run by own thread
 void *guifun(void *argument);
 
 int main (int argc, char** argv) {
@@ -72,14 +73,14 @@ int main (int argc, char** argv) {
 
     pthread_t controlthread, guithread;
 
-    //have both threads call their respective functions
+    // have both threads call their respective functions
     ret_code = pthread_create(&controlthread, NULL, contfun, &arguments);
     assert(ret_code == 0);
 
     ret_code = pthread_create(&guithread, NULL, guifun, &arguments);
     assert(ret_code == 0);
 
-    //wait for both threads to finish
+    // wait for both threads to finish
     ret_code = pthread_join(guithread, NULL);
     assert(ret_code == 0);
 
@@ -87,7 +88,6 @@ int main (int argc, char** argv) {
     assert(ret_code == 0);
 
     return 0;
-
 }
 
 void *contfun(void *argument){
@@ -107,7 +107,9 @@ void *contfun(void *argument){
     tx->getValues(&trim);
 
     std::cout << "Initialising Control Structure..." << std::endl;
-    CascadeControl* cascadeControl = new CascadeControl(trim, p_shiftLimit, p_K, v_snapLimit, v_K, a_jerkLimit, a_K);
+    CascadeControl* cascadeControl = new CascadeControl(trim, p_shiftLimit, p_K, 
+														v_snapLimit, v_K, 
+														a_jerkLimit, a_K);
     cascadeControl->changePositionSetPoint(fieldCentre);
 
     std::cout << "Transmitter Initialised. Counting down..." << std::endl;
@@ -117,25 +119,22 @@ void *contfun(void *argument){
     }
     std::cout << std::endl << "Liftoff!!!!" << std::endl;
 
-    //double oldtime, newtime;
-    //oldtime = clock();
     timespec oldTime, newTime;
     clock_gettime(CLOCK_REALTIME, &oldTime);
 
     while (true) {
-
       changed = mon->changed;
 
-      //Check for changes in monitor
+      // check for changes in monitor
       if(changed.target){
-        //use mon->get_target(Location) to get new location
+      // use mon->get_target(Location) to get new location
       }
       
       if(changed.lights){
 	tx->setLEDS(mon->get_light());
       }
       if(changed.land){
-        //land if mon->get_land() is true
+      // land if mon->get_land() is true
       }
       if(changed.stop){
 	tx->halt();
@@ -144,7 +143,6 @@ void *contfun(void *argument){
       if(changed.snap){
 	tx->setFlips(mon->get_snap());
       }
-
 
       // query kinect until a valid reading is acquired
       do currentLocation = kinect->query();
@@ -158,7 +156,6 @@ void *contfun(void *argument){
       tx->setValues(flightVariables);
 
       // Log time and settings for diagnostic reasons
-      //newtime = clock();
       clock_gettime(CLOCK_REALTIME, &newTime);
       std::cout << "time nanoseconds: " << (newTime.tv_sec - oldTime.tv_sec) << std::endl;
       oldTime.tv_sec = newTime.tv_sec;
@@ -176,11 +173,10 @@ void *guifun(void *argument){
 
     argstruct *args = (argstruct*) argument;
 
+	// initialise GUI and display it to the user
     QApplication quadcop(args->argcs, args->argvs);
     GUI_interface w(args->m);
-
     w.show();
-    
     quadcop.exec();
 
     return NULL;

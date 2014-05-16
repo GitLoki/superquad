@@ -15,9 +15,6 @@
 #include "../include/PhysicsModel/PhysicsModel.hpp"
 #include "../include/Controller/boost_xbox_controller.hpp"
 #include "../include/PID/PID.hpp"
-//#include "../include/CascadeControl/CascadeControl.hpp"
-//#include "../include/CascadeControl/AccelerationControl.hpp"
-//#include "../include/CascadeControl/VelocityControl.hpp"
 #include "../include/config.hpp"
 #include <pthread.h>
 #include <assert.h>
@@ -26,14 +23,17 @@
 
 using namespace std;
 
+// structure to hold arguments being passed to threads
 struct argstruct {
     int argcs;
     char **argvs;
     Monitor *m;
 };
 
+// controller function to be run by own thread
 void *contfun(void *argument);
 
+// gui function to be run by own thread
 void *guifun(void *argument);
 
 int main (int argc, char** argv) {
@@ -50,14 +50,14 @@ int main (int argc, char** argv) {
 
     pthread_t controlthread, guithread;
 
-    //have both threads call their respective functions
+    // have both threads call their respective functions
     ret_code = pthread_create(&controlthread, NULL, contfun, &arguments);
     assert(ret_code == 0);
 
     ret_code = pthread_create(&guithread, NULL, guifun, &arguments);
     assert(ret_code == 0);
 
-    //wait for both threads to finish
+    // wait for both threads to finish
     ret_code = pthread_join(guithread, NULL);
     assert(ret_code == 0);
 
@@ -82,12 +82,12 @@ void *contfun(void *argument){
     std::cout << "Transmitter Initialised. Waiting for serial connection..." 
 			  << std::endl;
     usleep(1000000 * COUNTDOWN);
-
     std::cout << "Waiting complete. Initiating automated control..." 
 			  << std::endl;
 
     PID* pid = new PID(kinect, tx);
 
+	// let PID controller take over
     while (pid->goToDestination(currentLocation)) {
       usleep(1000000 / FPS);
 	}
@@ -99,11 +99,10 @@ void *guifun(void *argument){
 
     argstruct *args = (argstruct*) argument;
 
+	// initialise GUI and display it to the user
     QApplication quadcop(args->argcs, args->argvs);
     GUI_interface w(args->m);
-
     w.show();
-    
     quadcop.exec();
 
     return NULL;

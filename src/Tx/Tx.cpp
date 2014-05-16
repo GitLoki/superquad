@@ -4,6 +4,7 @@
 Tx::Tx() {
   port = new boost::asio::serial_port(ios);  
 
+  // try opening the USB port to the Arduino
   try  {
     port->open("/dev/ttyACM0");
   } catch(...) {
@@ -157,19 +158,6 @@ void Tx::setFlips(bool active) {
 } 
 
 void Tx::sendValues(bool verbose) {
-    // ensure all values are legal
-    // N.B. avoid using three, for it is cursed. (reserved as control value)
-    // Deprecated - santising input inside sendCommand function instead
-  /*
-    for (int i = THROTTLE ; i <= ELEVATOR ; i++) {
-	if (controls[i] < 0)
-	    controls[i] = 0;
-	else if (controls[i] > 255)
-	    controls[i] = 255;
-	else if (controls[i] == sigVal)
-	    controls[i]++;
-    }
-  */
 	// avoid using packet header values as control values
   for ( int i = 1 ; i < 5 ; i++ ) {
       if (controls[i] == CONTROL_PACKET || controls[i] == SETTING_PACKET) {

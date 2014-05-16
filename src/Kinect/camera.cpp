@@ -21,7 +21,7 @@ ExtendedFreenectDevice::ExtendedFreenectDevice(freenect_context *_ctx, int _inde
   }
 }
 
-// Do not call directly even in child
+// not to be called directly, even in child
 void ExtendedFreenectDevice::VideoCallback(void* _rgb, uint32_t timestamp) {
   //std::cout << "RGB callback" << std::endl;
   m_rgb_mutex.lock();
@@ -30,7 +30,7 @@ void ExtendedFreenectDevice::VideoCallback(void* _rgb, uint32_t timestamp) {
   m_new_rgb_frame = true;
   m_rgb_mutex.unlock();
 };
-// Do not call directly even in child
+// not to be called directly, even in child
 void ExtendedFreenectDevice::DepthCallback(void* _depth, uint32_t timestamp) {
   //std::cout << "Depth callback" << std::endl;
   m_depth_mutex.lock();
