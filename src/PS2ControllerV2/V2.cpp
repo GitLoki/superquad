@@ -1,9 +1,8 @@
 #include "../../include/PS2ControllerV2/V2.hpp"  
 
 
-Controller::Controller(Tx* t, PhysicsModel* p){
+Controller::Controller(Tx* t){
   //intialize variables
-  pm = p;
   tx = t;
   flying = true;
   lights = 1; aileron = A_BASE; elevator = E_BASE; rudder = R_BASE;
@@ -12,8 +11,6 @@ Controller::Controller(Tx* t, PhysicsModel* p){
   prev_thrust = 0;
   thrust = 70;
  
-  pm->startSimulation();
-
   //Check controller input found
   if(in_stream.fail()){
     std::cout << "Controller not found" << std::endl;
