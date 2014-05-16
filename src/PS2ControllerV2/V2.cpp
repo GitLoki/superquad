@@ -116,6 +116,7 @@ void Controller::set_rudder(){
   }
 
 void Controller::resetOrientation(){
+  //L1 stabilizes flight, thrust value aims to hover
   aileron = A_BASE;
   rudder = R_BASE;
   elevator = E_BASE;
