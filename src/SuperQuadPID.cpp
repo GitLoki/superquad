@@ -81,7 +81,16 @@ void *contfun(void *argument){
     Tx* tx = new Tx;
     std::cout << "Transmitter Initialised. Waiting for serial connection..." 
 			  << std::endl;
-    usleep(1000000 * COUNTDOWN);
+
+    std::cout << "Transmitter Initialised. Waiting for serial connection...." 
+	      << std::endl;
+    for ( int i = COUNTDOWN ; i >= 0 ; i-- ) {
+        std::cout << i << std::endl;
+        usleep(ONE_SECOND);
+    }
+    std::cout << std::endl << "Liftoff!!!!" << std::endl;
+
+
     std::cout << "Waiting complete. Initiating automated control..." 
 			  << std::endl;
 
