@@ -55,19 +55,19 @@ int PID::updateRatios() {
     // lower parameters  => more aggressive correction 
 
     // Proportional parameters
-    const double KP_x = 6500;
-    const double KP_y = 6500;
-    const double KP_z = 10000000;
+    const double KP_x = 6000;
+    const double KP_y = 6000;
+    const double KP_z = 100000;
 
     // Integral parameters
-    const double KI_x = 50000;
-    const double KI_y = 50000;
+    const double KI_x = 70000;
+    const double KI_y = 70000;
     const double KI_z = 100000;
 
     // Differential parameters
-    const double KD_x = 10000000;
-    const double KD_y = 10000000;
-    const double KD_z = 10000000;
+    const double KD_x = 1000000;
+    const double KD_y = 1000000;
+    const double KD_z = 1000000;
     
     current_time = clock();
     time_diff = (current_time - previous_time) / 1000; // milliseconds
