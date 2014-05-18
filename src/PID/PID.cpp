@@ -1,7 +1,35 @@
 #include "../../include/PID/PID.hpp"
 
-PID::PID(Kinect* _kinect, Tx* _tx) : kinect(_kinect), tx(_tx)
+PID::PID(Kinect* _kinect, Tx* _tx, 
+	 int _KP_lateral, int _KP_z,
+         int _KI_lateral, int _KI_z, 
+	 int _KD_lateral, int _KD_z,
+         int _STARTPOW, int _MINDEPTH) : kinect(_kinect), tx(_tx)
 {
+    STARTPOW = _STARTPOW; // 140
+    MINDEPTH = _MINDEPTH; // 800
+    MAXTHROTTLE = 220;
+
+    // lower parameters  => more aggressive correction 
+    KP_lateral = _KP_lateral; // 6500
+    KP_z = _KP_z; // 10000
+    KI_lateral = _KI_lateral; // 40000
+    KI_z = _KI_z; // 100000
+    KD_lateral = _KD_lateral; // 40000
+    KD_z = _KD_z; // 100000
+
+    // Proportional parameters
+    KP_x = KP_lateral;
+    KP_y = KP_lateral;
+
+    // Integral parameters
+    KI_x = KI_lateral;
+    KI_y = KI_lateral;
+
+    // Differential parameters
+    KD_x = KD_lateral;
+    KD_y = KD_lateral;
+    
     // Get starting (neutral) values out of the transmitter.
     tx->getValues(trim);
     tx->getValues(control_vals);
@@ -52,23 +80,7 @@ void PID::updateDestination(Location* _destination) {
 }
 
 int PID::updateRatios() {
-    // lower parameters  => more aggressive correction 
 
-    // Proportional parameters
-    const double KP_x = 6000;
-    const double KP_y = 6000;
-    const double KP_z = 100000;
-
-    // Integral parameters
-    const double KI_x = 70000;
-    const double KI_y = 70000;
-    const double KI_z = 100000;
-
-    // Differential parameters
-    const double KD_x = 1000000;
-    const double KD_y = 1000000;
-    const double KD_z = 1000000;
-    
     current_time = clock();
     time_diff = (current_time - previous_time) / 1000; // milliseconds
     previous_time = current_time;
@@ -89,7 +101,8 @@ int PID::updateRatios() {
 		- (partial_derivatives.X / KD_x);
     ratios.Y = 1 + (delta.Y / KP_y) + (integrals.Y / KI_y)
 		- (partial_derivatives.Y / KD_y);
-    ratios.Z = 1 + (delta.Z / KP_z); 
+    ratios.Z = 1 + (delta.Z / KP_z) + (integrals.Z / KI_z)
+		- (partial_derivatives.Z / KD_z);
       
     previous_delta.X = delta.X;
     previous_delta.Y = delta.Y;
@@ -134,9 +147,9 @@ int PID::goToDestination(Location& _currentLocation) {
     }
  
 
-    if(control_vals[THROTTLE - 1] > 220) {
+    if(control_vals[THROTTLE - 1] > MAXTHROTTLE) {
       std::cout << "Throttle: " << control_vals[THROTTLE] << std::endl; 
-      control_vals[THROTTLE - 1] = 220;
+      control_vals[THROTTLE - 1] = MAXTHROTTLE;
     }
 
     std::cout << time_diff << "ms :: " 
