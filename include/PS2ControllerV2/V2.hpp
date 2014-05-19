@@ -30,7 +30,6 @@ private:
   std::ifstream in_stream;
   int thrust;
   //when thrust joystick released we can return to previous thrust
-  int prev_thrust;
   int speed_increment;
 
   //Button 9

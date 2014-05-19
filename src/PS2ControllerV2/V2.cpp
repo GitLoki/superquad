@@ -7,8 +7,7 @@ Controller::Controller(Tx* t){
   flying = true;
   lights = 1; aileron = A_BASE; elevator = E_BASE; rudder = R_BASE;
   in_stream.open("/dev/input/js0");
-  
-  prev_thrust = 0;
+
   thrust = 70;
   speed_increment = 15;
 
@@ -49,7 +48,6 @@ void Controller::thrust_up(){
   if(controllerCommand[4] == 1){
     tx->sendCommand('+');
     thrust += speed_increment;
-    prev_thrust += speed_increment; //NEED THIS?
   }
 }
 
@@ -58,24 +56,19 @@ void Controller::thrust_down(){
   if(controllerCommand[4] == 1){
     tx->sendCommand('-');
     thrust -= speed_increment;
-    prev_thrust -= speed_increment; //NEED THIS?
   }
 }
 
 void Controller::set_thrust(){
-  //power stick released
-  if(controllerCommand[4] == 0){ thrust = prev_thrust;}
   //if power up
-  else if(controllerCommand[5] < 0){
+  if(controllerCommand[5] < 0){
     //set prev thrust to thrust, so we can return to original thrust
     //when stick released
-    prev_thrust = thrust;
     //limit thrust to 255
     thrust = std::min((thrust - ((controllerCommand[5]/128)*SPEED)), 255);
   }
   //otherwise power down
   else if(controllerCommand[5] > 0){
-    prev_thrust = thrust;
     thrust = std::max((thrust-((controllerCommand[5]/127)*SPEED)), 0);
   }
   tx->setThrust(thrust);
